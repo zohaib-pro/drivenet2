@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import WidgetWrapper from "components/WidgetWrapper";
 import EventHandlerComponent from "./EventHandler";
 import IssuesHandlerComponent from "./IssuesHandler";
+import Dashboard from "./Dashboard";
 
 
 
@@ -39,7 +40,7 @@ const ProfilePage = () => {
   }
 
   const menu = {
-    'Dashboard': <></>, 
+    'Dashboard': <Dashboard />,
     'Events' : <EventHandlerComponent /> ,
     'Issues' : <IssuesHandlerComponent />,
     'Menu 1': <></>,

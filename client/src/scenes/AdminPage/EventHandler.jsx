@@ -43,8 +43,8 @@ const EventHandlerComponent = () => {
             headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             body: JSON.stringify(values)
         });
-        //const newEvent = await response.json();
-        handleClose();
+        const newEvent = await response.json();
+        alert(JSON.stringify(newEvent));
     };
 
     return (

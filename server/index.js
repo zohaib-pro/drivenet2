@@ -17,6 +17,7 @@ import eventRoutes from "./routes/events.js";
 import vehicleAdRoutes from "./routes/vehicleAds.js";
 import ChatRoute from './routes/ChatRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
+import reportRoutes from './routes/report.js'
 
 import { register} from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
@@ -25,9 +26,6 @@ import { createEvent} from "./controllers/events.js"
 
 
 import { verifyToken } from "./middleware/auth.js";
-import User from "./models/User.js";
-import Issue from "./models/Issue.js";
-import { users, posts } from "./data/index.js";
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -76,12 +74,12 @@ app.use("/issues", issueRoutes);
 app.use("/market", vehicleAdRoutes);
 app.use("/chat", ChatRoute);
 app.use('/message', MessageRoute);
+app.use('/report', reportRoutes)
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
-mongoose
-  //.connect('mongodb://localhost:27017/kun_drivenet', {
-    .connect(process.env.MONGO_URL, {
+mongoose.connect('mongodb://localhost:27017/kun_drivenet', {
+    // .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
