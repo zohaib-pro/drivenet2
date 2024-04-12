@@ -8,14 +8,14 @@ export const getReport = async (req, res) => {
     const vehiclesN = await VehicleAd.countDocuments();
     const vehiclesSoldN = await VehicleAd.countDocuments({sold: true});
     const issuesN = await Issue.countDocuments();
-    const issuesNewN = await Issue.countDocuments({status: 'new'});
+    const issuesResolvedN = await Issue.countDocuments({status: 'resolved'});
 
     const report = {
       usersN,
       vehiclesN,
       vehiclesSoldN,
       issuesN,
-      issuesNewN
+      issuesResolvedN
     }
     res.status(200).json(report);
   } catch (err) {

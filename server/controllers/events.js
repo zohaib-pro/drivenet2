@@ -3,18 +3,17 @@ import Event from "../models/Event.js";
 /* CREATE */
 export const createEvent = async (req, res) => {
   try {
-    const { title, description, datetime, picture } = req.body; // Add title
+    const { title, description, datetime, picture, picturePath } = req.body; // Add title
   
     console.log(picture);
     const newEvent = new Event({
       datetime,
       title, 
       description,
-      picture: picture.path,
+      picture: picturePath,
       venue: 'lahore'
     });
     await newEvent.save();
-
   
     res.status(201).json(newEvent);
   } catch (err) {
@@ -26,7 +25,7 @@ export const createEvent = async (req, res) => {
 /* READ */
 export const getEvents = async (req, res) => {
   try {
-    const event = await Event.find();
+    const event = await Event.find().sort({ createdAt: -1 });
     res.status(200).json(event);
   } catch (err) {
     res.status(404).json({ message: err.message });

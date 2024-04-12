@@ -12,22 +12,27 @@ const issueSchema = yup.object().shape({
 });
 
 const initialValues = {
-    userId: "",
+    userId: "hello",
     vehicleAdId: "",
     details: "",
     category: "",
+    userInfo: {}
 };
 
 const categories = ["Wrong Price Prediction", "Fake Vehicle details", "Fraud Seller"]; // Add your categories here
 
-const IssueCreationComponent = ({userId, vehicleAdId}) => {
+const IssueCreationComponent = ({user, vehicleAdId, onIssueReported}) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const submitIssue = async (values, onSubmitProps) => {
         try {
-            values.userId = userId;
+            values.userId = user._id;
+            values.userInfo = {
+                username: `${user.firstName} ${user.lastName}`,
+                phone: '+92 301 1212123'
+            }
             values.vehicleAdId = vehicleAdId;
             console.log(JSON.stringify(values));
             const response = await fetch(`http://localhost:3001/issues`, {
@@ -35,6 +40,11 @@ const IssueCreationComponent = ({userId, vehicleAdId}) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(values)
             });
+            if (response.ok){
+                onIssueReported("Your issue have been reported to admin Successfully!")
+            }else{
+                onIssueReported(JSON.stringify(response));
+            }
             // Handle success or error response as needed
             handleClose();
         } catch (error) {
@@ -48,7 +58,7 @@ const IssueCreationComponent = ({userId, vehicleAdId}) => {
             {/* Plus icon to toggle the form */}
             <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
                 <Button variant="contained" onClick={handleOpen} color="primary">
-                    Report and Issue
+                    Report an Issue
                 </Button>
             </Box>
 

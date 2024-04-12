@@ -6,40 +6,8 @@ import { Typography, Box } from "@mui/material";
 import Center from "components/Center";
 import AdvertWidget from "./AdvertWidget";
 
-const EventWidgetGallery = ({ horizontal=false, editable=false }) => {
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.events);
-  const token = useSelector((state) => state.token);
-
-  const delEvent = async (id) => {
-   
-    const response = await fetch("http://localhost:3001/events/"+id, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) {
-      alert("Failed to delete !")
-    }else{
-      dispatch(setEvents({ events: posts.filter(item=>item._id!=id) }));
-    }
-    //dispatch(setEvents({ events: data }));
-  };
-
-  const getEvents = async () => {
-    const response = await fetch("http://localhost:3001/events", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const data = await response.json();
-    console.log(data);
-    dispatch(setEvents({ events: data }));
-  };
-
-  useEffect(() => {
-    getEvents();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelClick }) => {
+  const posts = events;
 
   // Reverse the order of posts array
   const reversedPosts = posts;
@@ -74,7 +42,7 @@ const EventWidgetGallery = ({ horizontal=false, editable=false }) => {
                 date={item.datetime} 
                 image={item.picture} 
                 onDelete={editable? ()=>{
-                  delEvent(item._id)
+                  onDelClick(item._id);
                 }:null}
               />
               <Box m="2rem 0" />
@@ -82,7 +50,7 @@ const EventWidgetGallery = ({ horizontal=false, editable=false }) => {
             :
             <Box
             >
-              <AdvertWidget title={item.title} description={item.description} date={item.datetime} image={item.picture} />
+              <AdvertWidget title={item.title} description={item.description} date={item.datetime.replace('T', ' ')} image={item.picture} />
               <Box m="2rem 0" />
             </Box>
           ))}

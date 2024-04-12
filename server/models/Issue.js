@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const userInfoSchema = mongoose.Schema({
+  username: {
+    type: String,
+    required: true
+  },
+  phone: {
+    type: String,
+    required: true
+  }
+});
+
 const issueSchema = mongoose.Schema(
   {
     userId: {
@@ -24,6 +35,10 @@ const issueSchema = mongoose.Schema(
       type: String,
       enum: ['new', 'processing', 'resolved'],
       default: 'new',
+    },
+    userInfo: {
+      type: userInfoSchema,
+
     }
   },
   { timestamps: true }

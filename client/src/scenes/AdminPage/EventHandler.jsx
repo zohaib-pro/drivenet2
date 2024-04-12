@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Button, IconButton, Modal, TextField, useTheme, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Alert, Box, Button, IconButton, Modal, TextField, useTheme, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -22,11 +22,12 @@ const initialValues = {
     title: "",
     description: "",
     datetime: "",
-    picture: "",
+    picture: null,
 };
 
 const EventHandlerComponent = () => {
     const [open, setOpen] = useState(false);
+    
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -35,28 +36,79 @@ const EventHandlerComponent = () => {
 
     const { palette } = useTheme();
 
+    const [events, setEvents] = useState([]);
  
     const submitEvent = async (values, onSubmitProps) => {
 
+        const formData = new FormData();
+        formData.append('title', values.title)
+        formData.append('description', values.description);
+        formData.append('datetime', values.datetime);
+        formData.append('picture', values.picture);
+        formData.append('picturePath', values.picture.name)
         const response = await fetch(`http://localhost:3001/events/create`, {
             method: "POST",
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            body: JSON.stringify(values)
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData
         });
         const newEvent = await response.json();
-        alert(JSON.stringify(newEvent));
+        setEvents([newEvent, ...events])
+        handleClose();
     };
 
+    const getEvents = async () => {
+        const response = await fetch("http://localhost:3001/events", {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        const data = await response.json();
+        setEvents(data)
+    };
+
+    const delEvent = async (id) => {
+        const response = await fetch("http://localhost:3001/events/"+id, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        if (!response.ok) {
+          alert("Failed to delete !")
+        }else{
+          setEvents(events.filter(item=>item._id != id));
+          showAlert('Event Deleted Successfully!');
+        }
+
+    };
+
+    const [alertObj, setAlertObj] = useState();
+    const showAlert = (msg , severity='success')=> {
+        setAlertObj({
+            msg,
+            severity
+        })
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' // Smooth scrolling animation
+        });
+    }
+
+    useEffect(()=>{
+        getEvents();
+    },[]);
     return (
         <Box>
             {/* Plus icon to toggle the form */}
-            <Box sx={{ mt: 2, display: "flex", justifyContent: "end" }}>
+            <Box sx={{ mt: 2, display: "flex", justifyContent: alertObj?"space-between":"end" }}>
+            {
+                alertObj &&
+                <Alert severity={alertObj.severity} variant="outlined" onClose={()=>{setAlertObj(null)}}>{alertObj.msg}</Alert>
+            }
                 <Button startIcon={<AddIcon />} onClick={handleOpen} color="primary">
                     Add Event
                 </Button>
             </Box>
             
-
             {/* Modal for the form */}
             <Modal open={open} onClose={handleClose}>
                 <Box
@@ -126,7 +178,8 @@ const EventHandlerComponent = () => {
                                     acceptedFiles=".jpg,.jpeg,.png"
                                     multiple={false}
                                     onDrop={(acceptedFiles) => {
-                                        setFieldValue("picture", acceptedFiles[0])
+                                        setFieldValue("picture", acceptedFiles[0]);
+                                        console.log(values.picture)
                                     }
                                     }
                                 >
@@ -159,7 +212,7 @@ const EventHandlerComponent = () => {
                 </Box>
             </Modal>
 
-            <EventWidgetGallery horizontal={true} editable={true} />
+            <EventWidgetGallery horizontal={true} editable={true} events={events} onDelClick={(id)=>{delEvent(id)}} />
         </Box>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -7,8 +7,6 @@ import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 
 import { useDispatch, useSelector } from "react-redux";
-
-
 
 
 // Define Yup validation schema
@@ -23,6 +21,8 @@ const vehicleAdSchema = yup.object().shape({
   variant: yup.string().required('Variant is required'),
   condition: yup.string().required('Condition is required').oneOf(['New', 'Used'], 'Invalid condition'),
   location: yup.string().required('Location is required'),
+  cityReg: yup.string().required('Registration city is required'),
+  Color: yup.string().required('Color is required'),
   images: yup.array().of(yup.string()).min(1, 'At least one image is required'),
 });
 
@@ -36,6 +36,8 @@ const initialValues = {
   model: '',
   variant: '',
   condition: 'New',
+  cityReg: 'Not Registered',
+  color: '',
   location: '',
   images: [],
 };
@@ -43,12 +45,14 @@ const initialValues = {
 const VehicleAdForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  const [vehicleMakes, setVehicleMakes] = useState([]);
+  const [vehicleModels, setVehicleModels] = useState([]);
+
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
 
   const submitVehicleAd = async (values, onSubmitProps) => {
     // this allows us to send form info with image
-    console.log(values);
     const formData = new FormData();
 
     const image = values.images[0];
@@ -74,17 +78,39 @@ const VehicleAdForm = () => {
       "http://localhost:3001/vehicle/create",
       {
         method: "POST",
-        headers: {Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData
       }
     );
     const savedUser = await savedUserResponse.json();
     console.log(savedUser.title);
-    //onSubmitProps.resetForm();
+  };
 
+  const getVehicleMakes = async () => {
+    const response = await fetch("http://localhost:3001/vehicles", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await response.json();
+    setVehicleMakes(data);
+  };
+
+  const getVehicleModles = async (make) => {
+    const response = await fetch("http://localhost:3001/vehicles/"+make, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await response.json();
+    setVehicleModels(data);
   };
 
   const { palette } = useTheme();
+
+  useEffect(()=>{
+    getVehicleMakes();
+  },[])
 
   return (
     <Formik
@@ -164,17 +190,32 @@ const VehicleAdForm = () => {
           />
           <TextField
             fullWidth
+            select
             label="Make"
             name="make"
             value={values.make}
-            onChange={handleChange}
+            onChange={(event) => {
+              const selectedValue = event.target.value === '' ? undefined : event.target.value;
+              if (selectedValue)
+                getVehicleModles(selectedValue);
+              handleChange({ target: { name: 'make', value: selectedValue }});
+            }}
             onBlur={handleBlur}
             error={touched.make && Boolean(errors.make)}
             helperText={touched.make && errors.make}
+            SelectProps={{
+              native: true,
+            }}
             margin="normal"
-          />
+          >
+            <option value=""></option>
+            {
+              vehicleMakes.sort().map(make=>(<option value={make}>{make}</option>))
+            }
+          </TextField>
           <TextField
             fullWidth
+            select
             label="Model"
             name="model"
             value={values.model}
@@ -182,8 +223,16 @@ const VehicleAdForm = () => {
             onBlur={handleBlur}
             error={touched.model && Boolean(errors.model)}
             helperText={touched.model && errors.model}
+            SelectProps={{
+              native: true,
+            }}
             margin="normal"
-          />
+          >
+            <option value=""></option>
+            {
+              vehicleModels.sort().map(model=>(<option value={model}>{model}</option>))
+            }
+          </TextField>
           <TextField
             fullWidth
             label="Variant"
@@ -195,6 +244,19 @@ const VehicleAdForm = () => {
             helperText={touched.variant && errors.variant}
             margin="normal"
           />
+
+          <TextField
+            fullWidth
+            label="Color"
+            name="color"
+            value={values.color}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.color && Boolean(errors.color)}
+            helperText={touched.color && errors.color}
+            margin="normal"
+          />
+
           <TextField
             fullWidth
             select
@@ -224,6 +286,19 @@ const VehicleAdForm = () => {
             helperText={touched.location && errors.location}
             margin="normal"
           />
+
+          <TextField
+            fullWidth
+            label="City Registered"
+            name="cityReg"
+            value={values.cityReg}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.cityReg && Boolean(errors.cityReg)}
+            helperText={touched.cityReg && errors.cityReg}
+            margin="normal"
+          />
+
           {/* Display selected images */}
           <Box mt={2}>
             <Typography variant="h6">Selected Images:</Typography>

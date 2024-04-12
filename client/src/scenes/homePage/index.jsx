@@ -7,11 +7,27 @@ import PostsWidget from "scenes/widgets/PostsWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 import EventWidgetGallery from "scenes/widgets/EventGalleryWidget";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const { _id, picturePath } = useSelector((state) => state.user);
+  const token = useSelector(state=>state.token);
 
+  const [events, setEvents] = useState([]);
+
+  const getEvents = async () => {
+    const response = await fetch("http://localhost:3001/events", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await response.json();
+    setEvents(data)
+};
+useEffect(()=>{
+  getEvents();
+}, [])
   return (
     <Box>
       <Navbar />
@@ -34,7 +50,7 @@ const HomePage = () => {
         </Box>
         {isNonMobileScreens && (
           <Box flexBasis="26%">
-            <EventWidgetGallery />
+            <EventWidgetGallery events={events}/>
             <FriendListWidget userId={_id} />
           </Box>
           

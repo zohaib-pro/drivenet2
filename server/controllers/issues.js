@@ -3,12 +3,13 @@ import Issue from "../models/Issue.js";
 /* CREATE */
 export const createIssue = async (req, res) => {
   try {
-    const { userId, vehicleAdId, category, details } = req.body; // Add title
+    const { userId, vehicleAdId, category, details, userInfo } = req.body; // Add title
     const newIssue = new Issue({
       userId, 
       vehicleAdId,
       category,
       details,
+      userInfo
     });
     await newIssue.save();  
     res.status(201).json(newIssue);
@@ -20,14 +21,32 @@ export const createIssue = async (req, res) => {
 /* READ */
 export const getIssues = async (req, res) => {
   try {
-    const issue = await Issue.find().sort({ createdAt: -1 })
-    res.status(200).json(issue);
+    const issues = await Issue.find().sort({ createdAt: -1 });
+    res.status(200).json(issues);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 };
 
+/* UPDATE */
+export const updateIssue = async (req, res) => {
+  try {
+    const {issuesList} = req.body;
+    for (const issue of issuesList){
+      const status = issue.status;
+      const id = issue._id;
+      const updatedIssue = await Issue.findByIdAndUpdate(id, { status }, { new: true });
+      if (!updatedIssue) {
+        return res.status(404).json({ message: "Issue not found" });
+      }
+    }
+    res.status(200).json({msg: 'ok'});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
+/* DELETE */
 export const deleteIssue = async (req, res) => {
   const { id } = req.params;
 

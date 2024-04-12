@@ -18,11 +18,13 @@ import vehicleAdRoutes from "./routes/vehicleAds.js";
 import ChatRoute from './routes/ChatRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
 import reportRoutes from './routes/report.js'
+import vehicleRoutes from './routes/vehicles.js'
 
 import { register} from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { createVehicleAd} from "./controllers/vehicleAds.js"
 import { createEvent} from "./controllers/events.js"
+
 
 
 import { verifyToken } from "./middleware/auth.js";
@@ -74,7 +76,8 @@ app.use("/issues", issueRoutes);
 app.use("/market", vehicleAdRoutes);
 app.use("/chat", ChatRoute);
 app.use('/message', MessageRoute);
-app.use('/report', reportRoutes)
+app.use('/report', reportRoutes);
+app.use('/vehicles', vehicleRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
