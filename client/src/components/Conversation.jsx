@@ -30,8 +30,15 @@ const Conversation = ({ data, currentUser, online }) => {
 
   return (
     <>
-      <div className="follower conversation">
-        <div>
+      <div
+        className="follower conversation"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", padding:'5px'  }}>
           {online && <div className="online-dot"></div>}
           <img
             src={
@@ -44,17 +51,20 @@ const Conversation = ({ data, currentUser, online }) => {
             style={{ width: "50px", height: "50px" }}
           />
           {userData && (
-            <div className="name" style={{ fontSize: "0.8rem" }}>
-              <span>
+            <div
+              style={{ fontSize: "0.8rem", marginLeft: "0.5rem" }}
+            >
+              <span className="name">
                 {userData.firstName} {userData.lastName}
               </span>
+              <div style={{ color: online ? "#51e200" : "" }}>
+                {online ? "Online" : "Offline"}
+              </div>
             </div>
           )}
-          <span style={{ color: online ? "#51e200" : "" }}>
-            {online ? "Online" : "Offline"}
-          </span>
         </div>
       </div>
+
       <Divider />
     </>
   );
