@@ -6,7 +6,7 @@ export const addVehicleDetails = async (req, res) => {
   try {
       const {make, model} = req.params;
       const {variant, engineC, transType, fuelType, category} = req.body;
-      console.log("engine: ", engineC);
+
       const vehicle = await Vehicle.findOne({name:make})
     
       if (!vehicle) {
@@ -41,6 +41,7 @@ export const addVehicleDetails = async (req, res) => {
             engineC,
             fuelType,
             transType,
+            category
         });
       }
       vehModel.versions = []
@@ -57,8 +58,8 @@ export const addVehicleDetails = async (req, res) => {
 
 export const getVehicleDetails = async (req, res) => {
     try {
-        const {make, model, variant} = req.params;
-        //const {variant} = req.body;
+        const {make, model} = req.params;
+        const {variant} = req.query;
         const vehicle = await Vehicle.findOne({name:make})
       
         if (!vehicle) {

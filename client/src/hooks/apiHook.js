@@ -6,7 +6,7 @@ function getFullUrl(target){
     return baseURL + (target[0] === '/' ? target : '/' + target);
 }
 
-export const useGetData = (target, defValue=[], token='') => {
+export const useGetData = (target, token='', defValue=[]) => {
     const [data, setData] = useState(defValue);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);

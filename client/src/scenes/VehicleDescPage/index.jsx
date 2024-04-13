@@ -12,14 +12,98 @@ import { LocationOnOutlined } from "@mui/icons-material";
 import IconBtn from "components/IconBtn";
 import DetailsGrid from "components/DetailsGrid";
 import IssueCreationComponent from "./IssueCreator";
+import { useGetData } from "hooks/apiHook";
 
 const VehicleDescPage = () => {
 
   const [vehicle, setVehicle] = useState(null);
+  const [prediction, setPrediction] = useState({
+    upper_limit: 0,
+    lower_limit: 0,
+    predicted_price: 0
+  });
   const { vehicleAdId } = useParams();
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+
+
+  async function fetchImageAsBlob(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const contentType = response.headers.get('Content-Type');
+    const extension = contentType.split('/')[1];
+    
+    const blob = await response.blob();
+    return { blob, extension };
+  }
+
+  function formDataToJson(formData) {
+    const json = {};
+    
+    formData.forEach((value, key) => {
+      // Check if key already exists
+      if (json[key]) {
+        if (!Array.isArray(json[key])) {
+          // Convert existing value to an array
+          json[key] = [json[key]];
+        }
+        // Append the new value to the array
+        json[key].push(value);
+      } else {
+        // Just set the value
+        json[key] = value;
+      }
+    });
+    
+    return json;
+  }
+  
+
+  const getPrediction = async () => {
+
+    const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant? "?"+vehicle.variant: ""}`;
+    //get the extra details about the vehicle first
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    const vehDetails = await res.json()
+
+    if (!vehDetails) {
+      alert("No Vehicle Details Found!");
+      return;
+    }
+
+    //send the request to next page
+    const formData = new FormData();
+    formData.append('car_brand', vehicle.make);
+    formData.append('car_name', vehicle.model);
+    formData.append('milage', vehicle.mileage);
+    formData.append('model_year',vehicle.year);
+    formData.append('city_registered', vehicle.cityReg);
+    formData.append('color', vehicle.color);
+    formData.append('engineC', vehDetails.engineC);
+    formData.append('fuel_type', vehDetails.fuelType);
+    formData.append('trans', vehDetails.transType);
+    formData.append('cate', vehDetails.category);
+
+    const imageURLs = vehicle.images.map(item=>'http://localhost:3001/assets/'+item);
+    const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
+
+    results.forEach(({ blob, extension }, index) => {
+      formData.append(`image${index + 1}`, blob, `image${index + 1}.${extension}`);
+    });
+
+    const response = await fetch(`http://localhost:5000/predict`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await response.json();
+    setPrediction(data);
+  }
 
   const getVehicleDetails = async () => {
     const response = await fetch(`http://localhost:3001/market/${vehicleAdId}`, {
@@ -49,10 +133,12 @@ const VehicleDescPage = () => {
     vehicle ?
       <Box>
         <Navbar />
+
         {
           alertObj &&
           <Alert severity={alertObj.severity} variant="outlined" onClose={() => { setAlertObj(null) }}>{alertObj.msg}</Alert>
         }
+
         <Box
           width="100%"
           padding="2rem 6%"
@@ -91,7 +177,7 @@ const VehicleDescPage = () => {
 
                   <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'}>
                     <LocationOnOutlined />
-                    <Typography>{vehicle.location}</Typography>
+                    <Typography>{vehicle.location.area + " , "+vehicle.location.city}</Typography>
                     <Typography>|</Typography>
                     <Typography>2 days ago</Typography>
                   </Box>
@@ -115,7 +201,7 @@ const VehicleDescPage = () => {
                       }}
                     >
                       <Typography  >
-                        00000 - 00000
+                        {`${prediction.lower_limit}   -   ${prediction.upper_limit}`}
                       </Typography>
                       <Typography >
                         PKR
@@ -130,7 +216,7 @@ const VehicleDescPage = () => {
                     />
                     <IconBtn text="Estimate" style={{ float: 'right', color: 'white' }}
                       icon="http://localhost:3000/icons/ai.png"
-                      onPress={() => { alert("comming soon!") }}
+                      onPress={getPrediction}
                     />
                   </Box>
 

@@ -7,7 +7,7 @@ const router = express.Router();
 /* READ */
 router.get("/", getVehicleMakes);
 router.get("/:make", getVehicleModels);
-router.get("/:make/:model/:variant", getVehicleDetails);
+router.get("/:make/:model", getVehicleDetails);
 
 /* UPDATE */
 router.put("/:make/:model", addVehicleDetails);
