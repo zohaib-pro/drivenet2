@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 
 import { useRef } from "react";
 import { addMessage, getMessages } from "../../src/api/MessageRequests";
-import { getUser } from "../../src/api/UserRequests";
 import "./ChatBox.css";
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
@@ -109,7 +108,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
             {/* chat-header */}
             <div className="chat-header">
               <div className="follower">
-                <div>
+                <div style={{display: 'flex', alignItems: 'center'}}>
                   <img
                     src={
                       userData?.picturePath
@@ -121,7 +120,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
                     style={{ width: "50px", height: "50px" }}
                   />
                   {userData && (
-                    <div className="name" style={{ fontSize: "0.9rem" }}>
+                    <div className="name" style={{ fontSize: "0.9rem", padding: '1rem' }}>
                       <span>
                         {userData.firstName} {userData.lastName}
                       </span>
