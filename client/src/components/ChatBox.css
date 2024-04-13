@@ -108,3 +108,11 @@
   font-size: 0.9rem;
   font-weight: bold; /* Adjust font weight as needed */
 }
+
+
+@media screen and (max-width: 768px) {
+  .ChatBox-container {
+      margin: 2rem -2rem 0rem 2rem;
+  }
+
+}
