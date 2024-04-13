@@ -25,10 +25,19 @@ const VehicleSchema = new mongoose.Schema({
                 type: Map,
                 of: Object
             },
-            versions: {
-                type: Map,
-                of: Object
-            }
+            versions: [
+                {
+                    type: Map,
+                    of: {
+                        name: String,
+                        transType: String, 
+                        fuelType: String, 
+                        category: String, 
+                        engineC: Number,
+                        
+                    }
+                }
+            ]
         }
     }
 });

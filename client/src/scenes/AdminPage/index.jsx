@@ -10,6 +10,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import EventHandlerComponent from "./EventHandler";
 import IssuesHandlerComponent from "./IssuesHandler";
 import Dashboard from "./Dashboard";
+import VehicleDetailsComponent from "./VehicleDetails";
 
 
 
@@ -35,19 +36,16 @@ const ProfilePage = () => {
 
   if (!user) return null;
 
-  const selectItem = (item) => {
-    setSubMenu(item);
-  }
 
   const menu = {
     'Dashboard': <Dashboard />,
     'Events' : <EventHandlerComponent /> ,
     'Issues' : <IssuesHandlerComponent />,
-    'Menu 1': <></>,
-    'Menu 2': <></>,
-    'Menu 3': <></>,
-    'Menu 4': <></>,
-    'Menu 5': <></>,
+    'Vehicle Details': <VehicleDetailsComponent />,
+    'Listing Management': <></>,
+    'Menu 6': <></>,
+    'Menu 7': <></>,
+    'Menu 8': <></>,
   }
 
   return (

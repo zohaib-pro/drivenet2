@@ -18,7 +18,6 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("something....");
     const data = await response.json();
     console.log(data);
     dispatch(setVehicleAds({ vehicleAds: data }));
@@ -29,15 +28,15 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Reverse the order of posts array
-  const reversedPosts = posts;
+  const vehicleAds = posts;
 
   return (
     <>
-      {!reversedPosts || reversedPosts.length === 0 ? (
+      {!vehicleAds || vehicleAds.length === 0 ? (
         <Center>
 
           <Typography variant="h3" color="textSecondary">
-            No Posts
+            No Vehicles Listed for sale yet!
           </Typography>
         </Center>
       ) : (
@@ -54,7 +53,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
             gridTemplateColumns={`repeat(auto-fit, minmax(calc(${isNonMobileScreens? '25%': '50%'} - 0.5rem), 1fr))`}
             gap="0.5rem"
           >
-            {reversedPosts.map((item) => (
+            {vehicleAds.map((item) => (
               <VehicleAdWidget
                 key={item.title} // Add a unique key for each item in the map function
                 vehicle={item}

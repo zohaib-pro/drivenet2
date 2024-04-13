@@ -1,5 +1,17 @@
 import mongoose, { Schema } from "mongoose";
 
+
+const locationSchema = mongoose.Schema({
+  city: {
+    type: String,
+    required: true
+  },
+  area: {
+    type: String,
+    required: true
+  }
+});
+
 // Define the schema for a vehicle ad
 const vehicleAdSchema = new mongoose.Schema({
     title: {
@@ -32,16 +44,17 @@ const vehicleAdSchema = new mongoose.Schema({
     },
     variant: {
         type: String,
-        required: true
     },
-    condition: {
+    color: {
       type: String,
-      enum: ['New', 'Used'],
+      required: true
+    },
+    cityReg: {
+      type: String,
       required: true
     },
     location: {
-      type: String,
-      required: true
+      type: locationSchema
     },
     seller: {
       type: String,

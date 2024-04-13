@@ -30,12 +30,15 @@ const VehicleAdWidget = ({
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
-  // const isLiked = Boolean(likes[loggedInUserId]);
-  // const likeCount = Object.keys(likes).length;
 
   const { palette } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
+
+  const getTimeDiff = (vehicleAd) =>{
+    const timeDiff = new Date() - new Date(vehicleAd.createdAt);
+    return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  }
 
   return (
     <WidgetWrapper >
@@ -65,9 +68,10 @@ const VehicleAdWidget = ({
 
         <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'} >
           <LocationOnOutlined />
-          <Typography>{vehicle.location}</Typography>
+          {/* <Typography>{`${vehicle.location.area?vehicle.location.area+',':''}${vehicle.location.city}`}</Typography> */}
+          <Typography>{vehicle.location.city}</Typography>
           <Typography>|</Typography>
-          <Typography>2 days ago</Typography>
+          <Typography>{getTimeDiff(vehicle)} days ago</Typography>
         </Box>
       </Link>
     </WidgetWrapper>

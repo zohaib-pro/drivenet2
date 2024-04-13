@@ -18,7 +18,6 @@ export const test = async (req, res) =>{
 // };
 
 export const createVehicleAd = async (req, res)=> {
-  console.log("request received");
   try {
     const {
       userId,
@@ -30,13 +29,14 @@ export const createVehicleAd = async (req, res)=> {
       make,
       model,
       variant,
-      location,
-      condition,
+      cityReg,
+      color,
+      city, 
+      area,
     } = req.body;
 
+    
     const images = req.files.map(file=>file.filename);
-    console.log("printig something");
-    console.log(images);
 
     const newVehicleAd = new VehicleAd({
       seller: userId,
@@ -48,18 +48,14 @@ export const createVehicleAd = async (req, res)=> {
       make,
       model,
       variant,
-      location,
-      condition, 
+      location: {city, area},
+      cityReg, 
+      color,
       images
     });
-
-    console.log("after array");
-  
     await newVehicleAd.save();
-    console.log("after saving....");
-  
-    const vehicleAd = await newVehicleAd.find();
-    res.status(201).json(vehicleAd)
+
+    res.status(201).json({msg: 'ok'})
   }
   catch (err) {
     res.status(409).json({ message: err.message })
@@ -73,7 +69,6 @@ export const getUserVehicleAds = () => {
 
 export const getVehicleAds = async (req, res) => {
   try {
-    console.log("getting vehicle Ads");
     const vehicleAds = await VehicleAd.find();
     res.status(200).json(vehicleAds);
   }catch(err){
