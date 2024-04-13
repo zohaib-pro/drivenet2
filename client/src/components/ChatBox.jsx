@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTheme, Divider } from "@mui/material";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 import { useRef } from "react";
 import { addMessage, getMessages } from "../../src/api/MessageRequests";
@@ -22,21 +22,20 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
   const token = useSelector((state) => state.token);
   // fetching data for header
   useEffect(() => {
-
     const userId = chat?.members?.find((id) => id !== currentUser);
-    
+
     const getUserData = async () => {
       try {
         const response = await fetch(`http://localhost:3001/users/${userId}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
         setUserData(data);
-        console.log(data.firstName +" "+data.lastName);
+        console.log(data.firstName + " " + data.lastName);
       } catch (error) {
         console.log(error);
-        alert(error)
+        alert(error);
       }
     };
 
@@ -87,10 +86,10 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     }
   }, [receivedMessage]);
 
-   // Always scroll to last Message
-   useEffect(()=> {
+  // Always scroll to last Message
+  useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
-  },[messages])
+  }, [messages]);
 
   const scroll = useRef();
   const imageRef = useRef();
@@ -114,24 +113,23 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
                   <img
                     src={
                       userData?.picturePath
-                        ? "http://localhost:3001/assets/"+userData.picturePath
+                        ? "http://localhost:3001/assets/" + userData.picturePath
                         : "/assets/kunwar-b.jpg"
                     }
                     alt="Profile"
                     className="followerImage"
                     style={{ width: "50px", height: "50px" }}
                   />
-                  <div className="name" style={{ fontSize: "0.9rem" }}>
-                    <span>
-                      {userData?.firstname
-                        ? `${userData.firstname} ${userData.lastname}`
-                        : "Kunwar Ahmad"}
-                    </span>
-                  </div>
+                  {userData && (
+                    <div className="name" style={{ fontSize: "0.9rem" }}>
+                      <span>
+                        {userData.firstName} {userData.lastName}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               <Divider />
-
             </div>
 
             {/* chat-body */}
