@@ -101,7 +101,7 @@ const ChatPage = () => {
       </div>
 
       {/* Right Side */}
-      <div className={`Right-side-chat ${isMobileScreens ? 'hide' : 'show'}`}>
+      <div className={`Right-side-chat ${!isMobileScreens && !isChatClicked ? 'hide' : 'show'}`}>
           <ChatBox
             chat={currentChat}
             currentUser={user._id}
