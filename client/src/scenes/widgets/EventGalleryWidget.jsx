@@ -16,8 +16,7 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
     <>
       {!reversedPosts || reversedPosts.length === 0 ? (
         <Center>
-
-          <Typography variant="h3" color="textSecondary">
+          <Typography variant="h3" color="textSecondary" style={{paddingBottom: '2rem'}}>
             No Events!
           </Typography>
         </Center>

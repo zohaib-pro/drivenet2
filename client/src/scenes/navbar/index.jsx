@@ -84,8 +84,13 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <IconButton component={Link} to="/chat"> {/* Use IconButton instead of Message */}
-            <MessageIcon sx={{ fontSize: "25px" }} /> {/* Correctly use MessageIcon */}
+          <IconButton component={Link} to="/chat">
+            <MessageIcon
+              style={{
+                fontSize: "25px",
+                color: theme.palette.mode === "dark" ? "inherit" : dark,
+              }}
+            />
           </IconButton>
           <Notifications sx={{ fontSize: "25px" }} />
           <Help sx={{ fontSize: "25px" }} />
@@ -161,8 +166,11 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <IconButton component={Link} to="/chat"> {/* Use IconButton instead of Message */}
-              <MessageIcon sx={{ fontSize: "25px" }} /> {/* Correctly use MessageIcon */}
+            <IconButton component={Link} to="/chat">
+              {" "}
+              {/* Use IconButton instead of Message */}
+              <MessageIcon sx={{ fontSize: "25px" }} />{" "}
+              {/* Correctly use MessageIcon */}
             </IconButton>
             <Notifications sx={{ fontSize: "25px" }} />
             <Help sx={{ fontSize: "25px" }} />

@@ -1,57 +1,73 @@
-import { getUser } from "api/UserRequests";
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import WidgetWrapper from "components/WidgetWrapper";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Divider } from "@mui/material";
 
-
 const Conversation = ({ data, currentUser, online }) => {
+  const [userData, setUserData] = useState(null);
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.token); // Retrieve token from Redux store
 
-  const [userData, setUserData] = useState(null)
-  
-  const dispatch = useDispatch()
+  useEffect(() => {
+    const userId = data.members.find((id) => id !== currentUser);
 
-  useEffect(()=> {
-
-    const userId = data.members.find((id)=>id!==currentUser)
-
-    const getUserData = async ()=> {
-      try
-      {
-          const {data} = await getUser(userId)
-         setUserData(data)
+    const getUserData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/users/${userId}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        setUserData(data);
+        console.log(data.firstName + " " + data.lastName);
+      } catch (error) {
+        console.log(error);
+        alert(error);
       }
-      catch(error)
-      {
-        console.log(error)
-      }    
-    }
-    getUserData();
-  }, [])
+    };
 
+    getUserData();
+  }, [data.members, currentUser, token]);
 
   return (
     <>
-      <div className="follower conversation">
-        <div>
-          {online && <div className="online-dot"></div>}
+      <div
+        className="follower conversation"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        <div style={{ display: "flex"}}>
+           {online && <div className="online-dot"></div>}
           <img
-            src={userData?.picturePath ? userData.picturePath : "/assets/kunwar-b.jpg"}
+            src={
+              userData?.picturePath
+                ? "http://localhost:3001/assets/" + userData.picturePath
+                : "/assets/kunwar-b.jpg"
+            }
             alt="Profile"
             className="followerImage"
             style={{ width: "50px", height: "50px" }}
           />
-          <div className="name" style={{fontSize: '0.8rem'}}>
-            <span>{userData?.firstname ? `${userData.firstname} ${userData.lastname}` : "Kunwar Ahmad"}</span>
-          </div>
-          <span style={{color: online?"#51e200":""}}>{online? "Online" : "Offline"}</span>
+          {userData && (
+            <div
+              style={{ fontSize: "0.8rem", marginLeft: "0.5rem" }}
+            >
+              <span className="name">
+                {userData.firstName} {userData.lastName}
+              </span>
+              <div style={{ color: online ? "#51e200" : "" }}>
+                {online ? "Online" : "Offline"}
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
       <Divider />
-      
     </>
   );
-  };
+};
 
 export default Conversation;

@@ -7,7 +7,7 @@ import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 
-const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => { // Modify to accept firstName prop
+const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => { 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
@@ -24,19 +24,37 @@ const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => { /
   const isOwnPost = friendId === _id; // Check if the post belongs to the logged-in user
 
   const patchFriend = async () => {
-    const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
-      {
+    try {
+      const response = await fetch(`http://localhost:3001/users/${_id}/${friendId}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+      });
+      const data = await response.json();
+      dispatch(setFriends({ friends: data }));
+  
+      // If the user is not a friend, create a chat
+      if (!isFriend) {
+        const chatResponse = await fetch("http://localhost:3001/chat", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ senderId: _id, receiverId: friendId }),
+        });
+  
+        if (!chatResponse.ok) {
+          throw new Error("Failed to create chat");
+        }
       }
-    );
-    const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
 
   return (
     <FlexBetween>

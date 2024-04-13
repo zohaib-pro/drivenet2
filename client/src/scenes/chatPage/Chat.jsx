@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import Navbar from "scenes/navbar";
 import "./Chat.css";
 import { userChats } from "../../api/ChatRequests";
@@ -11,6 +11,7 @@ import Conversation from "components/Conversation";
 import ChatBox from "components/ChatBox";
 import { io } from "socket.io-client";
 
+
 const ChatPage = () => {
   const socket = useRef;
   const user = useSelector((state) => state.user);
@@ -21,6 +22,9 @@ const ChatPage = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [sendMessage, setSendMessage] = useState(null);
   const [receivedMessage, setReceivedMessage] = useState(null);
+  const [isChatClicked, setIsChatClicked] = useState(false); // State to track if a chat is clicked
+  const isMobileScreens = useMediaQuery("(min-width:768px)");
+
 
   // Get the chat in chat section
   useEffect(() => {
@@ -68,45 +72,46 @@ const ChatPage = () => {
   };
 
 
-  return (
-    <Box>
-      <Navbar />
+ return (
+  <Box>
+    <Navbar />
 
-      <div className="Chat">
-        {/* Left Side */}
-        <div className="Left-side-chat">
-          {/* Left side content */}
-          <div className="Chat-container">
-            <WidgetWrapper>
-              <h2>Chats</h2>
-              <div className="Chat-list">
-                {/* Render your chat list here */}
-                {chats.map((chat) => (
-                  <div
-                    onClick={() => {
-                      setCurrentChat(chat);
-                    }}
-                  >
-                    <Conversation data={chat} currentUser={user._id} online={checkOnlineStatus(chat)} />
-                  </div>
-                ))}
-              </div>
-            </WidgetWrapper>
-          </div>
-        </div>
-
-        {/* Right Side */}
-        <div className="Right-side-chat">
-            <ChatBox
-              chat={currentChat}
-              currentUser={user._id}
-              setSendMessage={setSendMessage}
-              receivedMessage={receivedMessage}
-            />
+    <div className="Chat">
+      {/* Left Side */}
+      <div className={`Left-side-chat ${isChatClicked && !isMobileScreens ? 'hide' : ''}`}>
+        {/* Left side content */}
+        <div className="Chat-container">
+          <WidgetWrapper>
+            <h2>Chats</h2>
+            <div className="Chat-list">
+              {/* Render your chat list here */}
+              {chats.map((chat) => (
+                <div
+                  onClick={() => {
+                    setCurrentChat(chat);
+                    setIsChatClicked(true); // Set state to true when a chat is clicked
+                  }}
+                >
+                  <Conversation data={chat} currentUser={user._id} online={checkOnlineStatus(chat)} />
+                </div>
+              ))}
+            </div>
+          </WidgetWrapper>
         </div>
       </div>
-    </Box>
-  );
+
+      {/* Right Side */}
+      <div className={`Right-side-chat ${!isMobileScreens && !isChatClicked ? 'hide' : 'show'}`}>
+          <ChatBox
+            chat={currentChat}
+            currentUser={user._id}
+            setSendMessage={setSendMessage}
+            receivedMessage={receivedMessage}
+          />
+      </div>
+    </div>
+  </Box>
+);
 };
 
 export default ChatPage;
