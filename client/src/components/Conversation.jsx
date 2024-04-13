@@ -38,8 +38,8 @@ const Conversation = ({ data, currentUser, online }) => {
           alignItems: "flex-start",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", padding:'5px'  }}>
-          {online && <div className="online-dot"></div>}
+        <div style={{ display: "flex"}}>
+           <div className="online-dot"></div>
           <img
             src={
               userData?.picturePath
