@@ -62,13 +62,21 @@
   font-size: 20px;
 }
 
-
 @media screen and (max-width: 768px) {
  .Chat {
-    grid-template-columns: 16% auto;
+    grid-template-columns: 80% auto;
   }
-  .follower.conversation > div > div > .name,
-  .follower.conversation > div > div > div {
+
+  .Right-side-chat.show {
+    display: block;
+  }
+
+  .Right-side-chat.hide {
     display: none;
   }
+  
+  .Left-side-chat.hide {
+    display: none;
+  }
+
 }
