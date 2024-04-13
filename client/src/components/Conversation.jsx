@@ -39,7 +39,7 @@ const Conversation = ({ data, currentUser, online }) => {
         }}
       >
         <div style={{ display: "flex"}}>
-           <div className="online-dot"></div>
+           {online && <div className="online-dot"></div>}
           <img
             src={
               userData?.picturePath
