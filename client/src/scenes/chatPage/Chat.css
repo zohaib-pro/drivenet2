@@ -66,9 +66,14 @@
  .Chat {
     grid-template-columns: 80% auto;
   }
+  .Chat-container {
+    margin: 2rem -4rem 0rem 1rem;
+  }
+  
 
   .Right-side-chat.show {
     display: block;
+    width: 110%;
   }
 
   .Right-side-chat.hide {

@@ -97,7 +97,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
       <div
         className="ChatBox-container"
         style={{
-          padding: "1.5rem 1.5rem 0.75rem 1.5rem",
           backgroundColor: palette.background.alt,
           borderRadius: "0.75rem",
           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Add drop shadow

@@ -1,6 +1,5 @@
 .ChatBox-container {
     background: var(--cardColor);
-    padding: "1.5rem 1.5rem 0.75rem 1.5rem";
     display: grid;
     grid-template-rows: 14vh 60vh 13vh;
     max-width: 150vh;
