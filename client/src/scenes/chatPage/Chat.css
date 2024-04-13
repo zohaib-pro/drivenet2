@@ -74,6 +74,7 @@
   .Right-side-chat.show {
     display: block;
     width: 110%;
+    margin: 0rem;
   }
 
   .Right-side-chat.hide {
