@@ -11,7 +11,7 @@ import ChatBox from "components/ChatBox";
 import WidgetWrapper from "components/WidgetWrapper";
 
 
-const ChatParent = () => {
+const ChatParent = ({isModal, chatWith}) => {
   const socket = useRef();
   const user = useSelector((state) => state.user);
   const [chats, setChats] = useState([]);
@@ -27,6 +27,12 @@ const ChatParent = () => {
       try {
         const { data } = await userChats(user._id);
         setChats(data);
+        if (chatWith){
+          const targetChat = data.find(item=>item.members[0] == chatWith || item.members[1] == chatWith);
+          if (targetChat)
+            setCurrentChat(targetChat);
+            setIsChatClicked(true);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -91,6 +97,7 @@ const ChatParent = () => {
           currentUser={user._id}
           setSendMessage={setSendMessage}
           receivedMessage={receivedMessage}
+          isModal={isModal}
         />
       </div>
     </div>

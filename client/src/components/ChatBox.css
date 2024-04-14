@@ -10,6 +10,12 @@
 
 }
 
+.ChatBox-container-modal {
+  background: var(--cardColor);
+  display: grid;
+  margin: 2rem 0rem 0rem 4rem;
+}
+
 
 .chat-header {
     padding: 1rem 1rem 0rem 1rem;
@@ -28,6 +34,17 @@
     overflow-y: auto; /* Show vertical scrollbar when necessary */
   }
   
+  .chat-body-modal{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    overflow: scroll;
+    max-height: 40vh;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer/Edge */
+    overflow-y: auto; /* Show vertical scrollbar when necessary */
+  }
   .chat-body::-webkit-scrollbar {
     display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
   }

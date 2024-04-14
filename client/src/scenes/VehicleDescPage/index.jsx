@@ -14,6 +14,7 @@ import DetailsGrid from "components/DetailsGrid";
 import IssueCreationComponent from "./IssueCreator";
 import { useGetData } from "hooks/apiHook";
 import ChatPage from "scenes/chatPage/Chat";
+import ChatParent from "scenes/chatPage/ChatParent";
 
 const VehicleDescPage = () => {
 
@@ -254,7 +255,7 @@ const VehicleDescPage = () => {
                         minWidth: 300,
                     }}
                 >
-                    <ChatPage />
+                    <ChatParent isModal={true} chatWith={sellerData?._id}/>
                 </Box>
             </Modal>
 

@@ -8,7 +8,7 @@ import "./ChatBox.css";
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
 
-const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
+const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal }) => {
   const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -95,7 +95,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
   return (
     <>
       <div
-        className="ChatBox-container"
+        className={isModal? "ChatBox-container-modal" : "ChatBox-container"}
         style={{
           backgroundColor: palette.background.alt,
           borderRadius: "0.75rem",
@@ -131,7 +131,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
             </div>
 
             {/* chat-body */}
-            <div className="chat-body">
+            <div className={isModal? "chat-body-modal": "chat-body"}>
               {messages.map((message) => (
                 <>
                   <div

@@ -45,7 +45,7 @@ const EventHandlerComponent = () => {
         formData.append('description', values.description);
         formData.append('datetime', values.datetime);
         formData.append('picture', values.picture);
-        formData.append('picturePath', values.picture.name)
+        formData.append('picturePath', values.picture.name);
         const response = await fetch(`http://localhost:3001/events/create`, {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
