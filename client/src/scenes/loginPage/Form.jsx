@@ -21,6 +21,7 @@ import FlexBetween from "components/FlexBetween";
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
+  phone: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   location: yup.string().required("required"),
@@ -40,6 +41,7 @@ const initialValuesRegister = {
   lastName: "",
   email: "",
   password: "",
+  phone: "",
   location: "",
   occupation: "",
   picture: "",
@@ -232,6 +234,17 @@ const Form = () => {
               name="password"
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
+              sx={{ gridColumn: "span 4" }}
+            />
+
+            <TextField
+              label="Phone"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.phone}
+              name="phone"
+              error={Boolean(touched.phone) && Boolean(errors.phone)}
+              helperText={touched.phone && errors.phone}
               sx={{ gridColumn: "span 4" }}
             />
           </Box>

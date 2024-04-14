@@ -21,7 +21,7 @@ import reportRoutes from './routes/report.js'
 import vehicleRoutes from './routes/vehicles.js'
 import locationRoutes from './routes/location.js'
 
-import { register} from "./controllers/auth.js";
+import { addPhones, register} from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { createVehicleAd} from "./controllers/vehicleAds.js"
 import { createEvent} from "./controllers/events.js"
@@ -64,6 +64,7 @@ const upload = multer({ storage });
 
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), register);
+app.get("/auth/register", addPhones);
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
 app.post("/events/create", verifyToken, upload.single("picture"), createEvent);
 app.post("/vehicle/create",verifyToken, upload.array("images", 12), createVehicleAd);

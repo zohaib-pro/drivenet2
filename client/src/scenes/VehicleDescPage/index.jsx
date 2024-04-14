@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Typography, useMediaQuery, Grid } from "@mui/material";
+import { Alert, Box, Divider, Typography, useMediaQuery, Grid, Modal } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "scenes/navbarMarket";
@@ -13,8 +13,15 @@ import IconBtn from "components/IconBtn";
 import DetailsGrid from "components/DetailsGrid";
 import IssueCreationComponent from "./IssueCreator";
 import { useGetData } from "hooks/apiHook";
+import ChatPage from "scenes/chatPage/Chat";
 
 const VehicleDescPage = () => {
+
+  const [open, setOpen] = useState(false);
+    
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const [vehicle, setVehicle] = useState(null);
   const [prediction, setPrediction] = useState({
@@ -26,6 +33,8 @@ const VehicleDescPage = () => {
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+
+  const {data:sellerData, getData:getSellerData} = useGetData(undefined, token, undefined);
 
 
   async function fetchImageAsBlob(url) {
@@ -110,6 +119,7 @@ const VehicleDescPage = () => {
       method: "GET",
     });
     const data = await response.json();
+    getSellerData('/users/'+data.seller);
     setVehicle(data);
   };
 
@@ -220,7 +230,7 @@ const VehicleDescPage = () => {
                     />
                   </Box>
 
-                  <SellerCard seller={{ name: "Zohaib Test", phone: '+92 307 5299036', image: 'zohaib wallpaper 2.jpeg' }} />
+                  <SellerCard seller={sellerData} onPressChat={handleOpen} />
 
                   <IssueCreationComponent vehicleAdId={vehicleAdId} user={user} onIssueReported={(msg)=>{showAlert(msg)}}/>
                 </Box>
@@ -228,6 +238,26 @@ const VehicleDescPage = () => {
             }
           </Box>
         </Box>
+
+        <Modal open={open} onClose={handleClose}>
+                <Box
+                    width={'80%'}
+                    height={'80%'}
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                        minWidth: 300,
+                    }}
+                >
+                    <ChatPage />
+                </Box>
+            </Modal>
+
 
       </Box>
       : <Box></Box>
