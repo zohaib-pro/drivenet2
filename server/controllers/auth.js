@@ -16,6 +16,7 @@ export const register = async (req, res) => {
       picturePath,
       friends,
       location,
+      phone,
       occupation,
     } = req.body;
 
@@ -31,6 +32,7 @@ export const register = async (req, res) => {
       friends,
       location,
       occupation,
+      phone,
       viewedProfile: Math.floor(Math.random() * 10000),
       impressions: Math.floor(Math.random() * 10000),
     });
@@ -40,6 +42,22 @@ export const register = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+//temporary function just to add dummy phones for existing users
+export const addPhones = async (req, res) => {
+  try {
+    const users = await User.find()
+    for (const user of users){
+      user.phone = "0301 "+(Math.floor((Math.random() * 10000000)));
+      await user.save();
+    }
+    res.status(201).json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 
 /* LOGGING IN */
 export const login = async (req, res) => {
