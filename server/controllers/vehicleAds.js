@@ -69,7 +69,7 @@ export const getUserVehicleAds = () => {
 
 export const getVehicleAds = async (req, res) => {
   try {
-    const vehicleAds = await VehicleAd.find();
+    const vehicleAds = await VehicleAd.find().sort({createdAt: -1})
     res.status(200).json(vehicleAds);
   }catch(err){
     res.status(409).json({message: error.message});

@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Typography, useMediaQuery, Grid, Modal } from "@mui/material";
+import { Alert, Box, Divider, Typography, useMediaQuery, Grid, Modal, LinearProgress } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "scenes/navbarMarket";
@@ -19,8 +19,8 @@ import ChatParent from "scenes/chatPage/ChatParent";
 const VehicleDescPage = () => {
 
   const [open, setOpen] = useState(false);
-    
-
+  
+  const [isPredicting, setIsPredicting] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -75,6 +75,7 @@ const VehicleDescPage = () => {
 
   const getPrediction = async () => {
 
+    setIsPredicting(true);
     const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant? "?"+vehicle.variant: ""}`;
     //get the extra details about the vehicle first
     const res = await fetch(url, {
@@ -95,19 +96,22 @@ const VehicleDescPage = () => {
     formData.append('model_year',vehicle.year);
     formData.append('city_registered', vehicle.cityReg);
     formData.append('color', vehicle.color);
-    formData.append('engineC', vehDetails.engineC);
+    formData.append('engine_c', vehDetails.engineC);
     formData.append('fuel_type', vehDetails.fuelType);
     formData.append('trans', vehDetails.transType);
     formData.append('cate', vehDetails.category);
 
     const imageURLs = vehicle.images.map(item=>'http://localhost:3001/assets/'+item);
     const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
-
+    console.log(imageURLs);
     results.forEach(({ blob, extension }, index) => {
-      formData.append(`image${index + 1}`, blob, `image${index + 1}.${extension}`);
+      formData.append(`images`, blob, `image${index + 1}.${extension}`);
     });
 
-    const response = await fetch(`http://localhost:5000/predict`, {
+    console.log(formDataToJson(formData))
+    //alert(JSON.stringify(formData));
+
+    const response = await fetch(`http://192.168.218.49:4000/predict`, {
       method: "POST",
       body: formData
     });
@@ -119,6 +123,7 @@ const VehicleDescPage = () => {
     const response = await fetch(`http://localhost:3001/market/${vehicleAdId}`, {
       method: "GET",
     });
+    setIsPredicting(false);
     const data = await response.json();
     getSellerData('/users/'+data.seller);
     setVehicle(data);
@@ -153,7 +158,9 @@ const VehicleDescPage = () => {
         <Box
           width="100%"
           padding="2rem 6%"
-          display={isNonMobileScreens ? "flex" : "block"}
+          display={"flex"}
+          flexDirection={isNonMobileScreens? 'row' : 'column-reverse'}
+
           gap="0.5rem"
           justifyContent="space-between"
         >
@@ -212,7 +219,9 @@ const VehicleDescPage = () => {
                       }}
                     >
                       <Typography  >
-                        {`${prediction.lower_limit}   -   ${prediction.upper_limit}`}
+                        {/* {`${prediction.lower_limit}   -   ${prediction.upper_limit}`} */
+                          prediction.predicted_price
+                        }
                       </Typography>
                       <Typography >
                         PKR
@@ -230,6 +239,8 @@ const VehicleDescPage = () => {
                       onPress={getPrediction}
                     />
                   </Box>
+
+                  {isPredicting && <LinearProgress />}
 
                   <SellerCard seller={sellerData} onPressChat={handleOpen} />
 

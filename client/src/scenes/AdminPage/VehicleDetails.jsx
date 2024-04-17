@@ -75,7 +75,7 @@ const VehicleDetailsComponent = () => {
         alert(values.engineC);
         postVehicleDetails(JSON.stringify(values), target, {
             onSuccess:()=>{
-                onSubmitProps.resetForm();
+                //onSubmitProps.resetForm();
                 ShowAlertBox('Vehicle Details Added Successfully!');
             }
         });

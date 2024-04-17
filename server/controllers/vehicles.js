@@ -1,7 +1,5 @@
 import Vehicle from "../models/Vehicle.js";
 
-
-
 export const addVehicleDetails = async (req, res) => {
   try {
       const {make, model} = req.params;
@@ -47,7 +45,7 @@ export const addVehicleDetails = async (req, res) => {
       vehModel.versions = []
       vehModel.versions = jsonVariants;
       //vehModel.versions = [];
-    await vehicle.save();
+      await vehicle.save();
       res.status(200).json(vehModel);
   } catch (error) {
         console.log(error.message);
@@ -59,7 +57,9 @@ export const addVehicleDetails = async (req, res) => {
 export const getVehicleDetails = async (req, res) => {
     try {
         const {make, model} = req.params;
+        console.log(model)
         const {variant} = req.query;
+        console.log(variant)
         const vehicle = await Vehicle.findOne({name:make})
       
         if (!vehicle) {

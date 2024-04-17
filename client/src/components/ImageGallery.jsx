@@ -33,9 +33,10 @@ const ImageGallery = ({
       {(
         <img
           width="100%"
-          height="auto"
+          height="400vh"
           alt="post"
-          style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
+
+          style={{ borderRadius: "0.75rem", marginTop: "0.75rem", objectFit: 'contain', background: 'black' }}
           src={`http://localhost:3001/assets/${images[bigImage]}`}
         />
         // <MagnifiableImage imageUrl={`http://localhost:3001/assets/${images[bigImage]}`}/>
@@ -53,8 +54,9 @@ const ImageGallery = ({
                   src={`http://localhost:3001/assets/${images[index]}`}
                   alt={`Image ${index}`}
                   width={100}
+                  height={80}
                   onClick={()=>{setBigImage(index)}}
-                  style={index == bigImage? {border: '2px solid blue', borderRadius: '0.25rem', padding: '0.1rem'}:{}}
+                  style={index == bigImage? {border: '2px solid #00d5fa', borderRadius: '0.25rem', padding: '0.1rem', objectFit:'contain', background: 'black'}:{}}
                 />
               </Box>:
               <Box></Box>

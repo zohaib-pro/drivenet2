@@ -6,7 +6,7 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
-  
+
 } from "@mui/material";
 
 import { Formik } from "formik";
@@ -99,7 +99,7 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      navigate("/home");
+      navigate("/market");
     }
   };
 
@@ -212,6 +212,16 @@ const Form = () => {
                     )}
                   </Dropzone>
                 </Box>
+                <TextField
+                  label="Phone"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.phone}
+                  name="phone"
+                  error={Boolean(touched.phone) && Boolean(errors.phone)}
+                  helperText={touched.phone && errors.phone}
+                  sx={{ gridColumn: "span 4" }}
+                />
               </>
             )}
 
@@ -237,16 +247,7 @@ const Form = () => {
               sx={{ gridColumn: "span 4" }}
             />
 
-            <TextField
-              label="Phone"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.phone}
-              name="phone"
-              error={Boolean(touched.phone) && Boolean(errors.phone)}
-              helperText={touched.phone && errors.phone}
-              sx={{ gridColumn: "span 4" }}
-            />
+
           </Box>
 
           {/* BUTTONS */}

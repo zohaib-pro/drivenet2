@@ -49,7 +49,7 @@ const Navbar = () => {
 
 
   return (
-    <FlexBetween padding="1rem 6%" backgroundColor={alt}>
+    <FlexBetween padding="0.3rem 1%" backgroundColor={alt}>
       <FlexBetween gap="1rem">
         <Typography
           fontWeight="bold"
@@ -69,7 +69,7 @@ const Navbar = () => {
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
-            gap="3rem"
+            gap="1rem"
             padding="0.1rem 1.5rem"
           >
             <InputBase placeholder="Search..." />
@@ -83,7 +83,6 @@ const Navbar = () => {
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
-
             padding="0.1rem 1.5rem"
           >
             <IconButton>
@@ -130,11 +129,16 @@ const Navbar = () => {
             </Typography>
           }
 
-<Link to="/market/new/sell" style={{ textDecoration: 'none' }}>
-      <Button variant="contained" color="primary">
-        Sell Now
-      </Button>
-    </Link>
+          <Link to="/home" style={{ textDecoration: 'none' }}>
+            <Button variant="contained" color="primary">
+              Community
+            </Button>
+          </Link>
+          <Link to="/market/new/sell" style={{ textDecoration: 'none' }}>
+            <Button variant="contained" color="primary">
+              Sell Now
+            </Button>
+          </Link>
         </FlexBetween>
       ) : (
         <IconButton
