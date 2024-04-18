@@ -1,18 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
+  Alert,
   TextField,
-  useMediaQuery,
   Typography,
+  useMediaQuery,
   useTheme,
-
 } from "@mui/material";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -25,15 +24,37 @@ import FlexBetween from "components/FlexBetween";
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
-  phone: yup.string().required("required"),
+  phone: yup
+    .number()
+    .typeError("Phone number must be a number")
+    .required("Phone number is required*")
+    .test(
+      "length",
+      "Phone number must be exactly 11 digits long*",
+      (value) => value && value.toString().length === 10
+    )
+    .test(
+      "startsWith03",
+      "Phone number must start with '03'",
+      (value) => value && value.toString().startsWith("3")
+    ),
   email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required"),
+  password: yup
+    .string()
+    .required("required")
+    .min(8, "Password must be at least 8 characters long*")
+    .matches(/[0-9]/, "Password must contain at least one numeric value*"),
   location: yup.string().required("required"),
   occupation: yup.string().required("required"),
-  picture: yup.string().required("required"),
+  picture: yup
+    .mixed()
+    .required("Picture is required*")
+    .test("fileType", "Unsupported file format", (value) => {
+      return (
+        value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+      );
+    }),
 });
-
-
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
@@ -58,22 +79,54 @@ const initialValuesLogin = {
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [registerError, setRegisterError] = useState("");
   const { palette } = useTheme();
-  const [showPassword, setShowPassword] = useState('false');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
+  // Set up the timer to clear registerError after 5 seconds
+  useEffect(() => {
+    let timer;
+    if (registerError) {
+      timer = setTimeout(() => {
+        setRegisterError("");
+      }, 4000); // Clear the error after 4 seconds
+    }
+
+    // Cleanup the timer when component unmounts or when registerError changes
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [registerError]);
+
+  // Set up the timer to clear loginError after 5 seconds
+  useEffect(() => {
+    let timer;
+    if (loginError) {
+      timer = setTimeout(() => {
+        setLoginError("");
+      }, 4000);
+    }
+    // Cleanup the timer when component unmounts or when loginError changes
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [loginError]);
+
   const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
+    // This allows us to send form info with image
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
     formData.append("picturePath", values.picture.name);
 
+    // Make the request to register the user
     const savedUserResponse = await fetch(
       "http://localhost:3001/auth/register",
       {
@@ -81,12 +134,28 @@ const Form = () => {
         body: formData,
       }
     );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
 
-    if (savedUser) {
-      setPageType("login");
+    // Parse the JSON response
+    const savedUser = await savedUserResponse.json();
+
+    // If the response is not successful, handle the error
+    if (!savedUserResponse.ok) {
+      if (savedUser.error === "Email is already registered.") {
+        // Set the registerError state with the error message
+        setRegisterError(
+          "Email is already registered. Please use a different email."
+        );
+      } else {
+        // Handle other types of errors (optional)
+        setRegisterError(`Registration failed: ${savedUser.error}`);
+      }
+      onSubmitProps.resetForm();
+      return;
     }
+
+    // If registration is successful, reset the form and set the page type to "login"
+    onSubmitProps.resetForm();
+    setPageType("login");
   };
 
   const login = async (values, onSubmitProps) => {
@@ -95,8 +164,10 @@ const Form = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
+
     if (loggedInResponse.ok) {
       dispatch(
         setLogin({
@@ -105,8 +176,8 @@ const Form = () => {
         })
       );
       navigate("/market");
-    }else{
-      alert(loggedIn.msg);
+    } else {
+      setLoginError(loggedIn.msg); // Set the error message to loginError state
     }
   };
 
@@ -143,7 +214,7 @@ const Form = () => {
             {isRegister && (
               <>
                 <TextField
-                  label="First Name"
+                  label="First Name *"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.firstName}
@@ -155,7 +226,7 @@ const Form = () => {
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="Last Name"
+                  label="Last Name *"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.lastName}
@@ -165,7 +236,7 @@ const Form = () => {
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="Location"
+                  label="Location *"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.location}
@@ -175,7 +246,7 @@ const Form = () => {
                   sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
-                  label="Occupation"
+                  label="Occupation *"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.occupation}
@@ -208,19 +279,20 @@ const Form = () => {
                       >
                         <input {...getInputProps()} />
                         {!values.picture ? (
-                          <p>Add Picture Here</p>
+                          <Typography>Add Picture Here (*)</Typography>
                         ) : (
                           <FlexBetween>
                             <Typography>{values.picture.name}</Typography>
                             <EditOutlinedIcon />
                           </FlexBetween>
                         )}
+                        <Typography color="error">{errors.picture}</Typography>
                       </Box>
                     )}
                   </Dropzone>
                 </Box>
                 <TextField
-                  label="Phone"
+                  label="Phone *"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.phone}
@@ -233,7 +305,7 @@ const Form = () => {
             )}
 
             <TextField
-              label="Email"
+              label="Email *"
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.email}
@@ -242,10 +314,10 @@ const Form = () => {
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 4" }}
             />
-            
+
             <TextField
-              label="Password"
-              type={showPassword? "password" : "text"}
+              label="Password *"
+              type={showPassword ? "password" : "text"}
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.password}
@@ -254,11 +326,11 @@ const Form = () => {
               helperText={touched.password && errors.password}
               sx={{ gridColumn: "span 4" }}
               InputProps={{
-                endAdornment : (
+                endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={()=>{setShowPassword(!showPassword)}}
+                      onClick={() => setShowPassword(!showPassword)}
                       edge="end"
                     >
                       {showPassword ? <Visibility /> : <VisibilityOff />}
@@ -267,9 +339,21 @@ const Form = () => {
                 ),
               }}
             />
-
-
           </Box>
+
+          {/* Display Register Error Message */}
+          {registerError && (
+            <Box mt={2}>
+              <Alert severity="error">{registerError}</Alert>
+            </Box>
+          )}
+
+          {/* Display Login Error Message */}
+          {loginError && (
+            <Box mt={2}>
+              <Alert severity="error">{loginError}</Alert>
+            </Box>
+          )}
 
           {/* BUTTONS */}
           <Box>

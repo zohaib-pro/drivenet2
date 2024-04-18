@@ -20,6 +20,14 @@ export const register = async (req, res) => {
       occupation,
     } = req.body;
 
+    // Check if the email already exists in the database
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      // If the email already exists, return a 400 status code with an error message
+      return res.status(400).json({ error: "Email is already registered." });
+    }
+
+    // Continue with user registration
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
@@ -36,6 +44,7 @@ export const register = async (req, res) => {
       viewedProfile: Math.floor(Math.random() * 10000),
       impressions: Math.floor(Math.random() * 10000),
     });
+
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
