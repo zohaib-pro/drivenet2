@@ -195,7 +195,7 @@ const VehicleDescPage = () => {
 
                   <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'}>
                     <LocationOnOutlined />
-                    <Typography>{vehicle.location.area + " , "+vehicle.location.city}</Typography>
+                    {/* <Typography>{vehicle.location.area + " , "+vehicle.location.city}</Typography> */}
                     <Typography>|</Typography>
                     <Typography>2 days ago</Typography>
                   </Box>
