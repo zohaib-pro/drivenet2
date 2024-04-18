@@ -35,18 +35,8 @@ const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => {
       const data = await response.json();
       dispatch(setFriends({ friends: data }));
   
-      // Check if a chat already exists between the logged-in user and the friend
-      const existingChatResponse = await fetch(`http://localhost:3001/chat/${_id}/${friendId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const existingChatData = await existingChatResponse.json();
-  
-      // If a chat doesn't exist, create a new one
-      if (!existingChatData) {
+      // If the user is not a friend, create a chat
+      if (!isFriend) {
         const chatResponse = await fetch("http://localhost:3001/chat", {
           method: "POST",
           headers: {
