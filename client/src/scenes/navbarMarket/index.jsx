@@ -121,9 +121,30 @@ const Navbar = () => {
 
           <UserImage size="35px" image={user.picturePath} />
 
-          {user ? <Typography>
-            {fullName}
-          </Typography> :
+          {user ? <FormControl variant="standard" value={fullName}>
+            <Select
+              value={fullName}
+              sx={{
+                backgroundColor: neutralLight,
+                width: "150px",
+                borderRadius: "0.25rem",
+                p: "0.25rem 1rem",
+                "& .MuiSvgIcon-root": {
+                  pr: "0.25rem",
+                  width: "3rem",
+                },
+                "& .MuiSelect-select:focus": {
+                  backgroundColor: neutralLight,
+                },
+              }}
+              input={<InputBase />}
+            >
+              <MenuItem value={fullName}>
+                <Typography>{fullName}</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+            </Select>
+          </FormControl> :
             <Typography component="a" href="/your-link-path" variant="body1">
               login
             </Typography>
