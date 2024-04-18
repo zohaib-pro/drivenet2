@@ -9,6 +9,10 @@ import {
 
 } from "@mui/material";
 
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -55,6 +59,7 @@ const initialValuesLogin = {
 const Form = () => {
   const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
+  const [showPassword, setShowPassword] = useState('false');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -92,7 +97,7 @@ const Form = () => {
     });
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
-    if (loggedIn) {
+    if (loggedInResponse.ok) {
       dispatch(
         setLogin({
           user: loggedIn.user,
@@ -100,6 +105,8 @@ const Form = () => {
         })
       );
       navigate("/market");
+    }else{
+      alert(loggedIn.msg);
     }
   };
 
@@ -235,9 +242,10 @@ const Form = () => {
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 4" }}
             />
+            
             <TextField
               label="Password"
-              type="password"
+              type={showPassword? "password" : "text"}
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.password}
@@ -245,6 +253,19 @@ const Form = () => {
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
               sx={{ gridColumn: "span 4" }}
+              InputProps={{
+                endAdornment : (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={()=>{setShowPassword(!showPassword)}}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
 
