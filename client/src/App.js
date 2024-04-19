@@ -67,6 +67,7 @@ function App() {
               path="/chat"
               element={isAuth ? <ChatPage /> : <Navigate to="/" />}
             />
+          
 
           </Routes>
         </ThemeProvider>
