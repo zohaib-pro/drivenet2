@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", getEvents);
 
 /* INTEREST */
-router.patch("/:eventId/interest", verifyToken, interestEvent);
+router.patch("/:eventId/:userId/interest", verifyToken, interestEvent);
 
 
 /* DELETE */

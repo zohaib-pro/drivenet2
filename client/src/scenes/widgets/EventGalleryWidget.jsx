@@ -9,6 +9,8 @@ import AdvertWidget from "./AdvertWidget";
 const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelClick }) => {
   const posts = events;
 
+  const user = useSelector((state) => state.user);
+
   // Reverse the order of posts array
   const reversedPosts = posts;
 
@@ -50,7 +52,7 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
             :
             <Box
             >
-              <AdvertWidget title={item.title} description={item.description} date={item.datetime.replace('T', ' ')} image={item.picture} eventId={item._id} />
+              <AdvertWidget title={item.title} description={item.description} date={item.datetime.replace('T', ' ')} image={item.picture} eventId={item._id} isUserInterested={item.interestedUsers[user._id]} />
               <Box m="2rem 0" />
             </Box>
           ))}

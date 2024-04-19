@@ -10,7 +10,8 @@ export const createEvent = async (req, res) => {
       title,
       description,
       picture: picturePath,
-      venue: 'lahore'
+      venue: 'lahore',
+      interestedUsers: {}
     });
     await newEvent.save();
 
@@ -33,17 +34,17 @@ export const getEvents = async (req, res) => {
 
 /* INTEREST */
 export const interestEvent = async (req, res) => {
-  const { eventId } = req.params;
-  const userId = req.user._id; // Assuming user ID is available from the request
-
+  const { eventId, userId } = req.params;
+  console.log(eventId, userId)
   try {
       const event = await Event.findById(eventId);
       if (!event) {
           return res.status(404).json({ message: "Event not found" });
       }
 
-      // Toggle interest
-      const userInterest = event.interestedUsers.get(userId);
+      const userInterest = event.interestedUsers?.get(userId);
+      console.log(userInterest);
+       
       event.interestedUsers.set(userId, !userInterest);
 
       await event.save();
