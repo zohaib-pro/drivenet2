@@ -40,6 +40,7 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
                 description={item.description} 
                 date={item.datetime} 
                 image={item.picture} 
+                eventId={item._id} // Pass the eventId prop
                 onDelete={editable? ()=>{
                   onDelClick(item._id);
                 }:null}
@@ -49,7 +50,7 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
             :
             <Box
             >
-              <AdvertWidget title={item.title} description={item.description} date={item.datetime.replace('T', ' ')} image={item.picture} />
+              <AdvertWidget title={item.title} description={item.description} date={item.datetime.replace('T', ' ')} image={item.picture} eventId={item._id} />
               <Box m="2rem 0" />
             </Box>
           ))}

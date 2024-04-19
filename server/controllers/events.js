@@ -3,36 +3,58 @@ import Event from "../models/Event.js";
 /* CREATE */
 export const createEvent = async (req, res) => {
   try {
-    const { title, description, datetime, picture, picturePath } = req.body; // Add title
-  
-    console.log(picture);
+    const { title, description, datetime, picture, picturePath } = req.body;
+
     const newEvent = new Event({
       datetime,
-      title, 
+      title,
       description,
       picture: picturePath,
       venue: 'lahore'
     });
     await newEvent.save();
-  
+
     res.status(201).json(newEvent);
   } catch (err) {
     res.status(409).json({ message: err.message });
   }
 };
 
-
 /* READ */
 export const getEvents = async (req, res) => {
   try {
-    const event = await Event.find().sort({ createdAt: -1 });
-    res.status(200).json(event);
+    const events = await Event.find().sort({ createdAt: -1 });
+    res.status(200).json(events);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 };
 
 
+/* INTEREST */
+export const interestEvent = async (req, res) => {
+  const { eventId } = req.params;
+  const userId = req.user._id; // Assuming user ID is available from the request
+
+  try {
+      const event = await Event.findById(eventId);
+      if (!event) {
+          return res.status(404).json({ message: "Event not found" });
+      }
+
+      // Toggle interest
+      const userInterest = event.interestedUsers.get(userId);
+      event.interestedUsers.set(userId, !userInterest);
+
+      await event.save();
+
+      res.status(200).json({ message: "Interest status updated", interested: !userInterest });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
+/* DELETE */
 export const deleteEvent = async (req, res) => {
   const { id } = req.params;
 

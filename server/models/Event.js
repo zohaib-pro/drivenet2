@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const eventSchema = mongoose.Schema(
   {
-
     title: {
       type: String,
       required: true,
@@ -15,13 +14,16 @@ const eventSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    picture:String,
+    picture: String,
     venue: String,
-
+    interestedUsers: {
+      type: Map,
+      of: Boolean,
+  },
+  
   },
   { timestamps: true }
 );
-
 
 const Event = mongoose.model("Event", eventSchema);
 

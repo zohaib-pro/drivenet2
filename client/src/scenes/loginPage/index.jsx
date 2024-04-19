@@ -1,7 +1,11 @@
+import React, { useState } from "react";
 import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
-import Form from "./Form";
+import Register from "./Register";
+import Login from "./Login";
 
 const LoginPage = () => {
+  const [login, setLogin] = useState(true);
+  const [register, setRegister] = useState(false);
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   return (
@@ -27,7 +31,22 @@ const LoginPage = () => {
         <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
           Welcome to DriveNet Media, the Social Media for Drivenet Community!
         </Typography>
-        <Form />
+        {login && (
+          <Login
+            handleRegister={() => {
+              setRegister(true);
+              setLogin(false);
+            }}
+          />
+        )}
+        {register && (
+          <Register
+            handleLogin={() => {
+              setLogin(true);
+              setRegister(false);
+            }}
+          />
+        )}
       </Box>
     </Box>
   );
