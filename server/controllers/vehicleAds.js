@@ -17,6 +17,20 @@ export const test = async (req, res) =>{
 //   }
 // };
 
+export const delVehicleAd = async (req, res) => { 
+  const { vehicleAdId } = req.params;
+  try {
+    const deletedEvent = await VehicleAd.findByIdAndDelete(vehicleAdId);
+    if (!deletedEvent) {
+      return res.status(404).json({ message: "Vehicle Ad not found" });
+    }
+
+    res.status(200).json({ message: "Vehicle Ad deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 export const createVehicleAd = async (req, res)=> {
   try {
     const {
@@ -63,8 +77,14 @@ export const createVehicleAd = async (req, res)=> {
   
 }
 
-export const getUserVehicleAds = () => {
-
+export const getUserVehicleAds = async (req, res) => {
+  try {
+    const {userId} = req.params;
+    const vehicleAds = await VehicleAd.find({seller:userId}).sort({createdAt: -1})
+    res.status(200).json(vehicleAds);
+  }catch(err){
+    res.status(409).json({message: error.message});
+  }
 }
 
 export const getVehicleAds = async (req, res) => {

@@ -28,11 +28,15 @@ import { useNavigate, Link } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
 
-const Navbar = () => {
+
+import { setVehicleAds } from "state";
+
+const Navbar = ({onSearch=()=>{}}) => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  const vehicleAds = useSelector((state)=>state.vehicleAds);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
   const theme = useTheme();
@@ -47,6 +51,29 @@ const Navbar = () => {
 
   const currentLocation = "Lahore";
 
+  const [inputValue, setInputValue] = useState('');
+
+
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      //onSearch(inputValue);
+      vehicleAds.forEach(element => {
+        console.log(element.make, inputValue, element.make == inputValue);
+      });
+      const results =  vehicleAds.filter(item=>item.make == inputValue);
+      console.log(results);
+      dispatch(setVehicleAds({vehicleAds: results}));
+    }
+  };
+
+  const handleSubmit = () => {
+    setInputValue('');
+  };
 
   return (
     <FlexBetween padding="0.3rem 1%" backgroundColor={alt}>
@@ -72,7 +99,10 @@ const Navbar = () => {
             gap="1rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
+            <InputBase placeholder="Search..." 
+              onChange={handleChange}
+              onKeyDown={handleKeyPress} 
+            />
             <IconButton>
               <Search />
             </IconButton>
@@ -142,7 +172,11 @@ const Navbar = () => {
               <MenuItem value={fullName}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
+              <MenuItem onClick={() => navigate('/market/profile/'+user._id)}>
+                  My Ads
+              </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+              
             </Select>
           </FormControl> :
             <Typography component="a" href="/your-link-path" variant="body1">
@@ -231,6 +265,9 @@ const Navbar = () => {
               >
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
+                </MenuItem>
+                <MenuItem onClick={() => navigate('/market')}>
+                  My Ads
                 </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out

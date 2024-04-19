@@ -1,4 +1,4 @@
-import { Button, Typography, useTheme, IconButton } from "@mui/material";
+import { Button, Typography, useTheme, IconButton, Box } from "@mui/material";
 import Center from "components/Center";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -23,6 +23,7 @@ const AdvertWidget = ({ image, title, date, description, onDelete }) => {
 
   return (
     <WidgetWrapper>
+      <Box width={'100%'}>
       <FlexBetween>
         <Typography color={dark} variant="h5" fontWeight="500">
           Upcoming Auto Event
@@ -65,6 +66,7 @@ const AdvertWidget = ({ image, title, date, description, onDelete }) => {
           <Typography p={"1.25rem"} color="success.main">Event Interest Saved ! You'll be Notified when the Event will be Live.</Typography>
         </Center>
       )}
+      </Box>
     </WidgetWrapper>
   );
 };

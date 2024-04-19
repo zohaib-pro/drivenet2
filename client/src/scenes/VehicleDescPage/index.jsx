@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Typography, useMediaQuery, Grid, Modal, LinearProgress } from "@mui/material";
+import { Alert, IconButton, Box, Divider, Typography, useMediaQuery, Grid, Modal, LinearProgress } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "scenes/navbarMarket";
@@ -7,6 +7,8 @@ import ImageGallery from "components/ImageGallery"
 import { useEffect, useState } from "react";
 import WidgetWrapper from "components/WidgetWrapper";
 import SellerCard from "components/SellerCard";
+
+import { Close } from "@mui/icons-material";
 
 import { LocationOnOutlined } from "@mui/icons-material";
 import IconBtn from "components/IconBtn";
@@ -19,7 +21,7 @@ import ChatParent from "scenes/chatPage/ChatParent";
 const VehicleDescPage = () => {
 
   const [open, setOpen] = useState(false);
-  
+
   const [isPredicting, setIsPredicting] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -35,7 +37,7 @@ const VehicleDescPage = () => {
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  const {data:sellerData, getData:getSellerData} = useGetData(undefined, token, undefined);
+  const { data: sellerData, getData: getSellerData } = useGetData(undefined, token, undefined);
 
 
   async function fetchImageAsBlob(url) {
@@ -43,17 +45,17 @@ const VehicleDescPage = () => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const contentType = response.headers.get('Content-Type');
     const extension = contentType.split('/')[1];
-    
+
     const blob = await response.blob();
     return { blob, extension };
   }
 
   function formDataToJson(formData) {
     const json = {};
-    
+
     formData.forEach((value, key) => {
       // Check if key already exists
       if (json[key]) {
@@ -68,15 +70,15 @@ const VehicleDescPage = () => {
         json[key] = value;
       }
     });
-    
+
     return json;
   }
-  
+
 
   const getPrediction = async () => {
 
     setIsPredicting(true);
-    const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant? "?"+vehicle.variant: ""}`;
+    const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant ? "?" + vehicle.variant : ""}`;
     //get the extra details about the vehicle first
     const res = await fetch(url, {
       method: "GET",
@@ -93,7 +95,7 @@ const VehicleDescPage = () => {
     formData.append('car_brand', vehicle.make);
     formData.append('car_name', vehicle.model);
     formData.append('milage', vehicle.mileage);
-    formData.append('model_year',vehicle.year);
+    formData.append('model_year', vehicle.year);
     formData.append('city_registered', vehicle.cityReg);
     formData.append('color', vehicle.color);
     formData.append('engine_c', vehDetails.engineC);
@@ -101,7 +103,7 @@ const VehicleDescPage = () => {
     formData.append('trans', vehDetails.transType);
     formData.append('cate', vehDetails.category);
 
-    const imageURLs = vehicle.images.map(item=>'http://localhost:3001/assets/'+item);
+    const imageURLs = vehicle.images.map(item => 'http://localhost:3001/assets/' + item);
     const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
     console.log(imageURLs);
     results.forEach(({ blob, extension }, index) => {
@@ -111,12 +113,24 @@ const VehicleDescPage = () => {
     console.log(formDataToJson(formData))
     //alert(JSON.stringify(formData));
 
-    const response = await fetch(`http://192.168.218.49:4000/predict`, {
-      method: "POST",
-      body: formData
-    });
-    const data = await response.json();
-    setPrediction(data);
+    // setTimeout(()=>{
+    //   setIsPredicting(false);
+    // }, 2000);
+    try {
+      const response = await fetch(`http://192.168.218.49:4000/predict`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      setPrediction(data);
+      setIsPredicting(false);
+    } catch (e) {
+      //alert('failed');
+      setPrediction({ predicted_price: "Failed to predict!" })
+      setIsPredicting(false);
+    }
+
+
   }
 
   const getVehicleDetails = async () => {
@@ -125,7 +139,7 @@ const VehicleDescPage = () => {
     });
     setIsPredicting(false);
     const data = await response.json();
-    getSellerData('/users/'+data.seller);
+    getSellerData('/users/' + data.seller);
     setVehicle(data);
   };
 
@@ -159,12 +173,12 @@ const VehicleDescPage = () => {
           width="100%"
           padding="2rem 6%"
           display={"flex"}
-          flexDirection={isNonMobileScreens? 'row' : 'column-reverse'}
+          flexDirection={isNonMobileScreens ? 'row' : 'column-reverse'}
 
           gap="0.5rem"
           justifyContent="space-between"
         >
-           
+
           <Box flexBasis={isNonMobileScreens ? "60%" : undefined}>
             {(vehicle && vehicle.images && <ImageGallery images={vehicle.images} />)}
             <Box>
@@ -195,7 +209,7 @@ const VehicleDescPage = () => {
 
                   <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'}>
                     <LocationOnOutlined />
-                    {/* <Typography>{vehicle.location.area + " , "+vehicle.location.city}</Typography> */}
+                    <Typography>{vehicle.location.area + " , " + vehicle.location.city}</Typography>
                     <Typography>|</Typography>
                     <Typography>2 days ago</Typography>
                   </Box>
@@ -244,7 +258,7 @@ const VehicleDescPage = () => {
 
                   <SellerCard seller={sellerData} onPressChat={handleOpen} />
 
-                  <IssueCreationComponent vehicleAdId={vehicleAdId} user={user} onIssueReported={(msg)=>{showAlert(msg)}}/>
+                  <IssueCreationComponent vehicleAdId={vehicleAdId} user={user} onIssueReported={(msg) => { showAlert(msg) }} />
                 </Box>
               </WidgetWrapper>
             }
@@ -252,23 +266,27 @@ const VehicleDescPage = () => {
         </Box>
 
         <Modal open={open} onClose={handleClose}>
-                <Box
-                    width={'80%'}
-                    height={'80%'}
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        bgcolor: "background.paper",
-                        boxShadow: 24,
-                        p: 4,
-                        minWidth: 300,
-                    }}
-                >
-                    <ChatParent isModal={true} chatWith={sellerData?._id}/>
-                </Box>
-            </Modal>
+
+          <Box
+            width={'80%'}
+            height={'80%'}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              minWidth: 300,
+            }}
+          >
+            <IconButton onClick={handleClose} style={{ position: 'absolute', top: 5, right: 5 }}>
+              <Close />
+            </IconButton>
+            <ChatParent isModal={true} chatWith={sellerData?._id} />
+          </Box>
+        </Modal>
 
 
       </Box>

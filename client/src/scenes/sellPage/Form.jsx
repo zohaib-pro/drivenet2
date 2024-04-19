@@ -12,20 +12,20 @@ import useAlertBox from 'components/AlertBox';
 
 
 // Define Yup validation schema
-// const vehicleAdSchema = yup.object().shape({
-//   title: yup.string().required('Title is required'),
-//   description: yup.string().required('Description is required'),
-//   price: yup.number().required('Price is required').positive('Price must be a positive number'),
-//   mileage: yup.number().required('Mileage is required').positive('Mileage must be a positive number'),
-//   year: yup.number().required('Year is required').positive('Year must be a positive number').integer('Year must be an integer'),
-//   make: yup.string().required('Make is required'),
-//   model: yup.string().required('Model is required'),
-//   city: yup.string().required('Location is required'),
-//   area: yup.string().required('Location is required'),
-//   cityReg: yup.string().required('Registration city is required'),
-//   Color: yup.string().required('Color is required'),
-//   images: yup.array().of(yup.string()).min(1, 'At least one image is required'),
-// });
+const vehicleAdSchema = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  description: yup.string().required('Description is required'),
+  price: yup.number().required('Price is required').positive('Price must be a positive number'),
+  mileage: yup.number().required('Mileage is required').positive('Mileage must be a positive number'),
+  year: yup.number().required('Year is required').positive('Year must be a positive number').integer('Year must be an integer'),
+  make: yup.string().required('Make is required'),
+  model: yup.string().required('Model is required'),
+  city: yup.string().required('Location is required'),
+  area: yup.string().required('Location is required'),
+  cityReg: yup.string().required('Registration city is required'),
+  Color: yup.string().required('Color is required'),
+  images: yup.array().of(yup.string()).min(1, 'At least one image is required'),
+});
 
 const initialValues = {
   title: '',
@@ -101,7 +101,7 @@ const VehicleAdForm = () => {
 
       <Formik
         initialValues={initialValues}
-        // validationSchema={vehicleAdSchema}
+        validationSchema={vehicleAdSchema}
         onSubmit={submitVehicleAd}
       >
         {({
@@ -174,6 +174,7 @@ const VehicleAdForm = () => {
               helperText={touched.year && errors.year}
               margin="normal"
             />
+            
             <TextField
               fullWidth
               select
@@ -235,6 +236,7 @@ const VehicleAdForm = () => {
               fullWidth
               label="Color"
               name="color"
+              type="text"
               value={values.color}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -332,6 +334,7 @@ const VehicleAdForm = () => {
                 ["NOT REGISTERED", ...cities].map(cityReg => (<option value={cityReg}>{cityReg}</option>))
               }
             </TextField>
+            
 
             {/* Display selected images */}
             <Box mt={2}>

@@ -317,7 +317,7 @@ const Form = () => {
 
             <TextField
               label="Password *"
-              type={showPassword ? "password" : "text"}
+              type={showPassword ? "text" : "password"}
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.password}

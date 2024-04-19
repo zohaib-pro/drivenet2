@@ -9,6 +9,7 @@ import { io } from "socket.io-client";
 import Conversation from "components/Conversation";
 import ChatBox from "components/ChatBox";
 import WidgetWrapper from "components/WidgetWrapper";
+import { json } from "react-router-dom";
 
 
 const ChatParent = ({isModal, chatWith}) => {
@@ -29,9 +30,10 @@ const ChatParent = ({isModal, chatWith}) => {
         setChats(data);
         if (chatWith){
           const targetChat = data.find(item=>item.members[0] == chatWith || item.members[1] == chatWith);
-          if (targetChat)
+          if (targetChat){
             setCurrentChat(targetChat);
             setIsChatClicked(true);
+          }
         }
       } catch (error) {
         console.log(error);

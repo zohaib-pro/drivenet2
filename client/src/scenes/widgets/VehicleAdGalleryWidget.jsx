@@ -42,16 +42,18 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
       ) : (
         <Box
           width="100%"
-          padding="2rem 6%">
+          padding="1rem 2%">
           <Typography variant="h4" fontWeight={500}
-            mt={1} mb={1}
+           mb={1}
           >
             {heading}
           </Typography>
           <Box
             display="grid"
-            gridTemplateColumns={`repeat(auto-fit, minmax(calc(${isNonMobileScreens? '25%': '50%'} - 0.5rem), 1fr))`}
-            gap="0.5rem"
+            style={{
+              gridTemplateColumns: `repeat(auto-fill, minmax(${isNonMobileScreens? "30%": "100%"}, 1fr))`,
+              gap: '0.5rem'
+            }}
           >
             {vehicleAds.map((item) => (
               <VehicleAdWidget

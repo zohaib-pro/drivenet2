@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
+import UserAdsPage from "scenes/UserAdsPage";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -43,8 +44,13 @@ function App() {
             />
 
             <Route
+              path="/market/profile/:userId"
+              element={isAuth ? <UserAdsPage /> : <Navigate to="/" />}
+            />
+
+            <Route
               path="/market"
-              element={<MarketPage />}
+              element={isAuth ? <MarketPage /> : <Navigate to="/" />}
             />
 
             <Route
