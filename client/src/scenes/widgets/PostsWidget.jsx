@@ -47,8 +47,8 @@ const PostsWidget = ({ userId, isProfile = false }) => {
       {reversedPosts.length === 0 ? (
         <Center>
 
-        <Typography variant="h3" color="textSecondary">
-          No Posts
+        <Typography variant="h3" color="textSecondary" mt={"2rem"}>
+          No Posts Yet!
         </Typography>
         </Center>
       ) : (

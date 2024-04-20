@@ -50,11 +50,18 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
               <Box m="2rem 0" />
             </Box>
             :
-            <Box
-            >
-              <AdvertWidget title={item.title} description={item.description} date={item.datetime.replace('T', ' ')} image={item.picture} eventId={item._id} isUserInterested={item.interestedUsers[user._id]} />
-              <Box m="2rem 0" />
-            </Box>
+            <Box>
+            <AdvertWidget
+              title={item.title}
+              description={item.description}
+              date={item.datetime.replace('T', ' ')}
+              image={item.picture}
+              eventId={item._id}
+              isUserInterested={item.interestedUsers && user && item.interestedUsers[user._id]}
+            />
+            <Box m="2rem 0" />
+          </Box>
+          
           ))}
         </Box>
       )}

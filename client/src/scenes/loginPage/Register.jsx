@@ -50,7 +50,7 @@ const Form = ({ handleLogin }) => {
       .required("required")
       .min(8, "Password must be at least 8 characters long*")
       .matches(/[0-9]/, "Password must contain at least one numeric value*"),
-    city: yup.string().required("required"),
+      location: yup.string().required("required"),
     occupation: yup.string().required("required"),
     picture: yup
       .mixed()
@@ -66,7 +66,6 @@ const Form = ({ handleLogin }) => {
     firstName: "",
     lastName: "",
     email: "",
-    city: "",
     password: "",
     phone: "",
     location: "",
@@ -185,18 +184,18 @@ const Form = ({ handleLogin }) => {
                   fullWidth
                   select
                   label="City *"
-                  name="city"
-                  value={values.city}
+                  name="location"
+                  value={values.location}
                   onChange={(event) => {
                     const selectedValue = event.target.value;
                     handleChange({
-                      target: { name: "city", value: selectedValue },
+                      target: { name: "location", value: selectedValue },
                     });
                     if (selectedValue) getAreas("location/" + selectedValue);
                   }}
                   onBlur={handleBlur}
-                  error={Boolean(touched.city) && Boolean(errors.city)}
-                  helperText={touched.city && errors.city}
+                  error={Boolean(touched.location) && Boolean(errors.location)}
+                  helperText={touched.location && errors.location}
                   sx={{ gridColumn: "span 4" }}
                   SelectProps={{
                     native: true,
@@ -204,9 +203,9 @@ const Form = ({ handleLogin }) => {
                   margin="normal"
                 >
                   <option value=""></option>
-                  {cities.map((city) => (
-                    <option key={city} value={city}>
-                      {city}
+                  {cities.map((location) => (
+                    <option key={location} value={location}>
+                      {location}
                     </option>
                   ))}
                 </TextField>

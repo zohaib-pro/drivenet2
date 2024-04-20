@@ -54,9 +54,6 @@ const ProfilePage = () => {
           <Box m="2rem 0" />
           <PostsWidget userId={userId} isProfile />
         </Box>
-          <Box flexBasis={isNonMobileScreens ? "30%" : undefined}>
-            <UserVehicleAdWidgetGallery heading={"My Vehicles Ads"} userId={userId}/>
-          </Box>
       </Box>
     </Box>
   );
