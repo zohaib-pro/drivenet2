@@ -11,7 +11,7 @@ const LoginPage = () => {
       <Navbar />
       <Box>
         <Box
-          width={isNonMobileScreens ? "45%" : "93%"}
+          width={isNonMobileScreens ? "95%" : "93%"}
           p="3rem"
           m="2rem auto"
           borderRadius="2rem"

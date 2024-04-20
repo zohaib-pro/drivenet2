@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IconButton, Box, Button, TextField, Typography, useTheme } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePostData } from 'hooks/apiHook';
+import { setVehicleAds, setFilterApplied } from 'state';
 import * as yup from 'yup';
 import WidgetWrapper from 'components/WidgetWrapper';
 
@@ -13,7 +14,6 @@ import FlexBetween from "components/FlexBetween";
 
 import { useDispatch, useSelector } from "react-redux";
 import useAlertBox from 'components/AlertBox';
-
 
 // Define Yup validation schema
 // const vehicleAdSchema = yup.object().shape({
@@ -32,33 +32,33 @@ import useAlertBox from 'components/AlertBox';
 // });
 
 const initialValues = {
-  title: '',
-  description: '',
-  price: '',
-  mileage: '',
+
+  price:'',
+  mileage:  '',
   year: '',
-  make: '',
-  model: '',
-  variant: '',
-  cityReg: 'Not Registered',
-  color: '',
-  city: '',
-  area: '',
-  location: {},
-  images: [],
+  make:  '',
+  model:  '',
+  variant:  '',
+  // city: '',
+  // area: '',
+  // location: {}, 
 };
 
 
 const FiltersWidget = ({ isNonMobileScreen = false }) => {
-  const { data: vehicleMakes } = useGetData("vehicles");
-  const { data: vehicleModels, getData: getVehicleModels } = useGetData();
-
+  const { data: vehicleMakes } = useGetData("vehicles", '', {defValue: []});
+  const { data: vehicleModels, getData: getVehicleModels } = useGetData(undefined, '', {defValue: []});
   const [isOpen, setOpen] = useState(true);
+  
+  const dispatch = useDispatch();
 
   const [location, setLocation] = useState({});
 
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
+  const vehicleAds = useSelector((state)=> state.vehicleAds)
+  const vehicleAdsAll = useSelector((state)=>state.vehicleAdsAll)
+  const isFilterApplied = useSelector(state => state.isFilterApplied)
 
   const openFilters = () => {
     setOpen(true);
@@ -68,9 +68,39 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     setOpen(false);
   }
 
+  const applyFilters = (values) => {
+    //check if there is any value entered
+    var isValue = false;
+    for (const key in values){
+      if (values[key] && String(values[key]).length != 0){
+        isValue = true;
+        break;
+      }
+    }
+    if (isValue){
+      dispatch(setFilterApplied({isFilterApplied: true}));
+      dispatch(setVehicleAds({vehicleAds: filterResults(vehicleAdsAll, values)}))
+    }
+  }
+
+  function filterResults(data, params) {
+    return data.filter(item => {
+        for (const key in params) {
+            if (params[key] !== '' && params[key] !== undefined) {
+                if (item[key] !== params[key]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    });
+}
+
   useEffect(()=>{
     setOpen(isNonMobileScreen);
-  }, [isNonMobileScreen])
+  }, [isNonMobileScreen]);
+
+
   return (
     <WidgetWrapper>
       <FlexBetween>
@@ -79,6 +109,10 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
           ml={1}
         >
           Filters
+        </Typography>
+
+        <Typography variant="body2" >
+          {isFilterApplied? "(applied)": ""}
         </Typography>
 
         {
@@ -106,6 +140,7 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
             handleSubmit, // <-- Ensure handleSubmit is included
             isSubmitting,
             setFieldValue,
+            resetForm
           }) => (
             <form onSubmit={handleSubmit}> {/* Use handleSubmit here */}
 
@@ -203,8 +238,15 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
                 margin="normal"
               />
 
-              <Button>
+              <Button onClick={()=>{applyFilters(values);}}>
                 apply
+              </Button>
+              <Button onClick={()=>{
+                resetForm(); 
+                dispatch(setVehicleAds({vehicleAds: vehicleAdsAll}));
+                dispatch(setFilterApplied({isFilterApplied: false}));
+                }}>
+                clear
               </Button>
             </form>
           )}

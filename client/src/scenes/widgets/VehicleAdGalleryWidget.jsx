@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setVehicleAds } from "state";
+import { setVehicleAds, setVehicleAdsAll } from "state";
 
 import { useMediaQuery,Typography, Box } from "@mui/material";
 import Center from "components/Center";
@@ -10,6 +10,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.vehicleAds);
   const token = useSelector((state) => state.token);
+  const isFilterApplied = useSelector(state=>state.isFilterApplied);
 
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
@@ -21,6 +22,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
     const data = await response.json();
     console.log(data);
     dispatch(setVehicleAds({ vehicleAds: data }));
+    dispatch(setVehicleAdsAll({ vehicleAdsAll: data }));
   };
 
   useEffect(() => {
@@ -35,8 +37,11 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
       {!vehicleAds || vehicleAds.length === 0 ? (
         <Center>
 
+          
           <Typography variant="h3" color="textSecondary">
-            No Vehicles Listed for sale yet!
+            {
+              isFilterApplied? "No Vehicles based on current filters!": "No Vehicles Listed for sale yet!"
+            }
           </Typography>
         </Center>
       ) : (

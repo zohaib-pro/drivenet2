@@ -69,7 +69,8 @@ export const createVehicleAd = async (req, res)=> {
     });
     await newVehicleAd.save();
 
-    res.status(201).json({msg: 'ok'})
+    console.log(JSON.stringify(newVehicleAd));
+    res.status(201).json(newVehicleAd)
   }
   catch (err) {
     res.status(409).json({ message: err.message })

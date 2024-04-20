@@ -19,7 +19,7 @@ const initialValues = {
     userInfo: {}
 };
 
-const categories = ["Wrong Price Prediction", "Fake Vehicle details", "Fraud Seller"]; // Add your categories here
+const categories = ["Wrong Price Prediction", "Fake Vehicle details", "Fraud Seller", "Other"]; // Add your categories here
 
 const IssueCreationComponent = ({user, vehicleAdId, onIssueReported}) => {
     const [open, setOpen] = useState(false);

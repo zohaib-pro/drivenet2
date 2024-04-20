@@ -37,7 +37,7 @@ const VehicleDescPage = () => {
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  const { data: sellerData, getData: getSellerData } = useGetData(undefined, token, undefined);
+  const { data: sellerData, getData: getSellerData } = useGetData(undefined, token, {defValue:null});
 
 
   async function fetchImageAsBlob(url) {

@@ -14,8 +14,8 @@ const ChatPage = () => {
   // Custom hook to fetch user data
   const { data: userDataResponse, getData: getUserData } = useGetData(
     userData ? `/users/${userData._id}` : null, // Pass userData only if it's available
-    token,
-    undefined
+    token ,
+    {defValue: undefined}
   );
 
   useEffect(() => {

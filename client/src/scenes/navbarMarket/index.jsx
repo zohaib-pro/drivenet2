@@ -23,11 +23,12 @@ import {
 } from "@mui/icons-material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout } from "state";
+import { setMode, setLogout, setCities } from "state";
 import { useNavigate, Link } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
 
+import { useGetData } from "hooks/apiHook";
 
 import { setVehicleAds } from "state";
 
@@ -36,8 +37,14 @@ const Navbar = ({onSearch=()=>{}}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  const cities = useSelector(state => state.cities);
   const vehicleAds = useSelector((state)=>state.vehicleAds);
+  const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
+  useGetData('location', '', {onSuccess: (data)=>{
+      dispatch(setCities({cities: data}));
+  }});
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -46,10 +53,10 @@ const Navbar = ({onSearch=()=>{}}) => {
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
 
-  /*   const fullName = `${user.firstName} ${user.lastName}`; */
-  const fullName = user ? `${user.firstName} ${user.lastName}` : "Kunwar Ahmad";
+  /* const fullName = `${user.firstName} ${user.lastName}`; */
+  const fullName = user ? `${user.firstName}` : "user";
 
-  const currentLocation = "Lahore";
+  const [currentLocation, setCurrentLocation] = useState("Pakistan"); 
 
   const [inputValue, setInputValue] = useState('');
 
@@ -61,7 +68,6 @@ const Navbar = ({onSearch=()=>{}}) => {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      //onSearch(inputValue);
       vehicleAds.forEach(element => {
         console.log(element.make, inputValue, element.make == inputValue);
       });
@@ -113,13 +119,23 @@ const Navbar = ({onSearch=()=>{}}) => {
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
-            padding="0.1rem 1.5rem"
+            padding="0.1rem 0.1rem"
+            maxWidth={"15rem"}
           >
             <IconButton>
               <LocationOnIcon />
             </IconButton>
+
             <Select
               value={currentLocation}
+              onChange={(event)=>{
+                const val = event.target.value;
+                setCurrentLocation(val);
+                if (val == "Pakistan")
+                  dispatch(setVehicleAds({vehicleAds: vehicleAdsAll}))
+                else
+                  dispatch(setVehicleAds({vehicleAds: vehicleAdsAll.filter(item=> item.location.city == val)}))
+              }}
               sx={{
                 backgroundColor: neutralLight,
 
@@ -127,7 +143,7 @@ const Navbar = ({onSearch=()=>{}}) => {
                 p: "0.25rem 1rem",
                 "& .MuiSvgIcon-root": {
                   pr: "0.25rem",
-                  width: "3rem",
+                  width: "2rem",
                 },
                 "& .MuiSelect-select:focus": {
                   backgroundColor: neutralLight,
@@ -135,9 +151,13 @@ const Navbar = ({onSearch=()=>{}}) => {
               }}
               input={<InputBase />}
             >
-              <MenuItem value={currentLocation}>
-                <Typography>{currentLocation}</Typography>
-              </MenuItem>
+              {
+                ["Pakistan", ...cities].map(city => 
+                <MenuItem value={city}>
+                <Typography>{city}</Typography>
+              </MenuItem>)
+              }
+              
             </Select>
 
           </FlexBetween>
@@ -176,7 +196,6 @@ const Navbar = ({onSearch=()=>{}}) => {
                   My Ads
               </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
-              
             </Select>
           </FormControl> :
             <Typography component="a" href="/your-link-path" variant="body1">

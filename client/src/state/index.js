@@ -5,6 +5,10 @@ const initialState = {
   user: null,
   token: null,
   posts: [],
+  vehicleAds: [],
+  vehicleAdsAll: [],
+  cities: [],
+  isFilterApplied: false
 };
 
 export const authSlice = createSlice({
@@ -37,8 +41,20 @@ export const authSlice = createSlice({
       state.vehicleAds = action.payload.vehicleAds;
     },
 
+    setVehicleAdsAll: (state, action) =>{
+      state.vehicleAdsAll = action.payload.vehicleAdsAll
+    },
+
     setEvents: (state, action) =>{
       state.events = action.payload.events;
+    },
+
+    setCities: (state, action) =>{
+      state.cities = action.payload.cities
+    },
+
+    setFilterApplied: (state, action) =>{
+      state.isFilterApplied = action.payload.isFilterApplied
     },
 
     setPost: (state, action) => {
@@ -51,6 +67,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setEvents, setPosts, setPost, setVehicleAds } =
+export const { setFilterApplied, setCities, setMode, setLogin, setLogout, setFriends, setEvents, setPosts, setPost, setVehicleAds, setVehicleAdsAll } =
   authSlice.actions;
 export default authSlice.reducer;

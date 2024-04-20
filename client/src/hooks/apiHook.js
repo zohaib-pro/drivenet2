@@ -6,7 +6,7 @@ function getFullUrl(target){
     return baseURL + (target[0] === '/' ? target : '/' + target);
 }
 
-export const useGetData = (target, token='', defValue=[]) => {
+export const useGetData = (target, token='', { defValue = [], onSuccess}) => {
     const [data, setData] = useState(defValue);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -52,6 +52,9 @@ export const useGetData = (target, token='', defValue=[]) => {
 
             const jsonData = await response.json();
             setData(jsonData);
+            if (onSuccess){
+                onSuccess(jsonData);
+            }
         } catch (err) {
             setError(err.message);
         } finally {
@@ -94,8 +97,9 @@ export const usePostData = (target, token='') => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
-            setResponse(response);
+            const result = await response.json()
+            setResponse(result);
+            
         } catch (err) {
             setError(err.message);
         } finally {
