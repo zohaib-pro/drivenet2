@@ -6,7 +6,7 @@ function getFullUrl(target){
     return baseURL + (target[0] === '/' ? target : '/' + target);
 }
 
-export const useGetData = (target, token='', { defValue = [], onSuccess}) => {
+export const useGetData = (target, token='', { defValue = [], onSuccess} = {}) => {
     const [data, setData] = useState(defValue);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -117,7 +117,7 @@ export const usePutData = (target, token='') => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const putData = async (values, newTarget, {isJson = true, onSuccess}) => {
+    const putData = async (values, newTarget, {isJson = true, onSuccess}={}) => {
         setError(null);
         if (newTarget) //dynamic urls/targets might be required
             target = newTarget;
@@ -166,7 +166,7 @@ export const useDelData = (target, token='') => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const delData = async (values, newTarget, {isJson = true, onSuccess, onFail}) => {
+    const delData = async (values, newTarget, {isJson = true, onSuccess, onFail}={}) => {
         setError(null);
         if (newTarget) //dynamic urls/targets might be required
             target = newTarget;
