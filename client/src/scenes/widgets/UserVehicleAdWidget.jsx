@@ -6,7 +6,8 @@ import {
   Typography,
   useTheme,
   TextField,
-  Button
+  Button,
+  Modal,
 } from "@mui/material";
 
 import DetailsGrid from "components/DetailsGrid";
@@ -27,6 +28,7 @@ import { setPost } from "state";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmationDialog from "components/ConfirmationDialog";
 import { useDelData } from "hooks/apiHook";
+import VehicleUpdateAdForm from "scenes/sellPage/FormUpdate";
 
 const UserVehicleAdWidget = ({
   vehicle, redirectTo, onDeleteSuccess
@@ -39,11 +41,17 @@ const UserVehicleAdWidget = ({
   const main = palette.neutral.main;
   const primary = palette.primary.main;
 
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const getTimeDiff = (vehicleAd) => {
     const timeDiff = new Date() - new Date(vehicleAd.createdAt);
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  }
+
+  const handleClose = ()=>{
+    setModalOpen(false)
   }
 
   const {delData} = useDelData()
@@ -60,9 +68,9 @@ const UserVehicleAdWidget = ({
       <IconButton onClick={()=>{setDialogOpen(true)}}>
         <Close />
       </IconButton>
-      <IconButton>
+      {/* <IconButton onClick={()=>{setModalOpen(true)}}>
         <EditOutlined />
-      </IconButton>
+      </IconButton> */}
     
       <Link to={redirectTo} style={{ textDecoration: 'none', color: 'inherit' }}>
         {(
@@ -97,6 +105,30 @@ const UserVehicleAdWidget = ({
         </Box>
       </Link>
       <ConfirmationDialog data={{title:"Are you sure to delete?", content: "The selected vehicle ad will be deleted from market", open: isDialogOpen, onConfirm:()=>{setDialogOpen(false); delVehicleAd(vehicle._id)}, onClose: ()=>{setDialogOpen(false)}}} />
+
+      <Modal open={isModalOpen} onClose={handleClose}>
+
+          <Box
+            width={'80%'}
+            height={'80%'}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              minWidth: 300,
+              overflow: 'scroll'
+            }}
+          >
+            <IconButton onClick={handleClose} style={{ position: 'absolute', top: 5, right: 5 }}>
+              <Close />
+            </IconButton>
+            <VehicleUpdateAdForm vehicleAd={vehicle}/>
+          </Box>
+        </Modal>
     </WidgetWrapper>
   );
 };

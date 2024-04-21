@@ -18,6 +18,8 @@ import { useGetData } from "hooks/apiHook";
 import ChatPage from "scenes/chatPage/Chat";
 import ChatParent from "scenes/chatPage/ChatParent";
 
+import { numberWithCommas } from "utils/math";
+
 const VehicleDescPage = () => {
 
   const [open, setOpen] = useState(false);
@@ -204,7 +206,7 @@ const VehicleDescPage = () => {
                   <Typography variant="h3" color={'blue'} fontWeight={500}
                     mb={2} mt={2}
                   >
-                    PKR {vehicle.price}
+                    PKR {numberWithCommas(vehicle.price)}
                   </Typography>
 
                   <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'}>

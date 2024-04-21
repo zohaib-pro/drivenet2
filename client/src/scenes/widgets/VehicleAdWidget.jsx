@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+
+import { numberWithCommas } from "utils/math";
+
 import {
   Box,
   Divider,
@@ -56,7 +59,7 @@ const VehicleAdWidget = ({
         <Typography variant="h4" fontWeight={500}
           mt={1}
         >
-          PKR {vehicle.price}
+          PKR {numberWithCommas(vehicle.price)}
         </Typography>
         <Typography variant="h5" fontWeight={500}
           mb={1}

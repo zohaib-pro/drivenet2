@@ -24,7 +24,6 @@ const Form = ({ handleLogin }) => {
   const [registerError, setRegisterError] = useState("");
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { data: areas, getData: getAreas } = useGetData();
   const { data: cities } = useGetData("location");
 
   const registerSchema = yup.object().shape({
@@ -191,7 +190,7 @@ const Form = ({ handleLogin }) => {
                     handleChange({
                       target: { name: "location", value: selectedValue },
                     });
-                    if (selectedValue) getAreas("location/" + selectedValue);
+                    // if (selectedValue) getAreas("location/" + selectedValue);
                   }}
                   onBlur={handleBlur}
                   error={Boolean(touched.location) && Boolean(errors.location)}

@@ -17,8 +17,12 @@ import AdvertWidgetShow from 'scenes/widgets/AdvertWidgetShow';
 // Define Yup validation schema
 const vehicleAdSchema = yup.object().shape({
   // title: yup.string().required('Title is required'),
-  description: yup.string().required('Description is required'),
-  price: yup.number().required('Price is required').positive('Price must be a positive number'),
+  description: yup
+    .string()
+    .required('Description is required')
+    .min(10, 'Description must be at least 10 characters')
+    .max(500, 'Description must be at most 500 characters'),
+  price: yup.number().required('Price is required').positive('Price must be a positive number').min(50000, 'Price must be at least 50,000'),
   mileage: yup.number().required('Mileage is required').positive('Mileage must be a positive number'),
   year: yup.number().required('Year is required').positive('Year must be a positive number').integer('Year must be an integer'),
   make: yup.string().required('Make is required'),
@@ -26,7 +30,10 @@ const vehicleAdSchema = yup.object().shape({
   city: yup.string().required('Location is required'),
   area: yup.string().required('Location is required'),
   cityReg: yup.string().required('Registration city is required'),
-  color: yup.string().required('Color is required'),
+  color: yup
+    .string()
+    .matches(/^[a-zA-Z]+$/, 'Color must contain only alphabets')
+    .required('Color is required'),
   images: yup.array().of(yup.string()).min(1, 'At least one image is required'),
 });
 
@@ -89,11 +96,16 @@ const VehicleAdForm = () => {
 
     formData.append("userId", _id);
 
-    postVehicleAd(formData);
-    if (postedVehicle)
-      ShowAlertBox("Vehicle Ad Posted Successfully!");
-    else if (vehiclePostingError)
-      ShowAlertBox(vehiclePostingError, 'error');
+    postVehicleAd(formData, undefined, {onSuccess: (data)=>{
+
+      if (data)
+        ShowAlertBox("Vehicle Ad Posted Successfully! Click to view it!");
+    }, onFail : (err)=>{
+        ShowAlertBox(err, 'error')
+    }});
+
+    onSubmitProps.resetForm();
+
   };
 
   const { palette } = useTheme();
@@ -179,6 +191,28 @@ const VehicleAdForm = () => {
                 }
               </TextField>
 
+
+              <TextField
+                fullWidth
+                select
+                label="Year *"
+                name="year"
+                value={values.year}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.year && Boolean(errors.year)}
+                helperText={touched.year && errors.year}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  [...Array(2025 - 1900).keys()].reverse().map(x => <option value={x + 1900}>{x + 1900}</option>)
+                }
+              </TextField>
+              {/* 
               <TextField
                 fullWidth
                 label="Year *"
@@ -190,7 +224,7 @@ const VehicleAdForm = () => {
                 error={touched.year && Boolean(errors.year)}
                 helperText={touched.year && errors.year}
                 margin="normal"
-              />
+              /> */}
 
 
               <TextField
@@ -298,7 +332,7 @@ const VehicleAdForm = () => {
               >
                 <option value=""></option>
                 {
-                  areas.map(area => (<option value={area}>{area}</option>))
+                  [...areas, "main"].map(area => (<option value={area}>{area}</option>))
                 }
               </TextField>
 
