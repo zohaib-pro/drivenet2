@@ -457,10 +457,11 @@ const VehicleAdForm = () => {
 
         <AdvertWidgetShow 
         heading={'Selling your vehicle with drivenet is easy'}
-        title={"Just will up the form"} 
+        title={"Just fill up the form"} 
         description={"We'll show your vehicle to the millions of buyers around the country"}
           image={"http://localhost:3000/assets/sellcar.jpg"}
         />
+        
 
         <Box mt={2}/>
         <AdvertWidgetShow 
