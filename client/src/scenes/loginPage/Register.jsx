@@ -344,7 +344,7 @@ const Form = ({ handleLogin }) => {
                   },
                 }}
               >
-                {"Already have an account? Login here.2"}
+                {"Already have an account? Login here."}
               </Typography>
             </Box>
           </form>

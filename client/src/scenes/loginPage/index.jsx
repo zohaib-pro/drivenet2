@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import Register from "./Register";
 import Login from "./Login";
+import Center from "components/Center";
 
 const LoginPage = () => {
   const [login, setLogin] = useState(true);
@@ -28,9 +29,10 @@ const LoginPage = () => {
         borderRadius="2rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
-          Welcome to DriveNet Media, the Social Media for Drivenet Community!
-        </Typography>
+        <Center><Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
+          Welcome to DriveNet Market and Community, for Car Enthusiasts!
+        </Typography></Center>
+        
         {login && (
           <Login
             handleRegister={() => {
