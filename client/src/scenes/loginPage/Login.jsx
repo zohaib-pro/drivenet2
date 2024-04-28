@@ -17,6 +17,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
+import Center from "components/Center";
 
 export default function Login({ handleRegister }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +35,6 @@ export default function Login({ handleRegister }) {
     email: "",
     password: "",
   };
-
 
   const login = async (values, onSubmitProps) => {
     const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
@@ -60,108 +60,121 @@ export default function Login({ handleRegister }) {
   };
 
   return (
-    <Formik
-      onSubmit={login}
-      initialValues={initialValuesLogin}
-      validationSchema={loginSchema}
-    >
-      {({
-        values,
-        errors,
-        touched,
-        handleBlur,
-        handleChange,
-        handleSubmit,
-        setFieldValue,
-        resetForm,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <Box
-            display="grid"
-            gap="30px"
-            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-            sx={{
-              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-            }}
-          >
-            <TextField
-              label="Email *"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.email}
-              name="email"
-              error={Boolean(touched.email) && Boolean(errors.email)}
-              helperText={touched.email && errors.email}
-              sx={{ gridColumn: "span 4" }}
-            />
+    <>
+      {/* Title image inside widget wrapper */}
+      <Center>
+        {/* Use Image from MUI Lab */}
+        <img
+          height={250}
+          style={{ alignSelf: "center" }}
+          src="http://localhost:3000/assets/drivenet.png"
+          alt="Drivenet Market"
+        />
+      </Center>
 
-            <TextField
-              label="Password *"
-              type={showPassword ? "text" : "password"}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.password}
-              name="password"
-              error={Boolean(touched.password) && Boolean(errors.password)}
-              helperText={touched.password && errors.password}
-              sx={{ gridColumn: "span 4" }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+      <Formik
+        onSubmit={login}
+        initialValues={initialValuesLogin}
+        validationSchema={loginSchema}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          setFieldValue,
+          resetForm,
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <Box
+              display="grid"
+              gap="30px"
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
-            />
-          </Box>
+            >
+              <TextField
+                label="Email *"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.email}
+                name="email"
+                error={Boolean(touched.email) && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+                sx={{ gridColumn: "span 4" }}
+              />
 
-          {/* Display Login Error Message */}
-          {loginError && (
-            <Box mt={2}>
-              <Alert severity="error">{loginError}</Alert>
+              <TextField
+                label="Password *"
+                type={showPassword ? "text" : "password"}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={Boolean(touched.password) && Boolean(errors.password)}
+                helperText={touched.password && errors.password}
+                sx={{ gridColumn: "span 4" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Box>
-          )}
 
-          {/* BUTTONS */}
-          <Box>
-            <Button
-              fullWidth
-              type="submit"
-              sx={{
-                m: "2rem 0",
-                p: "1rem",
-                backgroundColor: palette.primary.main,
-                color: palette.background.alt,
-                "&:hover": { color: palette.primary.main },
-              }}
-            >
-              {"LOGIN"}
-            </Button>
-            <Typography
-              onClick={() => {
-                handleRegister();
-                resetForm();
-              }}
-              sx={{
-                textDecoration: "underline",
-                color: palette.primary.main,
-                "&:hover": {
-                  cursor: "pointer",
-                  color: palette.primary.light,
-                },
-              }}
-            >
-              {"Don't have an account? Sign Up here."}
-            </Typography>
-          </Box>
-        </form>
-      )}
-    </Formik>
+            {/* Display Login Error Message */}
+            {loginError && (
+              <Box mt={2}>
+                <Alert severity="error">{loginError}</Alert>
+              </Box>
+            )}
+
+            {/* BUTTONS */}
+            <Box>
+              <Button
+                fullWidth
+                type="submit"
+                sx={{
+                  m: "2rem 0",
+                  p: "1rem",
+                  backgroundColor: palette.primary.main,
+                  color: palette.background.alt,
+                  "&:hover": { color: palette.primary.main },
+                }}
+              >
+                {"LOGIN"}
+              </Button>
+              <Typography
+                onClick={() => {
+                  handleRegister();
+                  resetForm();
+                }}
+                sx={{
+                  textDecoration: "underline",
+                  color: palette.primary.main,
+                  "&:hover": {
+                    cursor: "pointer",
+                    color: palette.primary.light,
+                  },
+                }}
+              >
+                {"Don't have an account? Sign Up here."}
+              </Typography>
+            </Box>
+          </form>
+        )}
+      </Formik>
+    </>
   );
 }
