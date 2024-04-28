@@ -72,7 +72,7 @@ export const usePostData = (target, token='') => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const postData = async (values, newTarget) => {
+    const postData = async (values, newTarget, {onSuccess, onFail}={}) => {
         if (newTarget) //dynamic urls/targets might be required
             target = newTarget;
             
@@ -99,9 +99,13 @@ export const usePostData = (target, token='') => {
             }
             const result = await response.json()
             setResponse(result);
+            if (onSuccess)
+                onSuccess(result);
             
         } catch (err) {
             setError(err.message);
+            if (onFail)
+                onFail(err.message)
         } finally {
             setIsLoading(false);
         }

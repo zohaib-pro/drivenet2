@@ -33,7 +33,8 @@ import useAlertBox from 'components/AlertBox';
 
 const initialValues = {
 
-  price:'',
+  minprice:'',
+  maxprice:'',
   mileage:  '',
   year: '',
   make:  '',
@@ -72,20 +73,33 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     //check if there is any value entered
     var isValue = false;
     for (const key in values){
-      if (values[key] && String(values[key]).length != 0){
+      if (values[key] && String(values[key]).length != 0 ){
         isValue = true;
         break;
       }
     }
+    var filteredResults = [...vehicleAdsAll];
+    if (values['minprice']) {
+      filteredResults = filteredResults.filter(item=>item.price >= values['minprice'])
+    }
+
+    if (values['maxprice']) {
+      filteredResults = filteredResults.filter(item=>item.price <= values['maxprice'])
+    }
+
+    filteredResults = filterResults(filteredResults, values, ['minprice', 'maxprice'])
+
     if (isValue){
       dispatch(setFilterApplied({isFilterApplied: true}));
-      dispatch(setVehicleAds({vehicleAds: filterResults(vehicleAdsAll, values)}))
+      dispatch(setVehicleAds({vehicleAds: filteredResults}))
     }
   }
 
-  function filterResults(data, params) {
+  function filterResults(data, params, omitKeys) {
     return data.filter(item => {
         for (const key in params) {
+            if (omitKeys.includes(key))
+              continue;
             if (params[key] !== '' && params[key] !== undefined) {
                 if (item[key] !== params[key]) {
                     return false;
@@ -203,16 +217,30 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
 
               <TextField
                 fullWidth
-                label="Price"
-                name="price"
+                label="Min Price"
+                name="minprice"
                 type="number"
-                value={values.price}
+                value={values.minprice}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.price && Boolean(errors.price)}
-                helperText={touched.price && errors.price}
+                error={touched.price && Boolean(errors.minprice)}
+                helperText={touched.minprice && errors.minprice}
                 margin="normal"
               />
+
+              <TextField
+                fullWidth
+                label="Max Price"
+                name="maxprice"
+                type="number"
+                value={values.maxprice}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.price && Boolean(errors.maxprice)}
+                helperText={touched.maxprice && errors.maxprice}
+                margin="normal"
+              />
+
               <TextField
                 fullWidth
                 label="Mileage"
