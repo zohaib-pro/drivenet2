@@ -21,6 +21,7 @@ import FlexBetween from "components/FlexBetween";
 
 const Form = ({ handleLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordC, setShowPasswordC] = useState(false);
   const [registerError, setRegisterError] = useState("");
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -47,13 +48,17 @@ const Form = ({ handleLogin }) => {
     password: yup
       .string()
       .required("required")
-      .min(8, "Password must be at least 8 characters long*")
-      .matches(/[0-9]/, "Password must contain at least one numeric value*"),
-      location: yup.string().required("required"),
+      .min(8, "Password must be at least 8 characters long")
+      .matches(/[0-9]/, "Password must contain at least one numeric value"),
+    confirmPassword: yup
+      .string()
+      .required("required")
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
+    location: yup.string().required("required"),
     occupation: yup.string().required("required"),
     picture: yup
       .mixed()
-      .required("Picture is required*")
+      .required("Picture is required")
       .test("fileType", "Unsupported file format", (value) => {
         return (
           value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
@@ -66,6 +71,7 @@ const Form = ({ handleLogin }) => {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     phone: "",
     location: "",
     occupation: "",
@@ -301,6 +307,33 @@ const Form = ({ handleLogin }) => {
                         edge="end"
                       >
                         {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <TextField
+                label="Confirm Password *"
+                type={showPasswordC ? "password" : "text"}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.confirmPassword}
+                name="confirmPassword"
+                error={Boolean(
+                  touched.confirmPassword && errors.confirmPassword
+                )}
+                helperText={touched.confirmPassword && errors.confirmPassword}
+                sx={{ gridColumn: "span 4" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPasswordC(!showPasswordC)}
+                        edge="end"
+                      >
+                        {showPasswordC ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   ),
