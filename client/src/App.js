@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import HomePage from "scenes/homePage";
 import LoginPage from "scenes/loginPage";
 import ProfilePage from "scenes/profilePage";
+import EditProfilePage from "scenes/profileEdit";
 import MarketPage from "scenes/marketPage";
 import SellPage from "scenes/sellPage"
 import VehicleDescPage from "scenes/VehicleDescPage"
@@ -46,6 +47,11 @@ function App() {
             <Route
               path="/market/profile/:userId"
               element={isAuth ? <UserAdsPage /> : <Navigate to="/" />}
+            />
+
+            <Route
+              path="/editProfile/:userId"
+              element={isAuth ? <EditProfilePage /> : <Navigate to="/" />}
             />
 
             <Route
