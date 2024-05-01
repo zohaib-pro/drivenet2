@@ -20,7 +20,9 @@ import {
   FavoriteOutlined,
   ShareOutlined,
   Close,
-  EditOutlined
+  DeleteForever,
+  EditOutlined,
+  Delete
 } from "@mui/icons-material";
 import WidgetWrapper from "components/WidgetWrapper";
 import Friend from "components/Friend";
@@ -66,7 +68,7 @@ const UserVehicleAdWidget = ({
   return (
     <WidgetWrapper >
       <IconButton onClick={()=>{setDialogOpen(true)}}>
-        <Close />
+        <Delete />
       </IconButton>
       {/* <IconButton onClick={()=>{setModalOpen(true)}}>
         <EditOutlined />

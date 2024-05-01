@@ -11,6 +11,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
   const posts = useSelector((state) => state.vehicleAds);
   const token = useSelector((state) => state.token);
   const isFilterApplied = useSelector(state=>state.isFilterApplied);
+  const search = useSelector(state=>state.search);
 
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
@@ -40,7 +41,9 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
           
           <Typography variant="h3" color="textSecondary">
             {
-              isFilterApplied? "No Vehicles based on current filters!": "No Vehicles Listed for sale yet!"
+              isFilterApplied? 
+                "No Vehicles based on current filters!":   
+                search? `No results found for '${search}'` : "No Vehicles Listed for sale yet!"
             }
           </Typography>
         </Center>
