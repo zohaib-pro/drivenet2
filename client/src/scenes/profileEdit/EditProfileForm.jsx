@@ -16,6 +16,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useGetData } from "hooks/apiHook";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
+import { setPost } from "state";
 
 const EditProfileForm = ({ userId, token }) => {
   const [registerError, setRegisterError] = useState("");

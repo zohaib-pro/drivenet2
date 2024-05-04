@@ -59,7 +59,17 @@ export const authSlice = createSlice({
 
     setPost: (state, action) => {
       const updatedPosts = state.posts.map((post) => {
-        if (post._id === action.payload.post._id) return action.payload.post;
+        // If the post's userId matches the updated user's _id
+        if (post.userId === action.payload.post.userId) {
+          // Update the user details in the post
+          return {
+            ...post,
+            firstName: action.payload.post.firstName,
+            lastName: action.payload.post.lastName,
+            location: action.payload.post.location,
+            userPicturePath: action.payload.post.userPicturePath,
+          };
+        }
         return post;
       });
       state.posts = updatedPosts;

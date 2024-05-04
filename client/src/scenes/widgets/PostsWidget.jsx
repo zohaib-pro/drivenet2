@@ -9,7 +9,8 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
   const token = useSelector((state) => state.token);
-  const [user, setUser] = useState(null);
+
+  const [usersMap, setUsersMap] = useState({});
 
   const getPosts = async () => {
     try {
@@ -46,20 +47,28 @@ const PostsWidget = ({ userId, isProfile = false }) => {
     }
   };
 
-  const getUser = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/users/${userId}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch user details");
+  // Fetch user details for each post
+  const fetchUserDetails = async () => {
+    const uniqueUserIds = new Set(posts.map((post) => post.userId));
+    const userDetailPromises = Array.from(uniqueUserIds).map(async (userId) => {
+      try {
+        const response = await fetch(`http://localhost:3001/users/${userId}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user details for userId: ${userId}`);
+        }
+        const userData = await response.json();
+        return { [userId]: userData };
+      } catch (error) {
+        console.error(error.message);
+        return {};
       }
-      const data = await response.json();
-      setUser(data);
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
+    });
+    const userDetails = await Promise.all(userDetailPromises);
+    const usersMap = Object.assign({}, ...userDetails);
+    setUsersMap(usersMap);
   };
 
   useEffect(() => {
@@ -68,8 +77,11 @@ const PostsWidget = ({ userId, isProfile = false }) => {
     } else {
       getPosts();
     }
-    getUser(); // Fetch user details
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userId, token, isProfile]); // Include userId, token, and isProfile in the dependency array
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [posts, token]); // Refetch user details if posts or token changes
 
   // Reverse the order of posts array
   const reversedPosts = posts.slice().reverse();
@@ -83,33 +95,23 @@ const PostsWidget = ({ userId, isProfile = false }) => {
           </Typography>
         </Center>
       ) : (
-        reversedPosts.map(
-          ({
-            _id,
-            userId,
-            title,
-            description,
-            location,
-            picturePath,
-            userPicturePath,
-            likes,
-            comments,
-          }) => (
-            <PostWidget
-              key={_id}
-              postId={_id}
-              postUserId={userId}
-              name={`${user?.firstName} ${user?.lastName}`}
-              title={title}
-              description={description}
-              location={user?.location} // Use updated user location
-              picturePath={picturePath}
-              userPicturePath={user?.picturePath} // Use updated user picture path
-              likes={likes}
-              comments={comments}
-            />
-          )
-        )
+        reversedPosts.map((post) => (
+          <PostWidget
+            key={post._id}
+            postId={post._id}
+            postUserId={post.userId}
+            title={post.title}
+            description={post.description}
+            location={usersMap[post.userId]?.location}
+            picturePath={post.picturePath}
+            userPicturePath={post.userPicturePath}
+            likes={post.likes}
+            comments={post.comments}
+            firstName={usersMap[post.userId]?.firstName} // Pass firstName from usersMap
+            lastName={usersMap[post.userId]?.lastName} // Pass lastName from usersMap
+            userPicturePath={usersMap[post.userId]?.picturePath} // Pass picturePath from usersMap
+          />
+        ))
       )}
     </>
   );

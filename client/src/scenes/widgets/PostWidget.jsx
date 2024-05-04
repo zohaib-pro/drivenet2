@@ -30,6 +30,8 @@ const PostWidget = ({
   userPicturePath,
   likes,
   comments,
+  firstName, // Add firstName
+  lastName, // Add lastName
 }) => {
   const [isComments, setIsComments] = useState(false);
   const [comment, setComment] = useState("");
@@ -62,7 +64,8 @@ const PostWidget = ({
           const userData = await response.json();
           return {
             image: userData.picturePath,
-            firstName: userData.lastName,
+            firstName: userData.firstName, // Use firstName
+            lastName: userData.lastName, // Use lastName
             comment: comment.comment,
           };
         });
@@ -130,7 +133,7 @@ const PostWidget = ({
     <WidgetWrapper m="1rem 0">
       <Friend
         friendId={postUserId}
-        name={name}
+        name={`${firstName} ${lastName}`} // Concatenate firstName and lastName
         subtitle={location}
         userPicturePath={userPicturePath}
       />

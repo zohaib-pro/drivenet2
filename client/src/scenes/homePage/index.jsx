@@ -28,6 +28,7 @@ useEffect(()=>{
   getEvents();
 }, [])
 
+
   return (
     <Box>
       <Navbar />

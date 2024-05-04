@@ -39,25 +39,34 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
   const location = useLocation(); // Get current location
 
   const handlePost = async () => {
-    const formData = new FormData();
-    formData.append("userId", _id);
-    formData.append("title", title); // Use input title
-    formData.append("description", post);
-    if (image) {
-      formData.append("picture", image);
-      formData.append("picturePath", image.name);
-    }
+    try {
+      const formData = new FormData();
+      formData.append("userId", _id);
+      formData.append("title", title);
+      formData.append("description", post);
+      if (image) {
+        formData.append("picture", image);
+        formData.append("picturePath", image.name);
+      }
 
-    const response = await fetch(`http://localhost:3001/posts`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const posts = await response.json();
-    dispatch(setPosts({ posts }));
-    setImage(null);
-    setPost("");
-    setTitle(defaultTitle || ''); // Reset title to default
+      const response = await fetch(`http://localhost:3001/posts`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+
+      const data = await response.json();
+      dispatch(setPosts({ posts: data }));
+      setImage(null);
+      setPost("");
+      setTitle(defaultTitle || ''); // Reset title to default
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
 
   // Check if current location is home page or own profile
@@ -68,7 +77,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
   if (!isHomePageOrOwnProfile) {
     return null;
   }
-  
+
   return (
     <WidgetWrapper>
       <FlexBetween gap="1.5rem">
@@ -107,8 +116,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
             acceptedFiles=".jpg,.jpeg,.png"
             multiple={false}
             onDrop={(acceptedFiles) => {
-              setImage(acceptedFiles[0])
-              //console.log(image);
+              setImage(acceptedFiles[0]);
             }}
           >
             {({ getRootProps, getInputProps }) => (
