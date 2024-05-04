@@ -100,6 +100,7 @@ const Form = ({ handleLogin }) => {
     for (let value in values) {
       formData.append(value, values[value]);
     }
+    
     formData.append("picturePath", values.picture.name);
 
     // Make the request to register the user

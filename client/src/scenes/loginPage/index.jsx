@@ -26,6 +26,7 @@ const LoginPage = () => {
         width={isNonMobileScreens ? "45%" : "93%"}
         p="3rem"
         m="2rem auto"
+        mb="2rem"
         borderRadius="2rem"
         backgroundColor={theme.palette.background.alt}
       >

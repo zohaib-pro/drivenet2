@@ -25,7 +25,7 @@ import { addPhones, register} from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { createVehicleAd} from "./controllers/vehicleAds.js"
 import { createEvent} from "./controllers/events.js"
-
+import { updateUser } from "./controllers/users.js";
 
 
 import { verifyToken } from "./middleware/auth.js";
@@ -68,6 +68,8 @@ app.get("/auth/register", addPhones);
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
 app.post("/events/create", verifyToken, upload.single("picture"), createEvent);
 app.post("/vehicle/create",verifyToken, upload.array("images", 12), createVehicleAd);
+app.patch("/users/:id", verifyToken, upload.single("picture"), updateUser);   
+
 
 /* ROUTES */
 app.use("/auth", authRoutes);

@@ -68,7 +68,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
   if (!isHomePageOrOwnProfile) {
     return null;
   }
-
+  
   return (
     <WidgetWrapper>
       <FlexBetween gap="1.5rem">
@@ -133,7 +133,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
                 {image && (
                   <IconButton
                     onClick={() => setImage(null)}
-                    sx={{ width: "15%" }}
+                    sx={{ width: "8%" }}
                   >
                     <DeleteOutlined />
                   </IconButton>
