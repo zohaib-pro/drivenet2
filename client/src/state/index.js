@@ -86,6 +86,6 @@ export const {
   setPost,
   setVehicleAds,
   setVehicleAdsAll,
-  setUserImage, // Add setUserImage to actions
+  setUserImage,
 } = authSlice.actions;
 export default authSlice.reducer;

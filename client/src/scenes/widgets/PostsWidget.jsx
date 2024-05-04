@@ -77,11 +77,12 @@ const PostsWidget = ({ userId, isProfile = false }) => {
     } else {
       getPosts();
     }
-  }, [userId, token, isProfile]); // Include userId, token, and isProfile in the dependency array
-
+  }, [userId, token, isProfile]);
+  
   useEffect(() => {
     fetchUserDetails();
-  }, [posts, token]); // Refetch user details if posts or token changes
+  }, [posts, token]);
+  
 
   // Reverse the order of posts array
   const reversedPosts = posts.slice().reverse();
@@ -104,9 +105,9 @@ const PostsWidget = ({ userId, isProfile = false }) => {
             description={post.description}
             location={usersMap[post.userId]?.location}
             picturePath={post.picturePath}
-            userPicturePath={post.userPicturePath}
-            likes={post.likes}
-            comments={post.comments}
+            likes={post.likes} // Pass likes directly
+            comments={post.comments} // Pass comments directly
+            createdAt={post.createdAt} // Pass createdAt
             firstName={usersMap[post.userId]?.firstName} // Pass firstName from usersMap
             lastName={usersMap[post.userId]?.lastName} // Pass lastName from usersMap
             userPicturePath={usersMap[post.userId]?.picturePath} // Pass picturePath from usersMap
