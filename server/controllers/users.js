@@ -70,6 +70,7 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const { firstName, lastName, email, phone, location, occupation, picture } = req.body;
 
+    console.log(firstName)
     // Find the user by ID
     const user = await User.findById(id);
 
