@@ -20,7 +20,7 @@ import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "state";
+import { setPosts, setUserImage } from "state"; // Import setUserImage action
 import Center from "components/Center";
 import { useLocation } from "react-router-dom";
 
@@ -29,7 +29,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
-  const [title, setTitle] = useState(defaultTitle || ''); // Set default title
+  const [title, setTitle] = useState(defaultTitle || ""); // Set default title
   const { palette } = useTheme();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -37,6 +37,14 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
   const location = useLocation(); // Get current location
+
+  const updateUserImage = async (imageUrl) => {
+    try {
+      await dispatch(setUserImage({ userId: _id, image: imageUrl }));
+    } catch (error) {
+      console.error("Error updating user image:", error);
+    }
+  };
 
   const handlePost = async () => {
     try {
@@ -63,7 +71,10 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
       dispatch(setPosts({ posts: data }));
       setImage(null);
       setPost("");
-      setTitle(defaultTitle || ''); // Reset title to default
+      setTitle(defaultTitle || ""); // Reset title to default
+      if (image) {
+        updateUserImage(data.picturePath); // Call updateUserImage with the new image path
+      }
     } catch (error) {
       console.error("Error creating post:", error);
     }
