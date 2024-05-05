@@ -125,15 +125,15 @@ const PostWidget = ({
       }
   
       const updatedPost = await response.json();
-  
+/*   
       // Update like count
       setLikeCount(Object.keys(updatedPost.likes).length);
       // Update isLiked state
-      setIsLiked(Boolean(updatedPost.likes[loggedInUserId]));
+      setIsLiked(Boolean(updatedPost.likes[loggedInUserId])); */
       // Update post data in Redux store
       dispatch(setPost({ post: updatedPost }));
   
-      // Update comment data with the newly added comment
+/*       // Update comment data with the newly added comment
       const newCommentData = [
         ...commentData,
         {
@@ -142,8 +142,8 @@ const PostWidget = ({
           lastName: lastName, // Use current user's last name
           comment: comment, // New comment text
         },
-      ];
-      setCommentData(newCommentData);
+      ]; */
+      //setCommentData(newCommentData);
   
       setComment("");
     } catch (error) {
