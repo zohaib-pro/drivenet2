@@ -26,7 +26,7 @@ const ProfilePage = () => {
       >
         <Center>
           <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
-            Welcome to DriveNet Here you can Edit your Profile Details!
+          Welcome to DriveNet. Here you can Edit your Profile Details!
           </Typography>
         </Center>
         

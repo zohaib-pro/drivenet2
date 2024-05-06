@@ -8,9 +8,10 @@ import { Box, Typography, Divider, useTheme } from "@mui/material";
 import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; // Import useDispatch
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { setUserImage } from "state"; // Import setUserImage action
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
@@ -20,6 +21,7 @@ const UserWidget = ({ userId, picturePath }) => {
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
+  const dispatch = useDispatch(); // Get dispatch function
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:3001/users/${userId}`, {
@@ -28,6 +30,8 @@ const UserWidget = ({ userId, picturePath }) => {
     });
     const data = await response.json();
     setUser(data);
+    // Update user image in Redux store
+    dispatch(setUserImage({ userId: userId, image: data.picturePath }));
   };
 
   useEffect(() => {
@@ -53,7 +57,8 @@ const UserWidget = ({ userId, picturePath }) => {
       {/* FIRST ROW */}
       <FlexBetween gap="0.5rem" pb="1.1rem">
         <FlexBetween gap="1rem">
-          <UserImage image={picturePath} />
+          {/* Pass user.picturePath to UserImage */}
+          <UserImage image={user.picturePath} />
           <Box onClick={() => navigate(`/profile/${userId}`)}>
             <Typography
               variant="h4"
@@ -74,7 +79,7 @@ const UserWidget = ({ userId, picturePath }) => {
 
         {/* Profile Edit Icon */}
         <ManageAccountsOutlined
-        onClick={() => navigate(`/editProfile/${userId}`)}
+          onClick={() => navigate(`/editProfile/${userId}`)}
           sx={{
             "&:hover": {
               color: palette.primary.main,

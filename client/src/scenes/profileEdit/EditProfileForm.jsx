@@ -16,6 +16,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useGetData } from "hooks/apiHook";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
+import { setPost } from "state";
 
 const EditProfileForm = ({ userId, token }) => {
   const [registerError, setRegisterError] = useState("");
@@ -25,8 +26,14 @@ const EditProfileForm = ({ userId, token }) => {
   const { data: cities } = useGetData("location");
 
   const editProfileSchema = yup.object().shape({
-    firstName: yup.string().required("required"),
-    lastName: yup.string().required("required"),
+    firstName: yup
+      .string()
+      .matches(/^[a-zA-Z]+$/, "First name must contain only alphabets")
+      .required("First name is required"),
+    lastName: yup
+      .string()
+      .matches(/^[a-zA-Z]+$/, "Last name must contain only alphabets")
+      .required("Last name is required"),
     phone: yup
       .number()
       .typeError("Phone number must be a number")
@@ -44,14 +51,7 @@ const EditProfileForm = ({ userId, token }) => {
     email: yup.string().email("invalid email").required("required"),
     location: yup.string().required("required"),
     occupation: yup.string().required("required"),
-    picture: yup
-      .mixed()
-      .test("fileType", "Unsupported file format", (value) => {
-        return (
-          !value ||
-          ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
-        );
-      }),
+    picture: yup.mixed(),
   });
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const EditProfileForm = ({ userId, token }) => {
     };
 
     getUser();
-  }, [userId, token]);
+  }, [userId, token, user]);
 
   const initialValuesEditProfile = {
     firstName: user ? user.firstName : "",
@@ -77,15 +77,33 @@ const EditProfileForm = ({ userId, token }) => {
     picture: user ? user.picturePath : "",
   };
 
+  function formDataToJSON(form) {
+    const formData = new FormData(form);
+    const jsonData = {};
+
+    formData.forEach((value, key) => {
+      jsonData[key] = value;
+    });
+
+    return jsonData;
+  }
 
   const editProfile = async (values, onSubmitProps) => {
     console.log("Submitting form...");
     console.log("Form values:", values);
-  
+
     try {
       // Extract only the necessary fields for the user profile update
-      const { firstName, lastName, email, phone, location, occupation, picture } = values;
-  
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        location,
+        occupation,
+        picture,
+      } = values;
+
       // Create a new FormData object to handle the file upload
       const formData = new FormData();
       formData.append("firstName", firstName);
@@ -96,20 +114,25 @@ const EditProfileForm = ({ userId, token }) => {
       formData.append("occupation", occupation);
       if (picture) {
         formData.append("picture", picture[0]); // Append the file correctly
+
+        // Append the picturePath if it exists
+        if (values.picture && values.picture.name) {
+          formData.append("picturePath", values.picture.name);
+        }
       }
-  
+
       // Make the request to update the user profile
       const updatedUserResponse = await fetch(
         `http://localhost:3001/users/${userId}`,
         {
-          method: "PUT",
+          method: "PATCH",
           body: formData,
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-  
+
       // Check if the response is not successful
       if (!updatedUserResponse.ok) {
         // Handle errors here
@@ -117,33 +140,26 @@ const EditProfileForm = ({ userId, token }) => {
         setRegisterError(`Profile update failed: ${errorMessage}`);
         return;
       }
-  
-      // Parse the JSON response
-      const updatedUser = await updatedUserResponse.json();
-  
+
       // If update is successful, reset the form
-      onSubmitProps.resetForm();
     } catch (error) {
       console.error("Error updating profile:", error);
       setRegisterError("Failed to update profile");
     }
+
+    onSubmitProps.resetForm();
   };
-  
-  
-  
-  
 
   return (
-<Formik
-  onSubmit={(values, onSubmitProps) => {
-    console.log("Form submitted");
-    editProfile(values, onSubmitProps);
-  }}
-  initialValues={initialValuesEditProfile}
-  validationSchema={editProfileSchema}
-  enableReinitialize
->
-
+    <Formik
+      onSubmit={(values, onSubmitProps) => {
+        console.log("Form submitted");
+        editProfile(values, onSubmitProps);
+      }}
+      initialValues={initialValuesEditProfile}
+      validationSchema={editProfileSchema}
+      enableReinitialize
+    >
       {({
         values,
         errors,
@@ -256,7 +272,11 @@ const EditProfileForm = ({ userId, token }) => {
                       ) : (
                         <FlexBetween>
                           <Typography>{values.picture.name}</Typography>
-                          <UserImage image={values.picture} />
+                          {values.picture.name ? (
+                            <UserImage image={values.picture.name} />
+                          ) : (
+                            <UserImage image={values.picture} />
+                          )}
                           <EditOutlinedIcon />
                         </FlexBetween>
                       )}
@@ -328,20 +348,19 @@ const EditProfileForm = ({ userId, token }) => {
 
           {/* BUTTON */}
           <Box>
-          <Button
-  fullWidth
-  type="submit" // Ensure this is set to "submit"
-  sx={{
-    m: "2rem 0",
-    p: "1rem",
-    backgroundColor: palette.primary.main,
-    color: palette.background.alt,
-    "&:hover": { color: palette.primary.main },
-  }}
->
-  {"SAVE CHANGES"}
-</Button>
-
+            <Button
+              fullWidth
+              type="submit" // Ensure this is set to "submit"
+              sx={{
+                m: "2rem 0",
+                p: "1rem",
+                backgroundColor: palette.primary.main,
+                color: palette.background.alt,
+                "&:hover": { color: palette.primary.main },
+              }}
+            >
+              {"SAVE CHANGES"}
+            </Button>
           </Box>
         </form>
       )}

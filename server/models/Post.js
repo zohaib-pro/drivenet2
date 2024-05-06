@@ -1,17 +1,11 @@
+
 import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema(
   {
     userId: {
-      type: String,
-      required: true,
-    },
-    firstName: {
-      type: String,
-      required: true,
-    },
-    lastName: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId, // Store only userId
+      ref: 'User',
       required: true,
     },
     title: String, 
@@ -32,10 +26,12 @@ const postSchema = mongoose.Schema(
         comment: String,
       },
     ],
+    // Define additional fields for user details
+    firstName: String,
+    lastName: String,
   },
   { timestamps: true }
 );
-
 
 const Post = mongoose.model("Post", postSchema);
 

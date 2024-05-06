@@ -67,9 +67,16 @@ const UserVehicleAdWidget = ({
 
   return (
     <WidgetWrapper >
+      <Box display={'flex'} justifyContent={'space-between'}>
       <IconButton onClick={()=>{setDialogOpen(true)}}>
         <Delete />
       </IconButton>
+
+      <Typography>
+          {vehicle.status == 'new'? "Pending approval" : vehicle.status == 'approved'? "live": "Rejected"}
+        </Typography>
+      </Box>
+      
       {/* <IconButton onClick={()=>{setModalOpen(true)}}>
         <EditOutlined />
       </IconButton> */}
@@ -106,6 +113,16 @@ const UserVehicleAdWidget = ({
           <Typography>{getTimeDiff(vehicle)} days ago</Typography>
         </Box>
       </Link>
+      
+      {
+        (vehicle.status == 'rejected') &&
+        <Box>
+        <hr/>
+        <Typography color={'red'} textAlign={'center'}>
+          Rejected: {vehicle.remarks}
+        </Typography>
+      </Box>
+      }
       <ConfirmationDialog data={{title:"Are you sure to delete?", content: "The selected vehicle ad will be deleted from market", open: isDialogOpen, onConfirm:()=>{setDialogOpen(false); delVehicleAd(vehicle._id)}, onClose: ()=>{setDialogOpen(false)}}} />
 
       <Modal open={isModalOpen} onClose={handleClose}>

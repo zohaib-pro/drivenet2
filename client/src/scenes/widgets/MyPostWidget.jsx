@@ -20,7 +20,7 @@ import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "state";
+import { setPosts, setUserImage } from "state"; // Import setUserImage action
 import Center from "components/Center";
 import { useLocation } from "react-router-dom";
 
@@ -29,7 +29,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
-  const [title, setTitle] = useState(defaultTitle || ''); // Set default title
+  const [title, setTitle] = useState(defaultTitle || ""); // Set default title
   const { palette } = useTheme();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -38,26 +38,46 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
   const medium = palette.neutral.medium;
   const location = useLocation(); // Get current location
 
-  const handlePost = async () => {
-    const formData = new FormData();
-    formData.append("userId", _id);
-    formData.append("title", title); // Use input title
-    formData.append("description", post);
-    if (image) {
-      formData.append("picture", image);
-      formData.append("picturePath", image.name);
+  const updateUserImage = async (imageUrl) => {
+    try {
+      await dispatch(setUserImage({ userId: _id, image: imageUrl }));
+    } catch (error) {
+      console.error("Error updating user image:", error);
     }
+  };
 
-    const response = await fetch(`http://localhost:3001/posts`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const posts = await response.json();
-    dispatch(setPosts({ posts }));
-    setImage(null);
-    setPost("");
-    setTitle(defaultTitle || ''); // Reset title to default
+  const handlePost = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("userId", _id);
+      formData.append("title", title);
+      formData.append("description", post);
+      if (image) {
+        formData.append("picture", image);
+        formData.append("picturePath", image.name);
+      }
+
+      const response = await fetch(`http://localhost:3001/posts`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+
+      const data = await response.json();
+      dispatch(setPosts({ posts: data }));
+      setImage(null);
+      setPost("");
+      setTitle(defaultTitle || ""); // Reset title to default
+      if (image) {
+        updateUserImage(data.picturePath); // Call updateUserImage with the new image path
+      }
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
 
   // Check if current location is home page or own profile
@@ -107,8 +127,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
             acceptedFiles=".jpg,.jpeg,.png"
             multiple={false}
             onDrop={(acceptedFiles) => {
-              setImage(acceptedFiles[0])
-              //console.log(image);
+              setImage(acceptedFiles[0]);
             }}
           >
             {({ getRootProps, getInputProps }) => (
@@ -133,7 +152,7 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
                 {image && (
                   <IconButton
                     onClick={() => setImage(null)}
-                    sx={{ width: "15%" }}
+                    sx={{ width: "8%" }}
                   >
                     <DeleteOutlined />
                   </IconButton>

@@ -4,8 +4,6 @@ import User from "../models/User.js";
 
 /* REGISTER USER */
 
-
-
 export const register = async (req, res) => {
   try {
     const {
@@ -55,9 +53,9 @@ export const register = async (req, res) => {
 //temporary function just to add dummy phones for existing users
 export const addPhones = async (req, res) => {
   try {
-    const users = await User.find()
-    for (const user of users){
-      user.phone = "0301 "+(Math.floor((Math.random() * 10000000)));
+    const users = await User.find();
+    for (const user of users) {
+      user.phone = "0301 " + Math.floor(Math.random() * 10000000);
       await user.save();
     }
     res.status(201).json(users);
@@ -65,8 +63,6 @@ export const addPhones = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
 
 /* LOGGING IN */
 export const login = async (req, res) => {
