@@ -59,6 +59,9 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal }
   // Send Message
   const handleSend = async (e) => {
     e.preventDefault();
+    if (!newMessage.trim()) {
+      return;
+    }
     const message = {
       senderId: currentUser,
       text: newMessage,

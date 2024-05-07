@@ -10,7 +10,7 @@ import {
   FormControl,
   useTheme,
   useMediaQuery,
-  Button
+  Button,
 } from "@mui/material";
 import {
   Search,
@@ -20,12 +20,13 @@ import {
   Help,
   Menu,
   Close,
-} from "@mui/icons-material"; // Remove Message icon from here
+} from "@mui/icons-material";
 import MessageIcon from "@mui/icons-material/Message"; // Correct import statement for Message icon
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
+import UserImage from "components/UserImage";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -60,7 +61,17 @@ const Navbar = () => {
         >
           DriveNet Media
         </Typography>
-{/*         {isNonMobileScreens && (
+
+        {/* WEBSITE LOGO HERE */}
+{/*         <img
+          style={{ objectFit: "cover", borderRadius: "50%" }}
+          width={"50px"}
+          height={"50px"}
+          alt="user"
+          src={"./assets/drivenet.png"}
+        /> */}
+
+        {/*         {isNonMobileScreens && (
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
@@ -119,11 +130,11 @@ const Navbar = () => {
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
           </FormControl>
-          <Link to="/market" style={{ textDecoration: 'none' }}>
-              <Button variant="contained" color="primary">
-                Market
-              </Button>
-            </Link>
+          <Link to="/market" style={{ textDecoration: "none" }}>
+            <Button variant="contained" color="primary">
+              Market
+            </Button>
+          </Link>
         </FlexBetween>
       ) : (
         <IconButton
@@ -178,8 +189,8 @@ const Navbar = () => {
               <MessageIcon sx={{ fontSize: "25px" }} />{" "}
               {/* Correctly use MessageIcon */}
             </IconButton>
-            <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
+            {/*             <Notifications sx={{ fontSize: "25px" }} />
+            <Help sx={{ fontSize: "25px" }} /> */}
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}

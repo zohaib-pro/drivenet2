@@ -108,6 +108,9 @@ const PostWidget = ({
 
   const handleCommentSubmit = async () => {
     try {
+      if (!comment.trim()) {
+        return; // If comment is empty, do nothing
+      }
       const response = await fetch(
         `http://localhost:3001/posts/${postId}/comment`,
         {
@@ -255,6 +258,11 @@ const PostWidget = ({
                 variant="outlined"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleCommentSubmit();
+                  }
+                }}
                 fullWidth
               />
               <Button
