@@ -104,7 +104,9 @@ const EventHandlerComponent = () => {
                 alertObj &&
                 <Alert severity={alertObj.severity} variant="outlined" onClose={()=>{setAlertObj(null)}}>{alertObj.msg}</Alert>
             }
-                <Button startIcon={<AddIcon />} onClick={handleOpen} color="primary">
+                <Button 
+                startIcon={<AddIcon />} onClick={handleOpen}
+                >
                     Add Event
                 </Button>
             </Box>

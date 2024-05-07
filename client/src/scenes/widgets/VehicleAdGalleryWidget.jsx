@@ -6,16 +6,17 @@ import { useMediaQuery,Typography, Box } from "@mui/material";
 import Center from "components/Center";
 import VehicleAdWidget from "./VehicleAdWidget";
 
-const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
+const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.vehicleAds);
   const token = useSelector((state) => state.token);
   const isFilterApplied = useSelector(state=>state.isFilterApplied);
+  const search = useSelector(state=>state.search);
 
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-
+  const url = "http://localhost:3001/market"+(isAdmin?"/all": "");
   const getVehicleAds = async () => {
-    const response = await fetch("http://localhost:3001/market", {
+    const response = await fetch(url, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -40,7 +41,9 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
           
           <Typography variant="h3" color="textSecondary">
             {
-              isFilterApplied? "No Vehicles based on current filters!": "No Vehicles Listed for sale yet!"
+              isFilterApplied? 
+                "No Vehicles based on current filters!":   
+                search? `No results found for '${search}'` : "No Vehicles Listed for sale yet!"
             }
           </Typography>
         </Center>
@@ -62,6 +65,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false }) => {
           >
             {vehicleAds.map((item) => (
               <VehicleAdWidget
+                isAdmin={isAdmin}
                 key={item.title} // Add a unique key for each item in the map function
                 vehicle={item}
                 redirectTo={'/market/' + item._id}

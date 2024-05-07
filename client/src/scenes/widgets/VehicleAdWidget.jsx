@@ -26,9 +26,10 @@ import WidgetWrapper from "components/WidgetWrapper";
 import Friend from "components/Friend";
 import { setPost } from "state";
 import { useDispatch, useSelector } from "react-redux";
+import ApproveRejectAd from "./ApproveRejectAd";
 
 const VehicleAdWidget = ({
-  vehicle, redirectTo
+  vehicle, redirectTo, isAdmin = false
 }) => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
@@ -38,7 +39,7 @@ const VehicleAdWidget = ({
   const main = palette.neutral.main;
   const primary = palette.primary.main;
 
-  const getTimeDiff = (vehicleAd) =>{
+  const getTimeDiff = (vehicleAd) => {
     const timeDiff = new Date() - new Date(vehicleAd.createdAt);
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   }
@@ -71,12 +72,16 @@ const VehicleAdWidget = ({
 
         <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'} >
           <LocationOnOutlined />
-          <Typography>{`${vehicle.location.area?vehicle.location.area+',':''}${vehicle.location.city}`}</Typography>
+          <Typography>{`${vehicle.location.area ? vehicle.location.area + ',' : ''}${vehicle.location.city}`}</Typography>
           {/* <Typography>{vehicle.location.city}</Typography> */}
           <Typography>|</Typography>
           <Typography>{getTimeDiff(vehicle)} days ago</Typography>
         </Box>
       </Link>
+      {
+        isAdmin &&
+        <ApproveRejectAd vehicleAdId={vehicle._id} curStatus={vehicle.status}/>
+      }
     </WidgetWrapper>
   );
 };

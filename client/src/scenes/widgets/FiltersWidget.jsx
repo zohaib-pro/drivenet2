@@ -33,13 +33,13 @@ import useAlertBox from 'components/AlertBox';
 
 const initialValues = {
 
-  minprice:'',
-  maxprice:'',
-  mileage:  '',
+  minprice: '',
+  maxprice: '',
+  mileage: '',
   year: '',
-  make:  '',
-  model:  '',
-  variant:  '',
+  make: '',
+  model: '',
+  variant: '',
   // city: '',
   // area: '',
   // location: {}, 
@@ -47,19 +47,21 @@ const initialValues = {
 
 
 const FiltersWidget = ({ isNonMobileScreen = false }) => {
-  const { data: vehicleMakes } = useGetData("vehicles", '', {defValue: []});
-  const { data: vehicleModels, getData: getVehicleModels } = useGetData(undefined, '', {defValue: []});
+  const { data: vehicleMakes } = useGetData("vehicles", '', { defValue: [] });
+  const { data: vehicleModels, getData: getVehicleModels } = useGetData(undefined, '', { defValue: [] });
   const [isOpen, setOpen] = useState(true);
-  
+
+
   const dispatch = useDispatch();
 
   const [location, setLocation] = useState({});
 
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
-  const vehicleAds = useSelector((state)=> state.vehicleAds)
-  const vehicleAdsAll = useSelector((state)=>state.vehicleAdsAll)
+  const vehicleAds = useSelector((state) => state.vehicleAds)
+  const vehicleAdsAll = useSelector((state) => state.vehicleAdsAll)
   const isFilterApplied = useSelector(state => state.isFilterApplied)
+  const search = useSelector(state => state.search);
 
   const openFilters = () => {
     setOpen(true);
@@ -72,45 +74,51 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
   const applyFilters = (values) => {
     //check if there is any value entered
     var isValue = false;
-    for (const key in values){
-      if (values[key] && String(values[key]).length != 0 ){
+    for (const key in values) {
+      if (values[key] && String(values[key]).length != 0) {
         isValue = true;
         break;
       }
     }
     var filteredResults = [...vehicleAdsAll];
+    const inValue = search.toLowerCase();
+    if (inValue)
+      filteredResults = filteredResults.filter(item =>
+        item.make.toLowerCase() == inValue ||
+        item.model.toLowerCase() == inValue
+      );
     if (values['minprice']) {
-      filteredResults = filteredResults.filter(item=>item.price >= values['minprice'])
+      filteredResults = filteredResults.filter(item => item.price >= values['minprice'])
     }
 
     if (values['maxprice']) {
-      filteredResults = filteredResults.filter(item=>item.price <= values['maxprice'])
+      filteredResults = filteredResults.filter(item => item.price <= values['maxprice'])
     }
 
     filteredResults = filterResults(filteredResults, values, ['minprice', 'maxprice'])
 
-    if (isValue){
-      dispatch(setFilterApplied({isFilterApplied: true}));
-      dispatch(setVehicleAds({vehicleAds: filteredResults}))
+    if (isValue) {
+      dispatch(setFilterApplied({ isFilterApplied: true }));
+      dispatch(setVehicleAds({ vehicleAds: filteredResults }))
     }
   }
 
   function filterResults(data, params, omitKeys) {
     return data.filter(item => {
-        for (const key in params) {
-            if (omitKeys.includes(key))
-              continue;
-            if (params[key] !== '' && params[key] !== undefined) {
-                if (item[key] !== params[key]) {
-                    return false;
-                }
-            }
+      for (const key in params) {
+        if (omitKeys.includes(key))
+          continue;
+        if (params[key] !== '' && params[key] !== undefined) {
+          if (item[key] !== params[key]) {
+            return false;
+          }
         }
-        return true;
+      }
+      return true;
     });
-}
+  }
 
-  useEffect(()=>{
+  useEffect(() => {
     setOpen(isNonMobileScreen);
   }, [isNonMobileScreen]);
 
@@ -126,11 +134,11 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
         </Typography>
 
         <Typography variant="body2" >
-          {isFilterApplied? "(applied)": ""}
+          {isFilterApplied ? "(applied)" : ""}
         </Typography>
 
         {
-          isOpen?
+          isOpen ?
             <IconButton onClick={closeFilters}>
               <KeyboardArrowUp />
             </IconButton>
@@ -266,14 +274,43 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
                 margin="normal"
               />
 
-              <Button onClick={()=>{applyFilters(values);}}>
+              {/* <TextField
+                fullWidth
+                select
+                label="Year"
+                name="year"
+                type='number'
+                value={values.year}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.year && Boolean(errors.year)}
+                helperText={touched.year && errors.year}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  [...Array(2025 - 1900).keys()].reverse().map(x => <option value={(""+(x + 1900))}>{x + 1900}</option>)
+                }
+              </TextField> */}
+
+              <Button onClick={() => { applyFilters(values); }}>
                 apply
               </Button>
-              <Button onClick={()=>{
-                resetForm(); 
-                dispatch(setVehicleAds({vehicleAds: vehicleAdsAll}));
-                dispatch(setFilterApplied({isFilterApplied: false}));
-                }}>
+              <Button onClick={() => {
+                resetForm();
+                const inValue = search.toLowerCase();
+                var filteredResults = vehicleAdsAll;
+                if (inValue)
+                  filteredResults = filteredResults.filter(item =>
+                    item.make.toLowerCase() == inValue ||
+                    item.model.toLowerCase() == inValue
+                  )
+                dispatch(setVehicleAds({ vehicleAds: filteredResults }));
+                dispatch(setFilterApplied({ isFilterApplied: false }));
+              }}>
                 clear
               </Button>
             </form>

@@ -61,6 +61,15 @@ const vehicleAdSchema = new mongoose.Schema({
       ref: 'User', 
       required: true
     },
+    status: {
+      type: String,
+      enum: ['new', 'approved', 'rejected'],
+      default: 'new',
+    },
+    remarks: {
+      type: String,
+      default: 'admin decision'
+    },
     likes: {
         type: Map,
         of: Boolean,

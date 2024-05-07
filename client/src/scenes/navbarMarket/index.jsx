@@ -23,7 +23,7 @@ import {
 } from "@mui/icons-material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout, setCities } from "state";
+import { setMode, setLogout, setCities, setSearch } from "state";
 import { useNavigate, Link } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
@@ -41,6 +41,7 @@ const Navbar = ({onSearch=()=>{}}) => {
   const vehicleAds = useSelector((state)=>state.vehicleAds);
   const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const search = useSelector(state=>state.search);
 
   useGetData('location', '', {onSuccess: (data)=>{
       dispatch(setCities({cities: data}));
@@ -68,12 +69,13 @@ const Navbar = ({onSearch=()=>{}}) => {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      vehicleAds.forEach(element => {
-        console.log(element.make, inputValue, element.make == inputValue);
-      });
-      const results =  vehicleAds.filter(item=>item.make == inputValue);
-      console.log(results);
+      const inValue = inputValue.toLowerCase()
+      const results =  vehicleAdsAll.filter( item=>
+        item.make.toLowerCase() == inValue ||
+        item.model.toLowerCase() == inValue
+      );
       dispatch(setVehicleAds({vehicleAds: results}));
+      dispatch(setSearch({search: inputValue}))
     }
   };
 
@@ -106,12 +108,25 @@ const Navbar = ({onSearch=()=>{}}) => {
             padding="0.1rem 1.5rem"
           >
             <InputBase placeholder="Search..." 
+            value={inputValue}
               onChange={handleChange}
               onKeyDown={handleKeyPress} 
             />
+            <Box>
+              {
+                search &&
+                <IconButton onClick={()=>{
+                  dispatch(setVehicleAds({vehicleAds: vehicleAdsAll}));
+                  dispatch(setSearch({search: ''}));
+                  setInputValue('');
+                  }}>
+                  <Close />
+                </IconButton>
+              }
             <IconButton>
               <Search />
             </IconButton>
+            </Box>
           </FlexBetween>
         )}
 

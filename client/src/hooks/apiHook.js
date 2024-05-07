@@ -163,6 +163,53 @@ export const usePutData = (target, token='') => {
     return { response, isLoading, error, putData };
 }
 
+export const usePatchData = (target, token='') => {
+    const [response, setResponse] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const patchData = async (values, newTarget, {isJson = true, onSuccess}={}) => {
+        setError(null);
+        if (newTarget) //dynamic urls/targets might be required
+            target = newTarget;
+            
+        try {
+            if (!target){
+                throw new Error("No target set to get data from !");
+            }
+            const headers = {};
+
+            if (token != '') {
+                headers['Authorization'] = `Bearer ${token}`;    
+            }
+
+            if (isJson){
+                headers['Content-Type'] = 'application/json';
+            }
+
+            const response = await fetch(getFullUrl(target), {
+                method: "PATCH",
+                headers: headers,
+                body: values
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setResponse(data);
+            if (onSuccess)
+                onSuccess(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    return { response, isLoading, error, patchData };
+}
+
 
 
 export const useDelData = (target, token='') => {

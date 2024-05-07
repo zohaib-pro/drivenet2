@@ -8,6 +8,26 @@ export const test = async (req, res) =>{
   res.status(200).json(req.body);
 }
 
+
+export const setVehicleStatus = async (req, res) => {
+  try {
+    const {vehicleAdId} = req.params;
+    const {status, remarks} = req.body;
+
+    console.log("finding: " + vehicleAdId);
+
+    const vehicle = await VehicleAd.findOne({_id:vehicleAdId})
+
+    vehicle.status = status;
+    vehicle.remarks = remarks;
+    await vehicle.save();
+    res.status(200).json(vehicle);
+} catch (error) {
+      console.log(error.message);
+    res.status(500).json({ message: error.message });
+}
+}
+
 // export const createVehicleAd = async (req, res) => {
 //   try {
 //     console.log("testing1123332: "+req.body.title);
@@ -88,7 +108,7 @@ export const getUserVehicleAds = async (req, res) => {
   }
 }
 
-export const getVehicleAds = async (req, res) => {
+export const getVehicleAdsAll = async (req, res) => {
   try {
     const vehicleAds = await VehicleAd.find().sort({createdAt: -1})
     res.status(200).json(vehicleAds);
@@ -97,6 +117,14 @@ export const getVehicleAds = async (req, res) => {
   }
 }
 
+export const getVehicleAds = async (req, res) => {
+  try {
+    const vehicleAds = await VehicleAd.find({status:'approved'}).sort({createdAt: -1})
+    res.status(200).json(vehicleAds);
+  }catch(err){
+    res.status(409).json({message: error.message});
+  }
+}
 
 export const getVehicleAd = async (req, res) =>{
   try {

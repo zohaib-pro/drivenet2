@@ -11,6 +11,7 @@ import EventHandlerComponent from "./EventHandler";
 import IssuesHandlerComponent from "./IssuesHandler";
 import Dashboard from "./Dashboard";
 import VehicleDetailsComponent from "./VehicleDetails";
+import ListingManagementComponent from "./ListingManagement";
 
 
 
@@ -42,7 +43,7 @@ const ProfilePage = () => {
     'Events' : <EventHandlerComponent /> ,
     'Issues' : <IssuesHandlerComponent />,
     'Vehicle Details': <VehicleDetailsComponent />,
-    'Listing Management': <></>,
+    'Listing Management': <ListingManagementComponent />,
     'Menu 6': <></>,
     'Menu 7': <></>,
     'Menu 8': <></>,
