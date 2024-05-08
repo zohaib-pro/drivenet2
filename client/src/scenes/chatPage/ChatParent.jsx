@@ -100,6 +100,7 @@ const ChatParent = ({isModal, chatWith, vehicleData}) => {
           setSendMessage={setSendMessage}
           receivedMessage={receivedMessage}
           isModal={isModal}
+          vehicleData={vehicleData} // Pass vehicleData here
         />
       </div>
     </div>
