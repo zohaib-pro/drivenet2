@@ -12,7 +12,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { json } from "react-router-dom";
 
 
-const ChatParent = ({isModal, chatWith}) => {
+const ChatParent = ({isModal, chatWith, vehicle}) => {
   const socket = useRef();
   const user = useSelector((state) => state.user);
   const [chats, setChats] = useState([]);

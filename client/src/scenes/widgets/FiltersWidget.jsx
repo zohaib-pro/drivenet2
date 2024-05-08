@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { IconButton, Box, Button, TextField, Typography, useTheme } from '@mui/material';
+import { IconButton, Box, Button, TextField, Typography, useTheme, Slider, InputLabel } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePostData } from 'hooks/apiHook';
 import { setVehicleAds, setFilterApplied } from 'state';
+import { numberWithCommas } from 'utils/math';
 import * as yup from 'yup';
 import WidgetWrapper from 'components/WidgetWrapper';
 
@@ -31,19 +32,6 @@ import useAlertBox from 'components/AlertBox';
 //   images: yup.array().of(yup.string()).min(1, 'At least one image is required'),
 // });
 
-const initialValues = {
-
-  minprice: '',
-  maxprice: '',
-  mileage: '',
-  year: '',
-  make: '',
-  model: '',
-  variant: '',
-  // city: '',
-  // area: '',
-  // location: {}, 
-};
 
 
 const FiltersWidget = ({ isNonMobileScreen = false }) => {
@@ -62,6 +50,25 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
   const vehicleAdsAll = useSelector((state) => state.vehicleAdsAll)
   const isFilterApplied = useSelector(state => state.isFilterApplied)
   const search = useSelector(state => state.search);
+
+  const prices = vehicleAdsAll.map(item => item.price);
+  const mileages = vehicleAdsAll.map(item => item.mileage);
+  const years = vehicleAdsAll.map(item => item.year);
+
+  const [priceRange, setPriceRange] = useState([Math.min(...prices), Math.max(...prices)])
+  const [mileageRange, setMileageRange] = useState([Math.min(...mileages), Math.max(...mileages)])
+  const [yearRange, setYearRange] = useState([Math.min(...years), Math.max(...years)])
+
+
+  const initialValues = {
+    priceRange: priceRange,
+    mileageRange: mileageRange,
+    yearRange: yearRange,
+    make: '',
+    model: '',
+    variant: '',
+  };
+
 
   const openFilters = () => {
     setOpen(true);
@@ -87,15 +94,21 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
         item.make.toLowerCase() == inValue ||
         item.model.toLowerCase() == inValue
       );
-    if (values['minprice']) {
-      filteredResults = filteredResults.filter(item => item.price >= values['minprice'])
-    }
 
-    if (values['maxprice']) {
-      filteredResults = filteredResults.filter(item => item.price <= values['maxprice'])
-    }
+    console.log(values.priceRange[0], values.priceRange[1]);
+    filteredResults = filteredResults.filter(item => (item.price >= values.priceRange[0] && item.price <= values.priceRange[1]))
+    filteredResults = filteredResults.filter(item => (item.mileage >= values.mileageRange[0] && item.mileage <= values.mileageRange[1]))
+    filteredResults = filteredResults.filter(item => (item.year >= values.yearRange[0] && item.year <= values.yearRange[1]))
 
-    filteredResults = filterResults(filteredResults, values, ['minprice', 'maxprice'])
+    // if (values['minprice']) {
+    //   filteredResults = filteredResults.filter(item => item.price >= values['minprice'])
+    // }
+
+    // if (values['maxprice']) {
+    //   filteredResults = filteredResults.filter(item => item.price <= values['maxprice'])
+    // }
+
+    filteredResults = filterResults(filteredResults, values, ['priceRange', 'mileageRange', 'yearRange'])
 
     if (isValue) {
       dispatch(setFilterApplied({ isFilterApplied: true }));
@@ -223,56 +236,58 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
                 margin="normal"
               />
 
-              <TextField
-                fullWidth
-                label="Min Price"
-                name="minprice"
-                type="number"
-                value={values.minprice}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.price && Boolean(errors.minprice)}
-                helperText={touched.minprice && errors.minprice}
-                margin="normal"
+              <InputLabel>Price Range</InputLabel>
+              <Slider
+                value={priceRange}
+                onChange={(e, value) => {
+                  setPriceRange(value);
+                  values.priceRange = value;
+                }}
+                min={Math.min(...prices)}
+                max={Math.max(...prices)}
+                valueLabelDisplay="auto"
+                aria-labelledby="range-slider"
+              />
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography>{numberWithCommas(priceRange[0])}</Typography>
+                <Typography>{numberWithCommas(priceRange[1])}</Typography>
+              </Box>
+
+              <InputLabel>Mileage Range</InputLabel>
+              <Slider
+                value={mileageRange}
+                onChange={(e, value) => {
+                  setMileageRange(value);
+                  values.mileageRange = value;
+                }}
+                min={Math.min(...mileages)}
+                max={Math.max(...mileages)}
+                valueLabelDisplay="auto"
+                aria-labelledby="range-slider"
               />
 
-              <TextField
-                fullWidth
-                label="Max Price"
-                name="maxprice"
-                type="number"
-                value={values.maxprice}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.price && Boolean(errors.maxprice)}
-                helperText={touched.maxprice && errors.maxprice}
-                margin="normal"
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography>{numberWithCommas(mileageRange[0])}</Typography>
+                <Typography>{numberWithCommas(mileageRange[1])}</Typography>
+              </Box>
+
+              <InputLabel>Model Year Range</InputLabel>
+              <Slider
+                value={yearRange}
+                onChange={(e, value) => {
+                  setYearRange(value);
+                  values.yearRange = value;
+                }}
+                min={Math.min(...years)}
+                max={Math.max(...years)}
+                valueLabelDisplay="auto"
+                aria-labelledby="range-slider"
               />
 
-              <TextField
-                fullWidth
-                label="Mileage"
-                name="mileage"
-                type="number"
-                value={values.mileage}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.mileage && Boolean(errors.mileage)}
-                helperText={touched.mileage && errors.mileage}
-                margin="normal"
-              />
-              <TextField
-                fullWidth
-                label="Year"
-                name="year"
-                type="number"
-                value={values.year}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.year && Boolean(errors.year)}
-                helperText={touched.year && errors.year}
-                margin="normal"
-              />
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography>{yearRange[0]}</Typography>
+                <Typography>{yearRange[1]}</Typography>
+              </Box>
 
               {/* <TextField
                 fullWidth

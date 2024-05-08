@@ -286,7 +286,7 @@ const VehicleDescPage = () => {
             <IconButton onClick={handleClose} style={{ position: 'absolute', top: 5, right: 5 }}>
               <Close />
             </IconButton>
-            <ChatParent isModal={true} chatWith={sellerData?._id} />
+            <ChatParent isModal={true} chatWith={sellerData?._id} vehicle={vehicle} />
           </Box>
         </Modal>
 
