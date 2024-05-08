@@ -13,7 +13,6 @@
 .ChatBox-container-modal {
   background: var(--cardColor);
   display: grid;
-  margin: 2rem 0rem 0rem 4rem;
 }
 
 
@@ -40,7 +39,7 @@
     gap: 0.5rem;
     padding: 1.5rem;
     overflow: scroll;
-    max-height: 40vh;
+    max-height: 50vh;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* Internet Explorer/Edge */
     overflow-y: auto; /* Show vertical scrollbar when necessary */

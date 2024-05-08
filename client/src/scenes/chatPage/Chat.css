@@ -18,6 +18,10 @@
   margin: 2rem -4rem 0rem 4rem;
 }
 
+.Chat-container-modal {
+  margin: 0rem;
+}
+
 
 .Chat-list {
   display: flex;
@@ -73,7 +77,7 @@
 
   .Right-side-chat.show {
     display: block;
-    width: 110%;
+    width: 130%;
     margin: 0rem;
   }
 

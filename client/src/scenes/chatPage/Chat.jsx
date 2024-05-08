@@ -33,7 +33,7 @@ const ChatPage = () => {
   return (
     <Box>
       <Navbar />
-      <ChatParent isModal={false} chatWith={userData?._id} />
+      <ChatParent isModal={false} chatWith={userData?._id} vehicle={vehicle} />
     </Box>
   );
 };
