@@ -12,7 +12,7 @@ import {
 
 import DetailsGrid from "components/DetailsGrid";
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ChatBubbleOutlineOutlined,
   FavoriteBorderOutlined,
@@ -22,7 +22,8 @@ import {
   Close,
   DeleteForever,
   EditOutlined,
-  Delete
+  Delete,
+  Edit
 } from "@mui/icons-material";
 import WidgetWrapper from "components/WidgetWrapper";
 import Friend from "components/Friend";
@@ -42,6 +43,8 @@ const UserVehicleAdWidget = ({
   const { palette } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
+
+  const navigate = useNavigate();
 
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -67,13 +70,19 @@ const UserVehicleAdWidget = ({
 
   return (
     <WidgetWrapper >
-      <Box display={'flex'} justifyContent={'space-between'}>
+      <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
+      <Box>
       <IconButton onClick={()=>{setDialogOpen(true)}}>
         <Delete />
       </IconButton>
+      <IconButton onClick={()=>{navigate(`/market/edit/${vehicle._id}`)}}>
+        <Edit />
+      </IconButton>
+      </Box>
 
-      <Typography>
-          {vehicle.status == 'new'? "Pending approval" : vehicle.status == 'approved'? "live": "Rejected"}
+
+      <Typography variant="h5" color={'orange'}>
+          {vehicle.status == 'new'? "Pending approval" : vehicle.status == 'approved'? "Live": "Rejected"}
         </Typography>
       </Box>
       
