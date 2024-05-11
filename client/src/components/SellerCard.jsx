@@ -22,13 +22,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 const SellerCard = ({
   seller,
+  user,
   onPressChat
 }) => {
 
   return (
     <WidgetWrapper m="1rem 0">
-
-
 
       <Box display={'flex'} justifyContent={'space-between'}>
         <Box >
@@ -36,7 +35,7 @@ const SellerCard = ({
             DriveNet Seller Card
           </Typography>
           <Typography>
-            Name   :  {seller?.firstName}
+            Name   :  {seller?.firstName  + " " +seller?.lastName + (seller?._id==user._id?" (You) ":"")}
           </Typography>
 
           <Typography>
@@ -57,6 +56,7 @@ const SellerCard = ({
             Contact
           </Button>
           <Button
+            disabled={seller?._id == user?._id}
             variant="contained"
             color="primary"
             startIcon={<Chat />}

@@ -66,8 +66,9 @@ export default function Login({ handleRegister }) {
         {/* Use Image from MUI Lab */}
         <img
           height={250}
-          style={{ alignSelf: "center" }}
-          src="http://localhost:3000/assets/drivenet.png"
+        
+          style={{ alignSelf: "center", marginBottom: '1rem' }}
+          src="http://localhost:3000/assets/drivenet2.png"
           alt="Drivenet Market"
         />
       </Center>

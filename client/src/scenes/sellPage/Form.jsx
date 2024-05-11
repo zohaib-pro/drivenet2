@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Button, TextField, Typography, useTheme, useMediaQuery, LinearProgress, IconButton } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePostData } from 'hooks/apiHook';
 import * as yup from 'yup';
@@ -12,6 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import useAlertBox from 'components/AlertBox';
 import VehicleAdWidget from 'scenes/widgets/VehicleAdWidget';
 import AdvertWidgetShow from 'scenes/widgets/AdvertWidgetShow';
+import IconBtn from "components/IconBtn";
+
+import CloseIcon from "@mui/icons-material/Close";
+import ImagesListViewer from 'components/ImagesListViewer';
 
 
 // Define Yup validation schema
@@ -34,7 +38,7 @@ const vehicleAdSchema = yup.object().shape({
     .string()
     .matches(/^[a-zA-Z]+$/, 'Color must contain only alphabets')
     .required('Color is required'),
-  images: yup.array().of(yup.string()).min(1, 'At least one image is required'),
+  images: yup.array().of(yup.string()).min(3, 'At least three images are required'),
 });
 
 const initialValues = {
@@ -54,9 +58,57 @@ const initialValues = {
   images: [],
 };
 
+
 const VehicleAdForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  /** Price prediciton */
+  const [vehicle, setVehicle] = useState(initialValues);
+  const [isPredicting, setIsPredicting] = useState(false);
+
+  const [prediction, setPrediction] = useState({
+    upper_limit: 0,
+    lower_limit: 0,
+    predicted_price: 0
+  });
+
+
+  async function fetchImageAsBlob(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('Content-Type');
+    const extension = contentType.split('/')[1];
+
+    const blob = await response.blob();
+    return { blob, extension };
+  }
+
+  function formDataToJson(formData) {
+    const json = {};
+
+    formData.forEach((value, key) => {
+      // Check if key already exists
+      if (json[key]) {
+        if (!Array.isArray(json[key])) {
+          // Convert existing value to an array
+          json[key] = [json[key]];
+        }
+        // Append the new value to the array
+        json[key].push(value);
+      } else {
+        // Just set the value
+        json[key] = value;
+      }
+    });
+
+    return json;
+  }
+
+
+  /*End of price prediction */
   const { data: vehicleMakes } = useGetData("vehicles", '', { defValue: [] });
   const { data: vehicleModels, getData: getVehicleModels } = useGetData(undefined, '', { defValue: [] });
 
@@ -68,9 +120,67 @@ const VehicleAdForm = () => {
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  const { postData: postVehicleAd, response: postedVehicle, error: vehiclePostingError } = usePostData('vehicle/create', token);
+  const { postData: postVehicleAd, response: postedVehicle, error: vehiclePostingError } = usePostData('vehiclead/create', token);
 
   const { AlertBox, ShowAlertBox } = useAlertBox();
+
+  const getPrediction = async () => {
+
+    setIsPredicting(true);
+    const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant ? "?" + vehicle.variant : ""}`;
+    //get the extra details about the vehicle first
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    const vehDetails = await res.json()
+
+    if (!vehDetails) {
+      alert("No Vehicle Details Found!");
+      return;
+    }
+
+    //send the request to next page
+    const formData = new FormData();
+    formData.append('car_brand', vehicle.make);
+    formData.append('car_name', vehicle.model);
+    formData.append('milage', vehicle.mileage);
+    formData.append('model_year', vehicle.year);
+    formData.append('city_registered', vehicle.cityReg);
+    formData.append('color', vehicle.color);
+    formData.append('engine_c', vehDetails.engineC);
+    formData.append('fuel_type', vehDetails.fuelType);
+    formData.append('trans', vehDetails.transType);
+    formData.append('cate', vehDetails.category);
+
+    const imageURLs = vehicle.images.map(item => 'http://localhost:3001/assets/' + item);
+    const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
+    console.log(imageURLs);
+    results.forEach(({ blob, extension }, index) => {
+      formData.append(`images`, blob, `image${index + 1}.${extension}`);
+    });
+
+    console.log(formDataToJson(formData))
+    //alert(JSON.stringify(formData));
+
+    // setTimeout(()=>{
+    //   setIsPredicting(false);
+    // }, 2000);
+    try {
+      const response = await fetch(`http://192.168.218.49:4000/predict`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      setPrediction(data);
+      setIsPredicting(false);
+    } catch (e) {
+      //alert('failed');
+      setPrediction({ predicted_price: "Failed to predict!" })
+      setIsPredicting(false);
+    }
+
+
+  }
 
   const submitVehicleAd = async (values, onSubmitProps) => {
 
@@ -96,13 +206,15 @@ const VehicleAdForm = () => {
 
     formData.append("userId", _id);
 
-    postVehicleAd(formData, undefined, {onSuccess: (data)=>{
+    postVehicleAd(formData, undefined, {
+      onSuccess: (data) => {
 
-      if (data)
-        ShowAlertBox("Vehicle Ad Posted Successfully! Click to view it!");
-    }, onFail : (err)=>{
+        if (data)
+          ShowAlertBox("Vehicle Ad Posted Successfully! Click to view it!");
+      }, onFail: (err) => {
         ShowAlertBox(err, 'error')
-    }});
+      }
+    });
 
     onSubmitProps.resetForm();
 
@@ -114,8 +226,8 @@ const VehicleAdForm = () => {
     <Box display={'flex'}
       gap="2rem"
       justifyContent="space-between"
-      flexDirection = {isNonMobileScreens? "row" : "column-reverse"}>
-        
+      flexDirection={isNonMobileScreens ? "row" : "column-reverse"}>
+
       <Box flexBasis={"60%"}>
         <Formik
           initialValues={initialValues}
@@ -239,19 +351,6 @@ const VehicleAdForm = () => {
                 margin="normal"
               />
 
-
-              <TextField
-                fullWidth
-                label="Price *"
-                name="price"
-                type="number"
-                value={values.price}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.price && Boolean(errors.price)}
-                helperText={touched.price && errors.price}
-                margin="normal"
-              />
               <TextField
                 fullWidth
                 label="Mileage *"
@@ -264,8 +363,6 @@ const VehicleAdForm = () => {
                 helperText={touched.mileage && errors.mileage}
                 margin="normal"
               />
-
-
 
               <TextField
                 fullWidth
@@ -386,21 +483,37 @@ const VehicleAdForm = () => {
 
 
               {/* Display selected images */}
-              <Box mt={2}>
+              <ImagesListViewer images={values.images} getSrc={(image)=>{return URL.createObjectURL(image)}} />
+              {/* <Box mt={2}>
                 <Typography variant="h6">Selected Images:</Typography>
-                <Box display="flex" alignItems="center">
+                <Box display="flex" flexWrap={'wrap'} justifyContent={'flex-start'}>
                   {values.images &&
                     Array.from(values.images).map((image, index) => (
                       <Box key={index} mr={1}>
+                        <IconButton 
+                        style={{position: 'absolute'}}
+                         onClick={()=>{
+                          setFieldValue("images", values.images.filter(item=>item != image));
+                        }}>
+                          <CloseIcon />
+                        </IconButton>
                         <img
                           src={URL.createObjectURL(image)}
                           alt={`Image ${index}`}
+                          height={130}
                           width={100}
+                          style={{
+                            objectFit: 'contain', 
+                            background: 'white',  
+                            border: '2px solid orange', 
+                            padding: '0.1rem', 
+                            borderRadius: '0.25rem'
+                          }}
                         />
                       </Box>
                     ))}
                 </Box>
-              </Box>
+              </Box> */}
 
               {/* Input for images */}
 
@@ -442,6 +555,59 @@ const VehicleAdForm = () => {
                 </Dropzone>
               </Box>
 
+              <TextField
+                fullWidth
+                label="Price *"
+                name="price"
+                type="number"
+                value={values.price}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.price && Boolean(errors.price)}
+                helperText={touched.price && errors.price}
+                margin="normal"
+              />
+
+              <Typography variant="p" fontWeight={500}>
+                Estimate the worth of this vehicle using our AI model
+              </Typography>
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '60%',
+                    float: 'left',
+                    borderRadius: '20px', // Adjust the border radius as needed
+                    border: '1px solid #BDBDBD', // Optionally, add a border for outline
+                    padding: '8px 12px', // Adjust padding as needed
+                    backgroundColor: '#F5F5F5', // Optionally, set background color
+                  }}
+                >
+                  <Typography  >
+                    {/* {`${prediction.lower_limit}   -   ${prediction.upper_limit}`} */
+                      prediction.predicted_price
+                    }
+                  </Typography>
+                  <Typography >
+                    PKR
+                  </Typography>
+                </Box>
+                <img
+                  width="50px"
+                  height="50px"
+                  alt="post"
+                  style={{ objectFit: "cover", marginTop: "1rem", marginLeft: "-1.4rem" }}
+                  src={`http://localhost:3000/icons/price_tag.png`}
+                />
+                <IconBtn text="Estimate" style={{ float: 'right', color: 'white' }}
+                  icon="http://localhost:3000/icons/ai.png"
+                  onPress={getPrediction}
+                />
+                {isPredicting && <LinearProgress />}
+              </Box>
+
+
               {/* Submit button */}
               <Button
                 type="submit"
@@ -481,31 +647,28 @@ const VehicleAdForm = () => {
           // </Typography>
           <Box mt={2} mb={2}>
             <VehicleAdWidget
-            key={postedVehicle.title} // Add a unique key for each item in the map function
-            vehicle={postedVehicle}
-            redirectTo={'/market/' + postedVehicle._id}
-          />
-          
-            </Box>
+              key={postedVehicle.title} // Add a unique key for each item in the map function
+              vehicle={postedVehicle}
+              redirectTo={'/market/' + postedVehicle._id}
+            />
+
+          </Box>
         }
 
-        <AdvertWidgetShow 
-        heading={'Selling your vehicle with drivenet is easy'}
-        title={"Just fill up the form"} 
-        description={"We'll show your vehicle to the millions of buyers around the country"}
+        <AdvertWidgetShow
+          heading={'Selling your vehicle with drivenet is easy'}
+          title={"Just fill up the form"}
+          description={"We'll show your vehicle to the millions of buyers around the country"}
           image={"http://localhost:3000/assets/sellcar.jpg"}
         />
-        
 
-        <Box mt={2}/>
-        <AdvertWidgetShow 
-        heading={'Make informed decisions with our ML module'}
-        title={"Get Price Prediction"} 
-        description={"Get predicted price and increase the chances of selling your vehicle earlier"}
+        <Box mt={2} />
+        <AdvertWidgetShow
+          heading={'Make informed decisions with our ML module'}
+          title={"Get Price Prediction"}
+          description={"Get predicted price and increase the chances of selling your vehicle earlier"}
           image={"http://localhost:3000/assets/aitell.jpeg"}
         />
-
-
 
       </Box>
 

@@ -23,7 +23,7 @@ import locationRoutes from './routes/location.js'
 
 import { addPhones, register} from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
-import { createVehicleAd} from "./controllers/vehicleAds.js"
+import { createVehicleAd, updateVehicleAd} from "./controllers/vehicleAds.js"
 import { createEvent} from "./controllers/events.js"
 import { updateUser } from "./controllers/users.js";
 
@@ -67,7 +67,8 @@ app.post("/auth/register", upload.single("picture"), register);
 app.get("/auth/register", addPhones);
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
 app.post("/events/create", verifyToken, upload.single("picture"), createEvent);
-app.post("/vehicle/create",verifyToken, upload.array("images", 12), createVehicleAd);
+app.post("/vehiclead/create",verifyToken, upload.array("images", 12), createVehicleAd);
+app.patch("/vehiclead/update",verifyToken, upload.array("images", 12), updateVehicleAd);
 app.patch("/users/:id", verifyToken, upload.single("picture"), updateUser);   
 
 

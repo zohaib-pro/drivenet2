@@ -45,10 +45,9 @@ const ImageGallery = ({
       {/* Display selected images */}
       <Box mt={2}>
         <Typography variant="h6">Other Images:</Typography>
-        <Box display="flex" alignItems="center" width={'100%'}>
+        <Box display="flex" alignItems="center" flexWrap={'wrap'} width={'100%'}>
           {
             Array.from(images).map((image, index) => (
-              index < 3 ? 
               <Box key={index} mr={1}>
                 <img
                   src={`http://localhost:3001/assets/${images[index]}`}
@@ -56,10 +55,9 @@ const ImageGallery = ({
                   width={100}
                   height={80}
                   onClick={()=>{setBigImage(index)}}
-                  style={index == bigImage? {border: '2px solid #00d5fa', borderRadius: '0.25rem', padding: '0.1rem', objectFit:'contain', background: 'black'}:{}}
+                  style={index == bigImage? {border: '3px solid orange' /*#00d5fa */, borderRadius: '0.25rem', padding: '0.15rem', objectFit:'contain', background: 'black'}:{}}
                 />
-              </Box>:
-              <Box></Box>
+              </Box>
             ))}
         </Box>
       </Box>

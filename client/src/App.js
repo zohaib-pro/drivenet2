@@ -70,6 +70,11 @@ function App() {
             />
 
             <Route
+              path="/market/edit/:vehicleAdId"
+              element={isAuth ? <SellPage /> : <Navigate to="/" />}
+            />
+
+            <Route
               path="/chat"
               element={isAuth ? <ChatPage /> : <Navigate to="/" />}
             />

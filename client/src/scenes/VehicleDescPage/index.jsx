@@ -37,6 +37,7 @@ const VehicleDescPage = () => {
   const { vehicleAdId } = useParams();
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
+  console.log("user:", user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const { data: sellerData, getData: getSellerData } = useGetData(undefined, token, {defValue:null});
@@ -131,8 +132,6 @@ const VehicleDescPage = () => {
       setPrediction({ predicted_price: "Failed to predict!" })
       setIsPredicting(false);
     }
-
-
   }
 
   const getVehicleDetails = async () => {
@@ -203,7 +202,7 @@ const VehicleDescPage = () => {
                     {vehicle.title}
                   </Typography>
 
-                  <Typography variant="h3" color={'blue'} fontWeight={500}
+                  <Typography variant="h3" color={'orange'} fontWeight={500}
                     mb={2} mt={2}
                   >
                     PKR {numberWithCommas(vehicle.price)}
@@ -258,7 +257,7 @@ const VehicleDescPage = () => {
 
                   {isPredicting && <LinearProgress />}
 
-                  <SellerCard seller={sellerData} onPressChat={handleOpen} />
+                  <SellerCard seller={sellerData} user={user} onPressChat={handleOpen} />
 
                   <IssueCreationComponent vehicleAdId={vehicleAdId} user={user} onIssueReported={(msg) => { showAlert(msg) }} />
                 </Box>

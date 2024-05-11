@@ -65,7 +65,7 @@ const EditProfileForm = ({ userId, token }) => {
     };
 
     getUser();
-  }, [userId, token, user]);
+  }, [userId, token]);
 
   const initialValuesEditProfile = {
     firstName: user ? user.firstName : "",
@@ -77,16 +77,7 @@ const EditProfileForm = ({ userId, token }) => {
     picture: user ? user.picturePath : "",
   };
 
-  function formDataToJSON(form) {
-    const formData = new FormData(form);
-    const jsonData = {};
 
-    formData.forEach((value, key) => {
-      jsonData[key] = value;
-    });
-
-    return jsonData;
-  }
 
   const editProfile = async (values, onSubmitProps) => {
     console.log("Submitting form...");

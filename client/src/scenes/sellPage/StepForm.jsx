@@ -36,9 +36,29 @@ const VehicleAdForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formValues, setFormValues] = useState(initialValues);
 
-  const handleNextStep = (values) => {
+  const handleNextStep = (values, { setTouched }) => {
     setFormValues({ ...formValues, ...values });
-    setCurrentStep(currentStep + 1);
+    // Mark all fields as touched
+    setTouched({
+      title: true,
+      description: true,
+      price: true,
+      mileage: true,
+      year: true,
+      make: true,
+      model: true,
+      variant: true,
+      condition: true,
+      location: true,
+    });
+    // Check if there are any validation errors
+    stepOneSchema.validate(values, { abortEarly: false })
+      .then(() => {
+        setCurrentStep(currentStep + 1);
+      })
+      .catch(() => {
+        // If there are errors, do nothing, as they will be displayed by Formik
+      });
   };
 
   const handlePrevStep = () => {
@@ -65,6 +85,7 @@ const VehicleAdForm = () => {
         handleSubmit,
         isSubmitting,
         setFieldValue,
+        setTouched,
       }) => (
         <form onSubmit={handleSubmit}>
           {/* Step 1 */}
@@ -77,8 +98,7 @@ const VehicleAdForm = () => {
                 value={values.title}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.title && Boolean(errors.title)}
-                helperText={touched.title && errors.title}
+
                 margin="normal"
               />
               {/* Add other input fields for step 1 */}
@@ -86,7 +106,7 @@ const VehicleAdForm = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => handleNextStep(values)}
+                  onClick={() => handleNextStep(values, { setTouched })}
                 >
                   Next Step
                 </Button>

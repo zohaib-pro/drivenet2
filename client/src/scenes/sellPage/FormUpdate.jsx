@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Button, TextField, Typography, useTheme, useMediaQuery, LinearProgress, IconButton } from '@mui/material';
 import { Formik } from 'formik';
-import { useGetData, usePostData } from 'hooks/apiHook';
+import { useGetData, usePatchData, usePostData } from 'hooks/apiHook';
 import * as yup from 'yup';
 
 
@@ -12,6 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 import useAlertBox from 'components/AlertBox';
 import VehicleAdWidget from 'scenes/widgets/VehicleAdWidget';
 import AdvertWidgetShow from 'scenes/widgets/AdvertWidgetShow';
+import IconBtn from "components/IconBtn";
+
+import CloseIcon from "@mui/icons-material/Close";
+import { json } from 'react-router-dom';
+import ImagesListViewer from 'components/ImagesListViewer';
 
 
 // Define Yup validation schema
@@ -34,32 +39,89 @@ const vehicleAdSchema = yup.object().shape({
     .string()
     .matches(/^[a-zA-Z]+$/, 'Color must contain only alphabets')
     .required('Color is required'),
-  images: yup.array().of(yup.string()).min(1, 'At least one image is required'),
+  //images: yup.array().of(yup.string()).min(3, 'At least three images are required'),
 });
 
 
+const VehicleAdUpdateForm = ({vehicleAdId}) => {
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-const VehicleUpdateAdForm = ({vehicleAd}) => {
+  /** Price prediciton */
+  const [isPredicting, setIsPredicting] = useState(false);
+
+  const [prediction, setPrediction] = useState({
+    upper_limit: 0,
+    lower_limit: 0,
+    predicted_price: 0
+  });
+
+
+  //array to store the previous images of the vehicle
+  const [prevImages, setPrevImages] = useState([]);
+  const [vehicle, setVehicle] = useState(null);
+  useGetData("market/"+vehicleAdId, undefined, { onSuccess: (data) => {
+    //alert(JSON.stringify(data));
+    setVehicle(data);
+    setPrevImages(data.images);
+    getAreas("location/"+data.location.city);
+    getVehicleModels("vehicles/" + data.make);
+    //alert("test"+vehicle.make);
+  }})
 
   const initialValues = {
     title: '',
-    description: vehicleAd.description,
-    price: vehicleAd.price,
-    mileage: vehicleAd.mileage,
-    year: vehicleAd.year,
-    make: vehicleAd.make,
-    model: vehicleAd.model,
-    variant: vehicleAd.variant,
-    cityReg: vehicleAd.cityReg,
-    color: vehicleAd.color,
-    city: vehicleAd.city,
-    area: vehicleAd.area,
-    location: {},
+    description: vehicle? vehicle.description: '',
+    price: vehicle? vehicle.price : ''  ,
+    mileage: vehicle? vehicle.mileage : '',
+    year:vehicle? vehicle.year :'',
+    make: vehicle? vehicle.make :'',
+    model: vehicle? vehicle.model :'',
+    variant: vehicle? vehicle.variant :'',
+    cityReg: vehicle? vehicle.cityReg :'',
+    color: vehicle? vehicle.color :'',
+    city: vehicle? vehicle.location.city :'',
+    area: vehicle? vehicle.location.area :'',
+    location: vehicle? vehicle.location :{},
     images: [],
-  };
+  };  
 
-  const [formSubmitted, setFormSubmitted] = useState(false);
 
+  async function fetchImageAsBlob(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('Content-Type');
+    const extension = contentType.split('/')[1];
+
+    const blob = await response.blob();
+    return { blob, extension };
+  }
+
+  function formDataToJson(formData) {
+    const json = {};
+
+    formData.forEach((value, key) => {
+      // Check if key already exists
+      if (json[key]) {
+        if (!Array.isArray(json[key])) {
+          // Convert existing value to an array
+          json[key] = [json[key]];
+        }
+        // Append the new value to the array
+        json[key].push(value);
+      } else {
+        // Just set the value
+        json[key] = value;
+      }
+    });
+
+    return json;
+  }
+
+
+  /*End of price prediction */
   const { data: vehicleMakes } = useGetData("vehicles", '', { defValue: [] });
   const { data: vehicleModels, getData: getVehicleModels } = useGetData(undefined, '', { defValue: [] });
 
@@ -71,9 +133,68 @@ const VehicleUpdateAdForm = ({vehicleAd}) => {
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  const { postData: postVehicleAd, response: postedVehicle, error: vehiclePostingError } = usePostData('vehicle/create', token);
+  const { patchData: postVehicleAd, 
+    response: postedVehicle, error: vehiclePostingError } = 
+    usePatchData("vehiclead/update", token);
 
   const { AlertBox, ShowAlertBox } = useAlertBox();
+
+  const getPrediction = async () => {
+
+    setIsPredicting(true);
+    const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant ? "?" + vehicle.variant : ""}`;
+    //get the extra details about the vehicle first
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    const vehDetails = await res.json()
+
+    if (!vehDetails) {
+      alert("No Vehicle Details Found!");
+      return;
+    }
+
+    //send the request to next page
+    const formData = new FormData();
+    formData.append('car_brand', vehicle.make);
+    formData.append('car_name', vehicle.model);
+    formData.append('milage', vehicle.mileage);
+    formData.append('model_year', vehicle.year);
+    formData.append('city_registered', vehicle.cityReg);
+    formData.append('color', vehicle.color);
+    formData.append('engine_c', vehDetails.engineC);
+    formData.append('fuel_type', vehDetails.fuelType);
+    formData.append('trans', vehDetails.transType);
+    formData.append('cate', vehDetails.category);
+
+    const imageURLs = vehicle.images.map(item => 'http://localhost:3001/assets/' + item);
+    const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
+    console.log(imageURLs);
+    results.forEach(({ blob, extension }, index) => {
+      formData.append(`images`, blob, `image${index + 1}.${extension}`);
+    });
+
+    console.log(formDataToJson(formData))
+    //alert(JSON.stringify(formData));
+
+    // setTimeout(()=>{
+    //   setIsPredicting(false);
+    // }, 2000);
+    try {
+      const response = await fetch(`http://192.168.218.49:4000/predict`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      setPrediction(data);
+      setIsPredicting(false);
+    } catch (e) {
+      //alert('failed');
+      setPrediction({ predicted_price: "Failed to predict!" })
+      setIsPredicting(false);
+    }
+
+  }
 
   const submitVehicleAd = async (values, onSubmitProps) => {
 
@@ -93,6 +214,12 @@ const VehicleUpdateAdForm = ({vehicleAd}) => {
 
     formData.append("location", location);
 
+    prevImages.forEach((image, index)=>{
+      formData.append("prevImages", image);
+    });
+    
+    formData.append("vehicleAdId", vehicle._id);
+
     values.images.forEach((image, index) => {
       formData.append(`images`, image, image.name);
     });
@@ -100,16 +227,19 @@ const VehicleUpdateAdForm = ({vehicleAd}) => {
     formData.append("userId", _id);
 
     postVehicleAd(formData, undefined, {
+      isJson: false,
       onSuccess: (data) => {
 
-        if (data)
-          ShowAlertBox("Vehicle Ad Posted Successfully! Click to view it!");
+        if (data) {
+          setVehicle(data);
+          ShowAlertBox("Vehicle Ad Updated Successfully! Click to view it!");
+        }
       }, onFail: (err) => {
         ShowAlertBox(err, 'error')
       }
     });
 
-    onSubmitProps.resetForm();
+    //onSubmitProps.resetForm();
 
   };
 
@@ -118,113 +248,96 @@ const VehicleUpdateAdForm = ({vehicleAd}) => {
   return (
     <Box display={'flex'}
       gap="2rem"
-      justifyContent="center"
+      justifyContent="space-between"
       flexDirection={isNonMobileScreens ? "row" : "column-reverse"}>
+        
+      <Box flexBasis={"60%"}>
+        { vehicle &&
+        <Formik
+          initialValues={initialValues}
+          validationSchema={vehicleAdSchema}
+          onSubmit={submitVehicleAd}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit, // <-- Ensure handleSubmit is included
+            isSubmitting,
+            setFieldValue,
+          }) => (
+            <form onSubmit={handleSubmit}> {/* Use handleSubmit here */}
+              <Typography>{values.model}</Typography>
+              <TextField
+                fullWidth
+                select
+                label="Make *"
+                name="make"
+                value={values.make}
+                onChange={(event) => {
+                  const selectedValue = event.target.value === '' ? undefined : event.target.value;
+                  if (selectedValue)
+                    getVehicleModels("vehicles/" + selectedValue);
+                  handleChange({ target: { name: 'make', value: selectedValue } });
+                }}
+                onBlur={handleBlur}
+                error={touched.make && Boolean(errors.make)}
+                helperText={touched.make && errors.make}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  vehicleMakes.map(make => (<option value={make}>{make}</option>))
+                }
+              </TextField>
+              <TextField
+                fullWidth
+                select
+                label="Model *"
+                name="model"
+                value={values.model}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.model && Boolean(errors.model)}
+                helperText={touched.model && errors.model}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  [...vehicleModels].sort().map(model => (<option value={model}>{model}</option>))
+                }
+              </TextField>
 
 
-      <Box flexBasis={"50%"}>
-
-        {
-          AlertBox
-        }
-
-        <Box flexBasis={"60%"}>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={vehicleAdSchema}
-            onSubmit={submitVehicleAd}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit, // <-- Ensure handleSubmit is included
-              isSubmitting,
-              setFieldValue,
-            }) => (
-              <form onSubmit={handleSubmit}> {/* Use handleSubmit here */}
-                {/* <TextField
-              fullWidth
-              label="Title *"
-              name="title"
-              value={values.title}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.title && Boolean(errors.title)}
-              helperText={touched.title && errors.title}
-              margin="normal"
-            /> */}
-
-                <TextField
-                  fullWidth
-                  select
-                  label="Make *"
-                  name="make"
-                  value={values.make}
-                  onChange={(event) => {
-                    const selectedValue = event.target.value === '' ? undefined : event.target.value;
-                    if (selectedValue)
-                      getVehicleModels("vehicles/" + selectedValue);
-                    handleChange({ target: { name: 'make', value: selectedValue } });
-                  }}
-                  onBlur={handleBlur}
-                  error={touched.make && Boolean(errors.make)}
-                  helperText={touched.make && errors.make}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  margin="normal"
-                >
-                  <option value=""></option>
-                  {
-                    vehicleMakes.map(make => (<option value={make}>{make}</option>))
-                  }
-                </TextField>
-                <TextField
-                  fullWidth
-                  select
-                  label="Model *"
-                  name="model"
-                  value={values.model}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.model && Boolean(errors.model)}
-                  helperText={touched.model && errors.model}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  margin="normal"
-                >
-                  <option value=""></option>
-                  {
-                    vehicleModels.sort().map(model => (<option value={model}>{model}</option>))
-                  }
-                </TextField>
-
-
-                <TextField
-                  fullWidth
-                  select
-                  label="Year *"
-                  name="year"
-                  value={values.year}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.year && Boolean(errors.year)}
-                  helperText={touched.year && errors.year}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  margin="normal"
-                >
-                  <option value=""></option>
-                  {
-                    [...Array(2025 - 1900).keys()].reverse().map(x => <option value={x + 1900}>{x + 1900}</option>)
-                  }
-                </TextField>
-                {/* 
+              <TextField
+                fullWidth
+                select
+                label="Year *"
+                name="year"
+                value={values.year}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.year && Boolean(errors.year)}
+                helperText={touched.year && errors.year}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  [...Array(2025 - 1900).keys()].reverse().map(x => <option value={x + 1900}>{x + 1900}</option>)
+                }
+              </TextField>
+              {/* 
               <TextField
                 fullWidth
                 label="Year *"
@@ -239,245 +352,357 @@ const VehicleUpdateAdForm = ({vehicleAd}) => {
               /> */}
 
 
-                <TextField
-                  fullWidth
-                  label="Variant (Optional)"
-                  name="variant"
-                  value={values.variant}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.variant && Boolean(errors.variant)}
-                  helperText={touched.variant && errors.variant}
-                  margin="normal"
-                />
+              <TextField
+                fullWidth
+                label="Variant (Optional)"
+                name="variant"
+                value={values.variant}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.variant && Boolean(errors.variant)}
+                helperText={touched.variant && errors.variant}
+                margin="normal"
+              />
+
+              <TextField
+                fullWidth
+                label="Mileage *"
+                name="mileage"
+                type="number"
+                value={values.mileage}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.mileage && Boolean(errors.mileage)}
+                helperText={touched.mileage && errors.mileage}
+                margin="normal"
+              />
+
+              <TextField
+                fullWidth
+                label="Color *"
+                name="color"
+                type="text"
+                value={values.color}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.color && Boolean(errors.color)}
+                helperText={touched.color && errors.color}
+                margin="normal"
+              />
+
+              <TextField
+                fullWidth
+                select
+                label="City *"
+                name="city"
+                value={values.city}
+                onChange={(event) => {
+                  const selectedValue = event.target.value === '' ? undefined : event.target.value;
+                  initialValues.city = selectedValue;
+                  if (selectedValue)
+                    getAreas("location/" + selectedValue);
+                  handleChange({ target: { name: 'city', value: selectedValue } });
+                }}
+                onBlur={handleBlur}
+                error={touched.city && Boolean(errors.city)}
+                helperText={touched.city && errors.city}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  cities.map(city => (<option value={city}>{city}</option>))
+                }
+              </TextField>
 
 
-                <TextField
-                  fullWidth
-                  label="Price *"
-                  name="price"
-                  type="number"
-                  value={values.price}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.price && Boolean(errors.price)}
-                  helperText={touched.price && errors.price}
-                  margin="normal"
-                />
-                <TextField
-                  fullWidth
-                  label="Mileage *"
-                  name="mileage"
-                  type="number"
-                  value={values.mileage}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.mileage && Boolean(errors.mileage)}
-                  helperText={touched.mileage && errors.mileage}
-                  margin="normal"
-                />
-
-
-
-                <TextField
-                  fullWidth
-                  label="Color *"
-                  name="color"
-                  type="text"
-                  value={values.color}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.color && Boolean(errors.color)}
-                  helperText={touched.color && errors.color}
-                  margin="normal"
-                />
-
-                <TextField
-                  fullWidth
-                  select
-                  label="City *"
-                  name="city"
-                  value={values.city}
-                  onChange={(event) => {
-                    const selectedValue = event.target.value === '' ? undefined : event.target.value;
-                    initialValues.city = selectedValue;
-                    if (selectedValue)
-                      getAreas("location/" + selectedValue);
-                    handleChange({ target: { name: 'city', value: selectedValue } });
-                  }}
-                  onBlur={handleBlur}
-                  error={touched.city && Boolean(errors.city)}
-                  helperText={touched.city && errors.city}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  margin="normal"
-                >
-                  <option value=""></option>
-                  {
-                    cities.map(city => (<option value={city}>{city}</option>))
+              <TextField
+                fullWidth
+                select
+                label="Area *"
+                name="area"
+                value={values.area}
+                onChange={(event) => {
+                  const selectedValue = event.target.value === '' ? undefined : event.target.value;
+                  if (selectedValue) {
+                    setLocation({ city: initialValues.city, area: selectedValue });
                   }
-                </TextField>
+
+                  handleChange({ target: { name: 'area', value: selectedValue } });
+                }}
+                onBlur={handleBlur}
+                error={touched.area && Boolean(errors.area)}
+                helperText={touched.area && errors.area}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  [...areas, "main"].map(area => (<option value={area}>{area}</option>))
+                }
+              </TextField>
 
 
-                <TextField
-                  fullWidth
-                  select
-                  label="Area *"
-                  name="area"
-                  value={values.area}
-                  onChange={(event) => {
-                    const selectedValue = event.target.value === '' ? undefined : event.target.value;
-                    if (selectedValue) {
-                      setLocation({ city: initialValues.city, area: selectedValue });
-                    }
+              <TextField
+                fullWidth
+                select
+                label="City Registered *"
+                name="cityReg"
+                value={values.cityReg}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.cityReg && Boolean(errors.cityReg)}
+                helperText={touched.cityReg && errors.cityReg}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  ["NOT REGISTERED", ...cities].map(cityReg => (<option value={cityReg}>{cityReg}</option>))
+                }
+              </TextField>
 
-                    handleChange({ target: { name: 'area', value: selectedValue } });
-                  }}
-                  onBlur={handleBlur}
-                  error={touched.area && Boolean(errors.area)}
-                  helperText={touched.area && errors.area}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  margin="normal"
-                >
-                  <option value=""></option>
-                  {
-                    [...areas, "main"].map(area => (<option value={area}>{area}</option>))
-                  }
-                </TextField>
-
-                {/* <TextField
-              fullWidth
-              label="Location"
-              name="location"
-              value={location.city + " - " + location.area}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.location && Boolean(errors.location)}
-              helperText={touched.location && errors.location}
-              margin="normal"
-              InputProps={{ readOnly: true }}
-            /> */}
-
-                <TextField
-                  fullWidth
-                  select
-                  label="City Registered *"
-                  name="cityReg"
-                  value={values.cityReg}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.cityReg && Boolean(errors.cityReg)}
-                  helperText={touched.cityReg && errors.cityReg}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  margin="normal"
-                >
-                  <option value=""></option>
-                  {
-                    ["NOT REGISTERED", ...cities].map(cityReg => (<option value={cityReg}>{cityReg}</option>))
-                  }
-                </TextField>
-
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={4}
-                  label="Description *"
-                  name="description"
-                  value={values.description}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.description && Boolean(errors.description)}
-                  helperText={touched.description && errors.description}
-                  margin="normal"
-                />
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                label="Description *"
+                name="description"
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.description && Boolean(errors.description)}
+                helperText={touched.description && errors.description}
+                margin="normal"
+              />
 
 
-                {/* Display selected images */}
-                <Box mt={2}>
-                  <Typography variant="h6">Selected Images:</Typography>
-                  <Box display="flex" alignItems="center">
-                    {values.images &&
-                      Array.from(values.images).map((image, index) => (
-                        <Box key={index} mr={1}>
-                          <img
-                            src={URL.createObjectURL(image)}
-                            alt={`Image ${index}`}
-                            width={100}
-                          />
-                        </Box>
-                      ))}
-                  </Box>
-                </Box>
+              {/* Display selected images */}
+              
+              {/* <Box display={'flex'}>
+              <ImagesListViewer images={prevImages} 
+                onDelete={(image)=>{setPrevImages(prevImages.filter(item=>item != image))}} />
+              <ImagesListViewer images={values.images} getSrc={(image)=>URL.createObjectURL(image)} />
+              </Box> */}
 
-                {/* Input for images */}
-
-
-                <Box
-                  gridColumn="span 4"
-                  border={`1px solid ${palette.neutral.medium}`}
-                  borderRadius="5px"
-                  p="1rem"
-                >
-                  <Dropzone
-                    acceptedFiles=".jpg,.jpeg,.png"
-                    multiple
-                    onDrop={(acceptedFiles) =>
-                      setFieldValue("images", [...values.images, ...acceptedFiles])
-                    }
-                  >
-                    {({ getRootProps, getInputProps }) => (
-                      <Box
-                        {...getRootProps()}
-                        border={`2px dashed ${palette.primary.main}`}
-                        p="1rem"
-                        sx={{ "&:hover": { cursor: "pointer" } }}
-                      >
-                        <input {...getInputProps()} />
-                        {!values.images.length ? (
-                          <p>Add Pictures Here *</p>
-                        ) : (
-                          <FlexBetween>
-                            <Typography>{values.images.length} images selected</Typography>
-                            {/* You can display the selected images here if needed */}
-                          </FlexBetween>
-                        )}
-                        <Typography color="error">
-                          {touched.images && errors.images}
-                        </Typography>
+              <Box mt={2}>
+                <Typography variant="h6">Selected Images:</Typography>
+                <Box display="flex" flexWrap={'wrap'} justifyContent={'flex-start'}>
+                  {values.images &&
+                    Array.from(values.images).map((image, index) => (
+                      <Box key={index} mr={1}>
+                        <IconButton 
+                        style={{position: 'absolute'}}
+                         onClick={()=>{
+                          setFieldValue("images", values.images.filter(item=>item != image));
+                        }}>
+                          <CloseIcon />
+                        </IconButton>
+                        <img
+                          src={URL.createObjectURL(image)}
+                          alt={`Image ${index}`}
+                          height={130}
+                          width={100}
+                          style={{
+                            objectFit: 'contain', 
+                            background: 'white',  
+                            border: '2px solid orange', 
+                            padding: '0.1rem', 
+                            borderRadius: '0.25rem'
+                          }}
+                        />
                       </Box>
-                    )}
-                  </Dropzone>
+                    ))}
+
+                  {prevImages &&
+                    Array.from(prevImages).map((image, index) => (
+                      <Box key={index} mr={1}>
+                        <IconButton 
+                        style={{position: 'absolute'}}
+                         onClick={()=>{
+                          setPrevImages(prevImages.filter(item=>item != image));
+                        }}>
+                          <CloseIcon />
+                        </IconButton>
+                        <img
+                          src={`http://localhost:3001/assets/${image}`}
+                          alt={`Image ${index}`}
+                          height={130}
+                          width={100}
+                          style={{
+                            objectFit: 'contain', 
+                            background: 'white',  
+                            border: '2px solid orange', 
+                            padding: '0.1rem', 
+                            borderRadius: '0.25rem'
+                          }}
+                        />
+                      </Box>
+                    ))}
                 </Box>
+              </Box>
 
-                {/* Submit button */}
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                  fullWidth
-                  sx={{ marginTop: 1 }}
+              {/* Input for images */}
+
+
+              <Box
+                gridColumn="span 4"
+                border={`1px solid ${palette.neutral.medium}`}
+                borderRadius="5px"
+                p="1rem"
+              >
+                <Dropzone
+                  acceptedFiles=".jpg,.jpeg,.png"
+                  multiple
+                  onDrop={(acceptedFiles) =>
+                    setFieldValue("images", [...values.images, ...acceptedFiles])
+                  }
                 >
-                  Submit
-                </Button>
+                  {({ getRootProps, getInputProps }) => (
+                    <Box
+                      {...getRootProps()}
+                      border={`2px dashed ${palette.primary.main}`}
+                      p="1rem"
+                      sx={{ "&:hover": { cursor: "pointer" } }}
+                    >
+                      <input {...getInputProps()} />
+                      {!values.images.length ? (
+                        <p>Add Pictures Here *</p>
+                      ) : (
+                        <FlexBetween>
+                          <Typography>{values.images.length+prevImages.length} images selected</Typography>
+                          {/* You can display the selected images here if needed */}
+                        </FlexBetween>
+                      )}
+                      <Typography color="error">
+                        {touched.images && errors.images}
+                      </Typography>
+                    </Box>
+                  )}
+                </Dropzone>
+              </Box>
 
-                {/* Submission confirmation */}
-                {formSubmitted && (
-                  <Typography variant="body1" color="textSecondary">
-                    Form submitted successfully!
+              <TextField
+                fullWidth
+                label="Price *"
+                name="price"
+                type="number"
+                value={values.price}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.price && Boolean(errors.price)}
+                helperText={touched.price && errors.price}
+                margin="normal"
+              />
+
+              <Typography variant="p" fontWeight={500}>
+                Estimate the worth of this vehicle using our AI model
+              </Typography>
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '60%',
+                    float: 'left',
+                    borderRadius: '20px', // Adjust the border radius as needed
+                    border: '1px solid #BDBDBD', // Optionally, add a border for outline
+                    padding: '8px 12px', // Adjust padding as needed
+                    backgroundColor: '#F5F5F5', // Optionally, set background color
+                  }}
+                >
+                  <Typography  >
+                    {/* {`${prediction.lower_limit}   -   ${prediction.upper_limit}`} */
+                      prediction.predicted_price
+                    }
                   </Typography>
-                )}
-              </form>
-            )}
-          </Formik>
+                  <Typography >
+                    PKR
+                  </Typography>
+                </Box>
+                <img
+                  width="50px"
+                  height="50px"
+                  alt="post"
+                  style={{ objectFit: "cover", marginTop: "1rem", marginLeft: "-1.4rem" }}
+                  src={`http://localhost:3000/icons/price_tag.png`}
+                />
+                <IconBtn text="Estimate" style={{ float: 'right', color: 'white' }}
+                  icon="http://localhost:3000/icons/ai.png"
+                  onPress={getPrediction}
+                />
+                {isPredicting && <LinearProgress />}
+              </Box>
 
 
-        </Box>
+              {/* Submit button */}
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+                fullWidth
+                sx={{ marginTop: 1 }}
+              >
+                Submit
+              </Button>
+
+              {/* Submission confirmation */}
+              {formSubmitted && (
+                <Typography variant="body1" color="textSecondary">
+                  Form submitted successfully!
+                </Typography>
+              )}
+            </form>
+          )}
+        </Formik>
+}
+
+
+      </Box>
+
+      <Box flexBasis={"30%"}>
+
+
+        {
+          AlertBox
+        }
+
+        {
+          postedVehicle &&
+          // <Typography>
+          //   {JSON.stringify(postedVehicle)}
+          // </Typography>
+          <Box mt={2} mb={2}>
+            <VehicleAdWidget
+              key={postedVehicle.title} // Add a unique key for each item in the map function
+              vehicle={postedVehicle}
+              redirectTo={'/market/' + postedVehicle._id}
+            />
+
+          </Box>
+        }
+
+        <AdvertWidgetShow
+          heading={'Selling your vehicle with drivenet is easy'}
+          title={"Just fill up the form"}
+          description={"We'll show your vehicle to the millions of buyers around the country"}
+          image={"http://localhost:3000/assets/sellcar.jpg"}
+        />
+
+        <Box mt={2} />
+        <AdvertWidgetShow
+          heading={'Make informed decisions with our ML module'}
+          title={"Get Price Prediction"}
+          description={"Get predicted price and increase the chances of selling your vehicle earlier"}
+          image={"http://localhost:3000/assets/aitell.jpeg"}
+        />
 
       </Box>
 
@@ -485,4 +710,4 @@ const VehicleUpdateAdForm = ({vehicleAd}) => {
   );
 };
 
-export default VehicleUpdateAdForm;
+export default VehicleAdUpdateForm;

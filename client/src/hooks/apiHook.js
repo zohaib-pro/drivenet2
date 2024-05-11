@@ -168,7 +168,7 @@ export const usePatchData = (target, token='') => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const patchData = async (values, newTarget, {isJson = true, onSuccess}={}) => {
+    const patchData = async (values, newTarget, {isJson = true, onSuccess, onFail}={}) => {
         setError(null);
         if (newTarget) //dynamic urls/targets might be required
             target = newTarget;
@@ -201,6 +201,7 @@ export const usePatchData = (target, token='') => {
             if (onSuccess)
                 onSuccess(data);
         } catch (err) {
+            onFail(err.message);
             setError(err.message);
         } finally {
             setIsLoading(false);
