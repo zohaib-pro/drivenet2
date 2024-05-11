@@ -12,7 +12,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { json } from "react-router-dom";
 
 
-const ChatParent = ({isModal, chatWith, vehicle}) => {
+const ChatParent = ({isModal, chatWith, vehicleData}) => {
   const socket = useRef();
   const user = useSelector((state) => state.user);
   const [chats, setChats] = useState([]);
@@ -72,7 +72,7 @@ const ChatParent = ({isModal, chatWith, vehicle}) => {
     <div className="Chat">
       {/* Left Side */}
       <div className={`Left-side-chat ${isChatClicked && !isMobileScreens ? 'hide' : ''}`}>
-        <div className="Chat-container">
+        <div className={isModal? "Chat-container-modal" : "Chat-container"}>
           <WidgetWrapper>
             <h2>Chats</h2>
             <div className="Chat-list">
@@ -100,6 +100,7 @@ const ChatParent = ({isModal, chatWith, vehicle}) => {
           setSendMessage={setSendMessage}
           receivedMessage={receivedMessage}
           isModal={isModal}
+          vehicleData={vehicleData} // Pass vehicleData here
         />
       </div>
     </div>
