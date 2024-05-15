@@ -32,9 +32,10 @@ import { useDispatch, useSelector } from "react-redux";
 import ConfirmationDialog from "components/ConfirmationDialog";
 import { useDelData } from "hooks/apiHook";
 import VehicleUpdateAdForm from "scenes/sellPage/FormUpdate";
+import ViewsEye from "components/ViewsEye";
 
 const UserVehicleAdWidget = ({
-  vehicle, redirectTo, onDeleteSuccess
+  vehicle, isOwner, redirectTo, onDeleteSuccess
 }) => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
@@ -55,43 +56,52 @@ const UserVehicleAdWidget = ({
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   }
 
-  const handleClose = ()=>{
+  const handleClose = () => {
     setModalOpen(false)
   }
 
-  const {delData} = useDelData()
+  const { delData } = useDelData()
 
-  const delVehicleAd = (id) =>{
-    const target = "market/"+id;
-    delData(undefined, target , {onSuccess:()=>{
-      onDeleteSuccess(id);
-    }, onFail: (err)=>{alert(err)}})
+  const delVehicleAd = (id) => {
+    const target = "market/" + id;
+    delData(undefined, target, {
+      onSuccess: () => {
+        onDeleteSuccess(id);
+      }, onFail: (err) => { alert(err) }
+    })
   }
 
   return (
     <WidgetWrapper >
       <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-      <Box>
-      <IconButton onClick={()=>{setDialogOpen(true)}}>
-        <Delete />
-      </IconButton>
-      <IconButton onClick={()=>{navigate(`/market/edit/${vehicle._id}`)}}>
-        <Edit />
-      </IconButton>
-      </Box>
+        {
+          isOwner && 
+          <Box>
+          <IconButton onClick={() => { setDialogOpen(true) }}>
+            <Delete />
+          </IconButton>
+          <IconButton onClick={() => { navigate(`/market/edit/${vehicle._id}`) }}>
+            <Edit />
+          </IconButton>
+        </Box>
+        }
 
 
-      <Typography variant="h5" color={'orange'}>
-          {vehicle.status == 'new'? "Pending approval" : vehicle.status == 'approved'? "Live": "Rejected"}
+        {
+          isOwner && <Typography variant="h5" color={'orange'}>
+          {vehicle.status == 'new' ? "Pending approval" : vehicle.status == 'approved' ? "Live" : "Rejected"}
         </Typography>
+        }
       </Box>
-      
+
       {/* <IconButton onClick={()=>{setModalOpen(true)}}>
         <EditOutlined />
       </IconButton> */}
-    
+
       <Link to={redirectTo} style={{ textDecoration: 'none', color: 'inherit' }}>
-        {(
+
+        <Box sx={{ position: 'relative' }}>
+          <ViewsEye views={vehicle.views} />
           <img
             width="100%"
             height="200rem"
@@ -99,7 +109,8 @@ const UserVehicleAdWidget = ({
             style={{ borderRadius: "0.75rem", objectFit: "cover", marginTop: "0.75rem" }}
             src={`http://localhost:3001/assets/${vehicle.images[0]}`}
           />
-        )}
+        </Box>
+
 
         <Typography variant="h4" fontWeight={500}
           mt={1}
@@ -116,47 +127,48 @@ const UserVehicleAdWidget = ({
 
         <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'} >
           <LocationOnOutlined />
-          <Typography>{`${vehicle.location.area?vehicle.location.area+',':''}${vehicle.location.city}`}</Typography>
+          <Typography>{`${vehicle.location.area ? vehicle.location.area + ',' : ''}${vehicle.location.city}`}</Typography>
           {/* <Typography>{vehicle.location.city}</Typography> */}
           <Typography>|</Typography>
           <Typography>{getTimeDiff(vehicle)} days ago</Typography>
         </Box>
       </Link>
-      
+
       {
+        isOwner &&
         (vehicle.status == 'rejected') &&
         <Box>
-        <hr/>
-        <Typography color={'red'} textAlign={'center'}>
-          Rejected: {vehicle.remarks}
-        </Typography>
-      </Box>
+          <hr />
+          <Typography color={'red'} textAlign={'center'}>
+            Rejected: {vehicle.remarks}
+          </Typography>
+        </Box>
       }
-      <ConfirmationDialog data={{title:"Are you sure to delete?", content: "The selected vehicle ad will be deleted from market", open: isDialogOpen, onConfirm:()=>{setDialogOpen(false); delVehicleAd(vehicle._id)}, onClose: ()=>{setDialogOpen(false)}}} />
+      <ConfirmationDialog data={{ title: "Are you sure to delete?", content: "The selected vehicle ad will be deleted from market", open: isDialogOpen, onConfirm: () => { setDialogOpen(false); delVehicleAd(vehicle._id) }, onClose: () => { setDialogOpen(false) } }} />
 
       <Modal open={isModalOpen} onClose={handleClose}>
 
-          <Box
-            width={'80%'}
-            height={'80%'}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              minWidth: 300,
-              overflow: 'scroll'
-            }}
-          >
-            <IconButton onClick={handleClose} style={{ position: 'absolute', top: 5, right: 5 }}>
-              <Close />
-            </IconButton>
-            <VehicleUpdateAdForm vehicleAd={vehicle}/>
-          </Box>
-        </Modal>
+        <Box
+          width={'80%'}
+          height={'80%'}
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            minWidth: 300,
+            overflow: 'scroll'
+          }}
+        >
+          <IconButton onClick={handleClose} style={{ position: 'absolute', top: 5, right: 5 }}>
+            <Close />
+          </IconButton>
+          <VehicleUpdateAdForm vehicleAd={vehicle} />
+        </Box>
+      </Modal>
     </WidgetWrapper>
   );
 };

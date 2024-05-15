@@ -6,7 +6,7 @@ function getFullUrl(target){
     return baseURL + (target[0] === '/' ? target : '/' + target);
 }
 
-export const useGetData = (target, token='', { defValue = [], onSuccess} = {}) => {
+export const useGetData = (target, token='', { defValue = [], onSuccess, onFail} = {}) => {
     const [data, setData] = useState(defValue);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -56,6 +56,8 @@ export const useGetData = (target, token='', { defValue = [], onSuccess} = {}) =
                 onSuccess(jsonData);
             }
         } catch (err) {
+            if (onFail)
+                onFail(err.message);
             setError(err.message);
         } finally {
             setIsLoading(false);
@@ -201,7 +203,8 @@ export const usePatchData = (target, token='') => {
             if (onSuccess)
                 onSuccess(data);
         } catch (err) {
-            onFail(err.message);
+            if (onFail)
+                onFail(err.message);
             setError(err.message);
         } finally {
             setIsLoading(false);

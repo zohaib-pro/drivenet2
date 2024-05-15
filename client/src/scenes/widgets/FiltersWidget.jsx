@@ -289,7 +289,8 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
                 <Typography>{yearRange[1]}</Typography>
               </Box>
 
-              {/* <TextField
+              {
+              /* <TextField
                 fullWidth
                 select
                 label="Year"
@@ -309,15 +310,22 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
                 {
                   [...Array(2025 - 1900).keys()].reverse().map(x => <option value={(""+(x + 1900))}>{x + 1900}</option>)
                 }
-              </TextField> */}
+              </TextField> */
+              }
 
               <Button onClick={() => { applyFilters(values); }}>
                 apply
               </Button>
               <Button onClick={() => {
                 resetForm();
+                
+                setPriceRange([Math.min(...prices), Math.max(...prices)]);
+                setMileageRange([Math.min(...mileages), Math.max(...mileages)]);
+                setYearRange([Math.min(...years), Math.max(...years)]);
+
                 const inValue = search.toLowerCase();
                 var filteredResults = vehicleAdsAll;
+
                 if (inValue)
                   filteredResults = filteredResults.filter(item =>
                     item.make.toLowerCase() == inValue ||

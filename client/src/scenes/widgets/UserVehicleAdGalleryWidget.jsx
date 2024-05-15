@@ -8,7 +8,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import UserVehicleAdWidget from "./UserVehicleAdWidget";
 import useAlertBox from "components/AlertBox";
 
-const UserVehicleAdWidgetGallery = ({ heading, userId, UserVehicleAds = [], onDeleteSuccess }) => {
+const UserVehicleAdWidgetGallery = ({ heading, UserVehicleAds = [], isOwner, onDeleteSuccess }) => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
 
@@ -41,7 +41,7 @@ const UserVehicleAdWidgetGallery = ({ heading, userId, UserVehicleAds = [], onDe
           <Box
             display="grid"
             style={{
-              gridTemplateColumns: `repeat(auto-fill, minmax(${isNonMobileScreens? "33%": "100%"}, 1fr))`,
+              gridTemplateColumns: `repeat(auto-fill, minmax(${isNonMobileScreens && isOwner? "33%": "100%"}, 1fr))`,
               gap: '0.5rem'
             }}
           >
@@ -50,6 +50,7 @@ const UserVehicleAdWidgetGallery = ({ heading, userId, UserVehicleAds = [], onDe
                 key={item.title || index} // Use index as fallback if title is not unique
               >
                 <UserVehicleAdWidget
+                  isOwner={false}
                   vehicle={item}
                   redirectTo={'/market/' + item._id}
                   onDeleteSuccess={(id)=>{

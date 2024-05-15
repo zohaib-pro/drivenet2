@@ -64,7 +64,7 @@ const UserAdsPage = () => {
           <FriendListWidget userId={userId} />
         </Box>
           <Box flexBasis={isNonMobileScreens ? "70%" : undefined}>
-            <UserVehicleAdWidgetGallery heading={"My Vehicle Ads"} userId={userId} UserVehicleAds={vehicleAds} />
+            <UserVehicleAdWidgetGallery heading={"My Vehicle Ads"} isOwner={true} userId={userId} UserVehicleAds={vehicleAds} />
           </Box>
       </Box>
     </Box>

@@ -14,6 +14,7 @@ const locationSchema = mongoose.Schema({
 
 // Define the schema for a vehicle ad
 const vehicleAdSchema = new mongoose.Schema({
+  
     title: {
       type: String,
       required: true
@@ -25,6 +26,10 @@ const vehicleAdSchema = new mongoose.Schema({
     price: {
       type: Number,
       required: true
+    },
+    views: {
+      type: Number,
+      default: 0
     },
     mileage: {
       type: Number,
@@ -78,7 +83,6 @@ const vehicleAdSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-
     images: [String] // Array of image URLs
   }, { timestamps: true }
 );
