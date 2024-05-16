@@ -16,7 +16,9 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useGetData } from "hooks/apiHook";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
-import { setPost } from "state";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 
 const EditProfileForm = ({ userId, token }) => {
   const [registerError, setRegisterError] = useState("");
@@ -24,6 +26,8 @@ const EditProfileForm = ({ userId, token }) => {
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { data: cities } = useGetData("location");
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const editProfileSchema = yup.object().shape({
     firstName: yup
@@ -52,6 +56,11 @@ const EditProfileForm = ({ userId, token }) => {
     location: yup.string().required("required"),
     occupation: yup.string().required("required"),
     picture: yup.mixed(),
+    password: yup
+    .string()
+    .required("required")
+    .min(8, "Password must be at least 8 characters long")
+    .matches(/[0-9]/, "Password must contain at least one numeric value"),
   });
 
   const getUser = async () => {
@@ -75,6 +84,7 @@ const EditProfileForm = ({ userId, token }) => {
     location: user ? user.location : "",
     occupation: user ? user.occupation : "",
     picture: user ? user.picturePath : "",
+    password: user ? user.password : "",
   };
 
 
@@ -93,6 +103,7 @@ const EditProfileForm = ({ userId, token }) => {
         location,
         occupation,
         picture,
+        password,
       } = values;
 
       // Create a new FormData object to handle the file upload
@@ -103,6 +114,7 @@ const EditProfileForm = ({ userId, token }) => {
       formData.append("phone", phone);
       formData.append("location", location);
       formData.append("occupation", occupation);
+      formData.append("password", password);
       if (picture) {
         formData.append("picture", picture[0]); // Append the file correctly
 
@@ -304,7 +316,7 @@ const EditProfileForm = ({ userId, token }) => {
               disabled
             />
 
-            {/*             <TextField
+                        <TextField
               label="Password *"
               type={showPassword ? "password" : "text"}
               onBlur={handleBlur}
@@ -327,8 +339,7 @@ const EditProfileForm = ({ userId, token }) => {
                   </InputAdornment>
                 ),
               }}
-              disabled
-            /> */}
+            />
           </Box>
 
           {/* Display Profile Update Error Message */}

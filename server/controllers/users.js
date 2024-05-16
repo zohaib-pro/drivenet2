@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import bcrypt from 'bcryptjs'; // Import bcrypt for password hashing
 
 /* READ */
 export const getUser = async (req, res) => {
@@ -33,6 +34,7 @@ export const getUserFriends = async (req, res) => {
 /* UPDATE */
 export const addRemoveFriend = async (req, res) => {
   try {
+
     const { id, friendId } = req.params;
     const user = await User.findById(id);
     const friend = await User.findById(friendId);
@@ -63,16 +65,24 @@ export const addRemoveFriend = async (req, res) => {
 };
 
 /* UPDATE */
+
+
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { firstName, lastName, email, phone, location, occupation, picturePath } = req.body;
+    const { firstName, lastName, email, phone, location, occupation, picturePath, oldPassword, newPassword } = req.body;
 
     // Find the user by ID
     const user = await User.findById(id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if old password matches the current password
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid old password" });
     }
 
     // Update user data
@@ -86,6 +96,13 @@ export const updateUser = async (req, res) => {
     // If there's a new picture path, update it
     if (picturePath) {
       user.picturePath = picturePath;
+    }
+
+    // If newPassword is provided, update it
+    if (newPassword) {
+      // Hash the new password before saving it
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedNewPassword;
     }
 
     // Save the updated user
