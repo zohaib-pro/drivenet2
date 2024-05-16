@@ -56,7 +56,7 @@ function App() {
 
             <Route
               path="/market"
-              element={isAuth ? <MarketPage /> : <Navigate to="/" />}
+              element={<MarketPage />}
             />
 
             <Route

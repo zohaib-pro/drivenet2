@@ -31,9 +31,6 @@ import ApproveRejectAd from "./ApproveRejectAd";
 const VehicleAdWidget = ({
   vehicle, redirectTo, isAdmin = false
 }) => {
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id);
 
   const { palette } = useTheme();
   const main = palette.neutral.main;

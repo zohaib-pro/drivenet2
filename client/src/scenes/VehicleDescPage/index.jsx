@@ -19,12 +19,15 @@ import ChatPage from "scenes/chatPage/Chat";
 import ChatParent from "scenes/chatPage/ChatParent";
 
 import { numberWithCommas } from "utils/math";
+import CustomModal from "components/CustomModal";
+import LoginPage from "scenes/loginPage";
 
 const VehicleDescPage = () => {
 
   const [open, setOpen] = useState(false);
 
   const [isPredicting, setIsPredicting] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -276,7 +279,7 @@ const VehicleDescPage = () => {
 
                   {isPredicting && <LinearProgress />}
 
-                  <SellerCard seller={sellerData} user={user} onPressChat={handleOpen} />
+                  <SellerCard seller={sellerData} user={user} onPressChat={user?handleOpen:()=>{setLoginModalOpen(true)}} />
 
                   <IssueCreationComponent vehicleAdId={vehicleAdId} user={user} onIssueReported={(msg) => { showAlert(msg) }} />
                 </Box>
@@ -284,6 +287,10 @@ const VehicleDescPage = () => {
             }
           </Box>
         </Box>
+
+        {/* <CustomModal open={open} close={()=>{setOpen(false)}}>
+          <Typography>Testing</Typography>
+        </CustomModal> */}
 
         <Modal open={open} onClose={handleClose}>
 
@@ -308,6 +315,9 @@ const VehicleDescPage = () => {
           </Box>
         </Modal>
 
+        <CustomModal open={isLoginModalOpen} setOpen={setLoginModalOpen}>
+          <LoginPage isModal={true} onLogin={()=>{setLoginModalOpen(false)}}/>
+        </CustomModal>
 
       </Box>
       : <Box></Box>

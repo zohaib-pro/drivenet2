@@ -84,7 +84,6 @@ const SellerCard = ({
         </Box>
       </Box>
 
-
     </WidgetWrapper>
   );
 };

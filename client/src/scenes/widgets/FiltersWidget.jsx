@@ -42,11 +42,6 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
 
   const dispatch = useDispatch();
 
-  const [location, setLocation] = useState({});
-
-  const { _id } = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
-  const vehicleAds = useSelector((state) => state.vehicleAds)
   const vehicleAdsAll = useSelector((state) => state.vehicleAdsAll)
   const isFilterApplied = useSelector(state => state.isFilterApplied)
   const search = useSelector(state => state.search);

@@ -10,6 +10,7 @@ import {
   useTheme,
   useMediaQuery,
   Button,
+  Modal,
 } from "@mui/material";
 import {
   Search,
@@ -31,8 +32,13 @@ import UserImage from "components/UserImage";
 import { useGetData } from "hooks/apiHook";
 
 import { setVehicleAds } from "state";
+import CustomModal from "components/CustomModal";
+import Login from "scenes/loginPage/Login";
+import LoginPage from "scenes/loginPage";
 
 const Navbar = ({ onSearch = () => { } }) => {
+
+  const [isModalOpen, setModalOpen] = useState(false);
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -87,6 +93,9 @@ const Navbar = ({ onSearch = () => { } }) => {
 
   return (
     <FlexBetween padding="0.3rem 1%" backgroundColor={alt}>
+      <CustomModal open={isModalOpen} setOpen={setModalOpen}>
+        <LoginPage isModal={true} onLogin={()=>{setModalOpen(false)}}/>
+      </CustomModal>
       <FlexBetween gap="1rem">
         <Typography
           fontWeight="bold"
@@ -198,7 +207,7 @@ const Navbar = ({ onSearch = () => { } }) => {
           </IconButton>
 
           {
-            user?.picturePath && <UserImage size="35px" image={user.picturePath} />
+            <UserImage size="35px" image={user?.picturePath ? user.picturePath : "defuser.jpg"} />
           }
 
           {user ? <FormControl variant="standard" value={fullName}>
@@ -232,7 +241,12 @@ const Navbar = ({ onSearch = () => { } }) => {
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
           </FormControl> :
-            <Typography component="a" href="/your-link-path" variant="body1">
+            <Typography component="a" href="/your-link-path" variant="body1"
+              onClick={(event)=>{
+                event.preventDefault();
+                setModalOpen(true);
+              }}
+            >
               login
             </Typography>
           }
@@ -255,6 +269,8 @@ const Navbar = ({ onSearch = () => { } }) => {
           <Menu />
         </IconButton>
       )}
+
+
 
       {/* MOBILE NAV */}
       {!isNonMobileScreens && isMobileMenuToggled && (
