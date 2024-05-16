@@ -127,15 +127,7 @@ export const updateVehicleAd = async (req, res) => {
 
     //there images are the new images that user uploaded
     var images = req.files.map(file => file.filename);
-
-    //now append the previous images to the new images
-    // console.log("previmages: "+prevImages);
-    // console.log("images: "+images);
-    // for (let test of prevImages)
-    //   console.log(test);
     images = [...images, ...prevImages];
-    // console.log("all iamges", images);
-
     vehicle.title = title,
     vehicle.description = description,
     vehicle.price = price,
@@ -159,6 +151,18 @@ export const updateVehicleAd = async (req, res) => {
     res.status(409).json({ message: err.message })
   }
 
+}
+
+export const incViews = async (req, res)  =>{
+  try{
+    const {vehicleAdId} = req.params;
+    const vehicle = await VehicleAd.findById(vehicleAdId);
+    vehicle.views += 1;
+    await vehicle.save();
+    res.status(200).json(vehicle);
+  }catch(err){
+    res.status(409).json({ message: err.message })
+  }
 }
 
 export const getUserVehicleAds = async (req, res) => {

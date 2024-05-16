@@ -10,6 +10,7 @@ import {
   useTheme,
   useMediaQuery,
   Button,
+  Modal,
 } from "@mui/material";
 import {
   Search,
@@ -31,21 +32,28 @@ import UserImage from "components/UserImage";
 import { useGetData } from "hooks/apiHook";
 
 import { setVehicleAds } from "state";
+import CustomModal from "components/CustomModal";
+import Login from "scenes/loginPage/Login";
+import LoginPage from "scenes/loginPage";
 
-const Navbar = ({onSearch=()=>{}}) => {
+const Navbar = ({ onSearch = () => { } }) => {
+
+  const [isModalOpen, setModalOpen] = useState(false);
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const cities = useSelector(state => state.cities);
-  const vehicleAds = useSelector((state)=>state.vehicleAds);
+  const vehicleAds = useSelector((state) => state.vehicleAds);
   const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-  const search = useSelector(state=>state.search);
+  const search = useSelector(state => state.search);
 
-  useGetData('location', '', {onSuccess: (data)=>{
-      dispatch(setCities({cities: data}));
-  }});
+  useGetData('location', '', {
+    onSuccess: (data) => {
+      dispatch(setCities({ cities: data }));
+    }
+  });
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -57,7 +65,7 @@ const Navbar = ({onSearch=()=>{}}) => {
   /* const fullName = `${user.firstName} ${user.lastName}`; */
   const fullName = user ? `${user.firstName}` : "user";
 
-  const [currentLocation, setCurrentLocation] = useState("Pakistan"); 
+  const [currentLocation, setCurrentLocation] = useState("Pakistan");
 
   const [inputValue, setInputValue] = useState('');
 
@@ -70,12 +78,12 @@ const Navbar = ({onSearch=()=>{}}) => {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       const inValue = inputValue.toLowerCase()
-      const results =  vehicleAdsAll.filter( item=>
+      const results = vehicleAdsAll.filter(item =>
         item.make.toLowerCase() == inValue ||
         item.model.toLowerCase() == inValue
       );
-      dispatch(setVehicleAds({vehicleAds: results}));
-      dispatch(setSearch({search: inputValue}))
+      dispatch(setVehicleAds({ vehicleAds: results }));
+      dispatch(setSearch({ search: inputValue }))
     }
   };
 
@@ -85,6 +93,9 @@ const Navbar = ({onSearch=()=>{}}) => {
 
   return (
     <FlexBetween padding="0.3rem 1%" backgroundColor={alt}>
+      <CustomModal open={isModalOpen} setOpen={setModalOpen}>
+        <LoginPage isModal={true} onLogin={()=>{setModalOpen(false)}}/>
+      </CustomModal>
       <FlexBetween gap="1rem">
         <Typography
           fontWeight="bold"
@@ -107,25 +118,25 @@ const Navbar = ({onSearch=()=>{}}) => {
             gap="1rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." 
-            value={inputValue}
+            <InputBase placeholder="Search..."
+              value={inputValue}
               onChange={handleChange}
-              onKeyDown={handleKeyPress} 
+              onKeyDown={handleKeyPress}
             />
             <Box>
               {
                 search &&
-                <IconButton onClick={()=>{
-                  dispatch(setVehicleAds({vehicleAds: vehicleAdsAll}));
-                  dispatch(setSearch({search: ''}));
+                <IconButton onClick={() => {
+                  dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }));
+                  dispatch(setSearch({ search: '' }));
                   setInputValue('');
-                  }}>
+                }}>
                   <Close />
                 </IconButton>
               }
-            <IconButton>
-              <Search />
-            </IconButton>
+              <IconButton>
+                <Search />
+              </IconButton>
             </Box>
           </FlexBetween>
         )}
@@ -143,13 +154,13 @@ const Navbar = ({onSearch=()=>{}}) => {
 
             <Select
               value={currentLocation}
-              onChange={(event)=>{
+              onChange={(event) => {
                 const val = event.target.value;
                 setCurrentLocation(val);
                 if (val == "Pakistan")
-                  dispatch(setVehicleAds({vehicleAds: vehicleAdsAll}))
+                  dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }))
                 else
-                  dispatch(setVehicleAds({vehicleAds: vehicleAdsAll.filter(item=> item.location.city == val)}))
+                  dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll.filter(item => item.location.city == val) }))
               }}
               sx={{
                 backgroundColor: neutralLight,
@@ -167,12 +178,12 @@ const Navbar = ({onSearch=()=>{}}) => {
               input={<InputBase />}
             >
               {
-                ["Pakistan", ...cities].map(city => 
-                <MenuItem value={city}>
-                <Typography>{city}</Typography>
-              </MenuItem>)
+                ["Pakistan", ...cities].map(city =>
+                  <MenuItem value={city}>
+                    <Typography>{city}</Typography>
+                  </MenuItem>)
               }
-              
+
             </Select>
 
           </FlexBetween>
@@ -182,9 +193,22 @@ const Navbar = ({onSearch=()=>{}}) => {
 
       {/* DESKTOP NAV */}
       {isNonMobileScreens ? (
-        <FlexBetween gap="2rem">
+        <FlexBetween gap="1rem">
 
-          <UserImage size="35px" image={user.picturePath} />
+          <IconButton
+            onClick={() => dispatch(setMode())}
+            sx={{ fontSize: "25px" }}
+          >
+            {theme.palette.mode === "dark" ? (
+              <DarkMode sx={{ fontSize: "20px" }} />
+            ) : (
+              <LightMode sx={{ color: dark, fontSize: "20px" }} />
+            )}
+          </IconButton>
+
+          {
+            <UserImage size="35px" image={user?.picturePath ? user.picturePath : "defuser.jpg"} />
+          }
 
           {user ? <FormControl variant="standard" value={fullName}>
             <Select
@@ -207,13 +231,22 @@ const Navbar = ({onSearch=()=>{}}) => {
               <MenuItem value={fullName}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
-              <MenuItem onClick={() => navigate('/market/profile/'+user._id)}>
-                  My Ads
+              <MenuItem onClick={() => navigate('/market/profile/' + user._id)}>
+                My Ads
               </MenuItem>
+              {/* <MenuItem onClick={() => dispatch(setMode())}>
+                  {theme.palette.mode === "dark"? "Light Mode": "Dark Mode"}
+              </MenuItem> */}
+
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
           </FormControl> :
-            <Typography component="a" href="/your-link-path" variant="body1">
+            <Typography component="a" href="/your-link-path" variant="body1"
+              onClick={(event)=>{
+                event.preventDefault();
+                setModalOpen(true);
+              }}
+            >
               login
             </Typography>
           }
@@ -236,6 +269,8 @@ const Navbar = ({onSearch=()=>{}}) => {
           <Menu />
         </IconButton>
       )}
+
+
 
       {/* MOBILE NAV */}
       {!isNonMobileScreens && isMobileMenuToggled && (

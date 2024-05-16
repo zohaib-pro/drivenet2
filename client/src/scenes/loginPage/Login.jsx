@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 import Center from "components/Center";
 
-export default function Login({ handleRegister }) {
+export default function Login({ onLogin, handleRegister }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
   const { palette } = useTheme();
@@ -53,7 +53,10 @@ export default function Login({ handleRegister }) {
           token: loggedIn.token,
         })
       );
-      navigate("/market");
+      if (onLogin)
+        onLogin();
+      else
+        navigate("/market");
     } else {
       setLoginError(loggedIn.msg); // Set the error message to loginError state
     }
@@ -65,8 +68,7 @@ export default function Login({ handleRegister }) {
       <Center>
         {/* Use Image from MUI Lab */}
         <img
-          height={250}
-        
+          height={onLogin? 100:250}
           style={{ alignSelf: "center", marginBottom: '1rem' }}
           src="http://localhost:3000/assets/drivenet2.png"
           alt="Drivenet Market"

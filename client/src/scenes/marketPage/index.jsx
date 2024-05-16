@@ -7,7 +7,7 @@ import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  const { picturePath } = useSelector((state) => state.user);
+  //const { picturePath } = useSelector((state) => state.user);
 
   return (
     <Box>

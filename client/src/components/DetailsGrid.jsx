@@ -6,7 +6,7 @@ import { AdjustOutlined } from '@mui/icons-material';
 const DetailsGrid = ({
     mainUrl="http://localhost:3000/icons",
     data,
-    size=20
+    size=22
 }) => {
     const units = {
         kms: 'kms',

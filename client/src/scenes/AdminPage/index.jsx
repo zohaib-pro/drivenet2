@@ -44,7 +44,7 @@ const ProfilePage = () => {
     'Issues' : <IssuesHandlerComponent />,
     'Vehicle Details': <VehicleDetailsComponent />,
     'Listing Management': <ListingManagementComponent />,
-    'Menu 6': <></>,
+    'User Management': <></>,
     'Menu 7': <></>,
     'Menu 8': <></>,
   }

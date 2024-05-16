@@ -31,9 +31,6 @@ import ApproveRejectAd from "./ApproveRejectAd";
 const VehicleAdWidget = ({
   vehicle, redirectTo, isAdmin = false
 }) => {
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id);
 
   const { palette } = useTheme();
   const main = palette.neutral.main;
@@ -57,7 +54,7 @@ const VehicleAdWidget = ({
           />
         )}
 
-        <Typography variant="h4" fontWeight={500}
+        <Typography variant="h4" fontWeight={500} color={'orange'}
           mt={1}
         >
           PKR {numberWithCommas(vehicle.price)}
@@ -72,10 +69,10 @@ const VehicleAdWidget = ({
 
         <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'} >
           <LocationOnOutlined />
-          <Typography>{`${vehicle.location.area ? vehicle.location.area + ',' : ''}${vehicle.location.city}`}</Typography>
+          <Typography variant="subtitle2">{`${vehicle.location.area ? vehicle.location.area + ', ' : ''}${vehicle.location.city}`}</Typography>
           {/* <Typography>{vehicle.location.city}</Typography> */}
           <Typography>|</Typography>
-          <Typography>{getTimeDiff(vehicle)} days ago</Typography>
+          <Typography variant="subtitle2">{getTimeDiff(vehicle)} days ago</Typography>
         </Box>
       </Link>
       {
