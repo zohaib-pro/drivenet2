@@ -122,7 +122,13 @@ const Form = ({ handleLogin }) => {
         setRegisterError(
           "Email is already registered. Please use a different email."
         );
-      } else {
+      } else if(savedUser.error === "Phone Number is already registered.") {
+        // Handle other types of errors (optional)
+        setRegisterError(
+          "Phone Number is already registered. Please use a different Phone Number."
+        );
+      }
+      else {
         // Handle other types of errors (optional)
         setRegisterError(`Registration failed: ${savedUser.error}`);
       }
@@ -307,7 +313,7 @@ const Form = ({ handleLogin }) => {
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                       >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -334,7 +340,7 @@ const Form = ({ handleLogin }) => {
                         onClick={() => setShowPasswordC(!showPasswordC)}
                         edge="end"
                       >
-                        {showPasswordC ? <Visibility /> : <VisibilityOff />}
+                        {showPasswordC ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),

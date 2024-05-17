@@ -9,13 +9,16 @@ const useAlertBox = () => {
       top: 0,
       behavior: 'smooth' // Smooth scrolling animation
     });
-    SetAlertBox (
-      <Alert severity={severity} variant="outlined" onClose={() => { SetAlertBox(defAlert) }}>{msg}</Alert>
+    SetAlertBox(
+      <Box mb="2rem"> {/* Apply the margin bottom here */}
+        <Alert severity={severity} variant="outlined" onClose={() => { SetAlertBox(defAlert) }}>
+          {msg}
+        </Alert>
+      </Box>
     )
   }
   
-  
-  return {AlertBox, ShowAlertBox};
+  return { AlertBox, ShowAlertBox };
 };
 
 export default useAlertBox;

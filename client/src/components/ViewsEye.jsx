@@ -10,7 +10,7 @@ const ViewsEye = ({views = 0}) => {
     flexDirection={'row'}
     alignItems={'center'}
     bgcolor={'rgba(0,0,0,0.7)'}
-      sx={{position:'absolute', bottom: '0.35rem', borderRadius: "0.5rem", padding: '0.15rem'}}
+      sx={{position:'absolute', bottom: '0.35rem', borderRadius: "0.75rem", padding: '0.15rem', margin: '0.2rem'}}
     > 
       <Typography variant='subtitle1' color={'white'}>{views}</Typography>     
       <Visibility style={{color: 'white', marginLeft: '0.25rem'}}/>
