@@ -1,10 +1,11 @@
-import { Button, Typography, useTheme, IconButton } from "@mui/material";
+import { Button, Typography, useTheme, IconButton, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import Center from "components/Center";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
+import useAlertBox from "../../components/AlertBox";
 
 const AdvertWidget = ({
   image,
@@ -22,7 +23,14 @@ const AdvertWidget = ({
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
 
-  const [interested, setInterested] = useState(isUserInterested); // State to track if user is interested
+  const [interested, setInterested] = useState(isUserInterested);
+  const [openModal, setOpenModal] = useState(false); // State to control modal open/close
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  // Initialize the custom alert box hook
+  const { AlertBox, ShowAlertBox } = useAlertBox();
 
   const handleInterestClick = async () => {
     try {
@@ -32,7 +40,7 @@ const AdvertWidget = ({
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -45,15 +53,30 @@ const AdvertWidget = ({
 
       const data = await response.json();
 
-      // Update the interested state based on the response data
-      setInterested(data.interested);
+      if (interested) {
+        ShowAlertBox("Event Unsubscribed successfully", 'error');
+      } else {
+        ShowAlertBox("Event Subscribed successfully", 'success');
+      }
+
+      setInterested(!interested);
+      
     } catch (error) {
       console.error("Error updating interest status:", error);
+      ShowAlertBox("Failed to update interest status", 'error');
     }
+  };
+
+  const handleUnsubscribe = () => {
+    handleCloseModal(); // Close the modal
+    handleInterestClick(); // Unsubscribe from event
   };
 
   return (
     <WidgetWrapper>
+      {/* Render the custom alert box */}
+      {AlertBox}
+
       <FlexBetween>
         <Typography color={dark} variant="h5" fontWeight="500">
           Upcoming Auto Event
@@ -82,7 +105,7 @@ const AdvertWidget = ({
       </Typography>
       <Center>
         <Button
-          onClick={handleInterestClick}
+          onClick={interested ? handleOpenModal : handleInterestClick}
           sx={{
             color: palette.background.alt,
             backgroundColor: interested
@@ -91,9 +114,24 @@ const AdvertWidget = ({
             borderRadius: "3rem",
           }}
         >
-          {interested ? "Interested" : "Interest"}
+          {interested ? "Subscribed" : "Subscribe"}
         </Button>
       </Center>
+      {/* Unsubscribe confirmation modal */}
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Confirm Unsubscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to unsubscribe from this event?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Close</Button>
+          <Button onClick={handleUnsubscribe} variant="contained" color="error">
+            Unsubscribe
+          </Button>
+        </DialogActions>
+      </Dialog>
     </WidgetWrapper>
   );
 };

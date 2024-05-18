@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
-  Divider,
   IconButton,
   Typography,
   useTheme,
-  TextField,
-  Button,
   Modal,
 } from "@mui/material";
 
@@ -89,7 +86,7 @@ const UserVehicleAdWidget = ({
 
         {
           isOwner && <Typography variant="h5" color={'orange'}>
-          {vehicle.status == 'new' ? "Pending approval" : vehicle.status == 'approved' ? "Live" : "Rejected"}
+          {vehicle.status === 'new' ? "Pending approval" : vehicle.status === 'approved' ? "Live" : "Rejected"}
         </Typography>
         }
       </Box>
@@ -136,7 +133,7 @@ const UserVehicleAdWidget = ({
 
       {
         isOwner &&
-        (vehicle.status == 'rejected') &&
+        (vehicle.status === 'rejected') &&
         <Box>
           <hr />
           <Typography color={'red'} textAlign={'center'}>

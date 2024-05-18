@@ -25,6 +25,12 @@ export const register = async (req, res) => {
       return res.status(400).json({ error: "Email is already registered." });
     }
 
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) {
+      // If the email already exists, return a 400 status code with an error message
+      return res.status(400).json({ error: "Phone Number is already registered." });
+    }
+
     // Continue with user registration
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);

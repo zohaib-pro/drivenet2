@@ -16,7 +16,10 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useGetData } from "hooks/apiHook";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
-import { setPost } from "state";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import useAlertBox from "../../components/AlertBox";
 
 const EditProfileForm = ({ userId, token }) => {
   const [registerError, setRegisterError] = useState("");
@@ -24,6 +27,8 @@ const EditProfileForm = ({ userId, token }) => {
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { data: cities } = useGetData("location");
+  const [showPassword, setShowPassword] = useState(true);
+  const { AlertBox, ShowAlertBox } = useAlertBox();
 
   const editProfileSchema = yup.object().shape({
     firstName: yup
@@ -52,6 +57,11 @@ const EditProfileForm = ({ userId, token }) => {
     location: yup.string().required("required"),
     occupation: yup.string().required("required"),
     picture: yup.mixed(),
+    /*     password: yup
+    .string()
+    .required("required")
+    .min(8, "Password must be at least 8 characters long")
+    .matches(/[0-9]/, "Password must contain at least one numeric value"), */
   });
 
   const getUser = async () => {
@@ -75,9 +85,8 @@ const EditProfileForm = ({ userId, token }) => {
     location: user ? user.location : "",
     occupation: user ? user.occupation : "",
     picture: user ? user.picturePath : "",
+    //password: user ? user.password : "",
   };
-
-
 
   const editProfile = async (values, onSubmitProps) => {
     console.log("Submitting form...");
@@ -93,6 +102,7 @@ const EditProfileForm = ({ userId, token }) => {
         location,
         occupation,
         picture,
+        //password,
       } = values;
 
       // Create a new FormData object to handle the file upload
@@ -103,6 +113,7 @@ const EditProfileForm = ({ userId, token }) => {
       formData.append("phone", phone);
       formData.append("location", location);
       formData.append("occupation", occupation);
+      //formData.append("password", password);
       if (picture) {
         formData.append("picture", picture[0]); // Append the file correctly
 
@@ -132,6 +143,7 @@ const EditProfileForm = ({ userId, token }) => {
         return;
       }
       getUser();
+      ShowAlertBox("Profile updated successfully!", 'success');
 
       // If update is successful, reset the form
     } catch (error) {
@@ -163,6 +175,7 @@ const EditProfileForm = ({ userId, token }) => {
         resetForm,
       }) => (
         <form onSubmit={handleSubmit}>
+          {AlertBox}
           <Box
             display="grid"
             gap="30px"
@@ -304,7 +317,7 @@ const EditProfileForm = ({ userId, token }) => {
               disabled
             />
 
-            {/*             <TextField
+            {/*<TextField
               label="Password *"
               type={showPassword ? "password" : "text"}
               onBlur={handleBlur}
@@ -314,6 +327,7 @@ const EditProfileForm = ({ userId, token }) => {
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
               sx={{ gridColumn: "span 4" }}
+              disabled
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -322,12 +336,11 @@ const EditProfileForm = ({ userId, token }) => {
                       onClick={() => setShowPassword(!showPassword)}
                       edge="end"
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
-              disabled
             /> */}
           </Box>
 

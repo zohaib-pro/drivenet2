@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import bcrypt from 'bcryptjs'; // Import bcrypt for password hashing
 
 /* READ */
 export const getUser = async (req, res) => {
@@ -33,6 +34,7 @@ export const getUserFriends = async (req, res) => {
 /* UPDATE */
 export const addRemoveFriend = async (req, res) => {
   try {
+
     const { id, friendId } = req.params;
     const user = await User.findById(id);
     const friend = await User.findById(friendId);
@@ -61,6 +63,10 @@ export const addRemoveFriend = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+
+/* UPDATE */
+
+
 
 /* UPDATE */
 export const updateUser = async (req, res) => {
@@ -96,5 +102,40 @@ export const updateUser = async (req, res) => {
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Failed to update user" });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { currentPassword, newPassword } = req.body;
+
+    // Find the user by ID
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the current password matches
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid current password" });
+    }
+
+    // Hash the current password (reusing it as new password)
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedPassword;
+
+    // Save the updated user
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json({ message: "Failed to change password" });
   }
 };
