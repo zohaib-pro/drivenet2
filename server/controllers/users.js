@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import bcrypt from 'bcryptjs'; // Import bcrypt for password hashing
+import bcrypt from 'bcrypt'; // Import bcrypt for password hashing
 
 /* READ */
 export const getUser = async (req, res) => {

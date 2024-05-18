@@ -7,12 +7,15 @@ import "./ChatBox.css";
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
 import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
+import VehicleAdWidgetLink from "scenes/widgets/VehicleAdWidgetLink";
 
 const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, vehicleData }) => {
   const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const { palette } = useTheme();
+
+  const isVehicleAdSent = useRef(false);
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage);
@@ -37,8 +40,34 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
       }
     };
 
-    if (chat !== null) getUserData();
+    if (chat !== null) {
+      getUserData();
+      if (!isVehicleAdSent.current){
+        test();
+        isVehicleAdSent.current = true;
+      }
+    }
   }, [chat, currentUser]);
+
+
+  const test = async () =>{
+    if (vehicleData){
+      const message = {
+        senderId: currentUser,
+        text: "vehiclead:"+vehicleData._id,
+        chatId: chat._id,
+      };
+      const receiverId = chat.members.find((id) => id !== currentUser);
+      setSendMessage({ ...message, receiverId });
+      try {
+        await addMessage(message);
+      } catch {
+        //alert("errro");
+        console.log("error");
+      }
+    }
+  }
+
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -53,8 +82,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
     if (chat !== null) fetchMessages();
   }, [chat]);
 
-  const handleSend = async (e) => {
-    e.preventDefault();
+  const sendMsg = async ()=> {
     if (!newMessage.trim()) {
       return;
     }
@@ -69,19 +97,14 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
       const { data } = await addMessage(message);
       setMessages([...messages, data]);
       setNewMessage("");
-
-      // If this is the first message in the chat, and vehicleData is available, send it with the message
-      if (messages.length === 0 && vehicleData) {
-        setSendMessage({
-          senderId: currentUser,
-          text: vehicleData.title, // Message text is the title of the vehicle
-          chatId: chat._id,
-          vehicleData: vehicleData // Pass vehicle data here
-        });
-      }
     } catch {
+      //alert("errro");
       console.log("error");
     }
+  }
+  const handleSend = async (e) => {
+    e.preventDefault();
+    sendMsg();
   };
 
   useEffect(() => {
@@ -123,9 +146,14 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
           <div className={isModal ? "chat-body-modal" : "chat-body"}>
             {messages.map((message, index) => (
               <div key={index} ref={scroll} className={message.senderId === currentUser ? "message own" : "message"}>
-                {index === 0 && vehicleData && (
+                {/* {index === 0 && vehicleData && (
                   <VehicleAdWidget vehicle={vehicleData} />
-                )}
+                )} */}
+                {
+                  message.text.includes("vehiclead:")
+                  &&
+                  <VehicleAdWidgetLink id={message.text.replace("vehiclead:", "").trim()}/>
+                }
                 <span>{message.text}</span> <span>{format(message.createdAt)}</span>
               </div>
             ))}
