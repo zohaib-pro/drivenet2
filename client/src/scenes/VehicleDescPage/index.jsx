@@ -288,10 +288,7 @@ const VehicleDescPage = () => {
           </Box>
         </Box>
 
-        {/* <CustomModal open={open} close={()=>{setOpen(false)}}>
-          <Typography>Testing</Typography>
-        </CustomModal> */}
-
+        
         <Modal open={open} onClose={handleClose}>
 
           <Box
