@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -8,32 +8,41 @@ import {
   Select,
   MenuItem,
   FormControl,
+  Badge,
   useTheme,
   useMediaQuery,
   Button,
 } from "@mui/material";
 import {
-  Search,
   DarkMode,
   LightMode,
-  Notifications,
-  Help,
   Menu,
   Close,
 } from "@mui/icons-material";
-import MessageIcon from "@mui/icons-material/Message"; // Correct import statement for Message icon
+import MessageIcon from "@mui/icons-material/Message";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
-import UserImage from "components/UserImage";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
+  const unreadMessages = useSelector((state) => state.unreadMessages);
+
+  useEffect(() => {
+    // Calculate total unread message count
+    const totalUnreadCount = Object.values(unreadMessages).reduce(
+      (acc, curr) => curr,
+      0
+    );
+    setUnreadMessageCount(totalUnreadCount);
+  }, [unreadMessages]); 
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -61,32 +70,8 @@ const Navbar = () => {
         >
           DriveNet Media
         </Typography>
-
-        {/* WEBSITE LOGO HERE */}
-{/*         <img
-          style={{ objectFit: "cover", borderRadius: "50%" }}
-          width={"50px"}
-          height={"50px"}
-          alt="user"
-          src={"./assets/drivenet.png"}
-        /> */}
-
-        {/*         {isNonMobileScreens && (
-          <FlexBetween
-            backgroundColor={neutralLight}
-            borderRadius="9px"
-            gap="3rem"
-            padding="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
-        )} */}
       </FlexBetween>
 
-      {/* DESKTOP NAV */}
       {isNonMobileScreens ? (
         <FlexBetween gap="2rem">
           <IconButton onClick={() => dispatch(setMode())}>
@@ -97,15 +82,15 @@ const Navbar = () => {
             )}
           </IconButton>
           <IconButton component={Link} to="/chat">
-            <MessageIcon
-              style={{
-                fontSize: "25px",
-                color: theme.palette.mode === "dark" ? "inherit" : dark,
-              }}
-            />
+            <Badge badgeContent={unreadMessageCount} color="error">
+              <MessageIcon
+                style={{
+                  fontSize: "25px",
+                  color: theme.palette.mode === "dark" ? "inherit" : dark,
+                }}
+              />
+            </Badge>
           </IconButton>
-          {/* <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} /> */}
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -144,7 +129,6 @@ const Navbar = () => {
         </IconButton>
       )}
 
-      {/* MOBILE NAV */}
       {!isNonMobileScreens && isMobileMenuToggled && (
         <Box
           position="fixed"
@@ -156,7 +140,6 @@ const Navbar = () => {
           minWidth="300px"
           backgroundColor={background}
         >
-          {/* CLOSE ICON */}
           <Box display="flex" justifyContent="flex-end" p="1rem">
             <IconButton
               onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
@@ -165,7 +148,6 @@ const Navbar = () => {
             </IconButton>
           </Box>
 
-          {/* MENU ITEMS */}
           <FlexBetween
             display="flex"
             flexDirection="column"
@@ -184,13 +166,10 @@ const Navbar = () => {
               )}
             </IconButton>
             <IconButton component={Link} to="/chat">
-              {" "}
-              {/* Use IconButton instead of Message */}
-              <MessageIcon sx={{ fontSize: "25px" }} />{" "}
-              {/* Correctly use MessageIcon */}
+              <Badge badgeContent={unreadMessageCount} color="error">
+                <MessageIcon sx={{ fontSize: "25px" }} />
+              </Badge>
             </IconButton>
-            {/*             <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} /> */}
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}

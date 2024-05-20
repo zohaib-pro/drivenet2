@@ -1,20 +1,19 @@
-// ChatParent.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@mui/material";
 import "./Chat.css";
 import { userChats } from "../../api/ChatRequests";
-
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { io } from "socket.io-client";
 import Conversation from "components/Conversation";
 import ChatBox from "components/ChatBox";
 import WidgetWrapper from "components/WidgetWrapper";
-import { json } from "react-router-dom";
+import { incrementUnread, resetUnread } from "../../state";
 
-
-const ChatParent = ({isModal, chatWith, vehicleData}) => {
+const ChatParent = ({ isModal, chatWith, vehicleData }) => {
   const socket = useRef();
   const user = useSelector((state) => state.user);
+  const unreadMessages = useSelector((state) => state.unreadMessages);
+  const dispatch = useDispatch();
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -24,23 +23,25 @@ const ChatParent = ({isModal, chatWith, vehicleData}) => {
   const isMobileScreens = useMediaQuery("(min-width:768px)");
 
   useEffect(() => {
-    const getChats = async () => {
-      try {
-        const { data } = await userChats(user._id);
-        setChats(data);
-        if (chatWith){
-          const targetChat = data.find(item=>item.members[0] == chatWith || item.members[1] == chatWith);
-          if (targetChat){
-            setCurrentChat(targetChat);
-            setIsChatClicked(true);
+    if (user && user._id) {
+      const getChats = async () => {
+        try {
+          const { data } = await userChats(user._id);
+          setChats(data);
+          if (chatWith) {
+            const targetChat = data.find((item) => item.members.includes(chatWith));
+            if (targetChat) {
+              setCurrentChat(targetChat);
+              setIsChatClicked(true);
+            }
           }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getChats();
-  }, [user]);
+      };
+      getChats();
+    }
+  }, [user, chatWith]);
 
   useEffect(() => {
     if (sendMessage !== null) {
@@ -49,18 +50,27 @@ const ChatParent = ({isModal, chatWith, vehicleData}) => {
   }, [sendMessage]);
 
   useEffect(() => {
-    socket.current = io("ws://localhost:8800");
-    socket.current.emit("new-user-add", user._id);
-    socket.current.on("get-users", (users) => {
-      setOnlineUsers(users);
-    });
-  }, [user]);
+    if (user && user._id) {
+      socket.current = io("ws://localhost:8800");
+      socket.current.emit("new-user-add", user._id);
+      socket.current.on("get-users", (users) => {
+        setOnlineUsers(users);
+      });
+      socket.current.on("receive-message", (data) => {
+        setReceivedMessage(data);
+        dispatch(incrementUnread({ chatId: data.chatId }));
+      });
+      socket.current.on("incrementUnread", ({ senderId }) => {
+        dispatch(incrementUnread({ chatId: senderId }));
+      });
+    }
+  }, [user, dispatch]);
 
-  useEffect(() => {
-    socket.current.on("recieve-message", (data) => {
-      setReceivedMessage(data);
-    });
-  }, []);
+  const handleChatClick = (chat) => {
+    setCurrentChat(chat);
+    setIsChatClicked(true);
+    dispatch(resetUnread({ chatId: chat._id }));
+  };
 
   const checkOnlineStatus = (chat) => {
     const chatMember = chat.members.find((member) => member !== user._id);
@@ -68,23 +78,29 @@ const ChatParent = ({isModal, chatWith, vehicleData}) => {
     return online ? true : false;
   };
 
+  if (!user) {
+    return null; // or a loading spinner, or any other placeholder
+  }
+
   return (
     <div className="Chat">
       {/* Left Side */}
       <div className={`Left-side-chat ${isChatClicked && !isMobileScreens ? 'hide' : ''}`}>
-        <div className={isModal? "Chat-container-modal" : "Chat-container"}>
+        <div className={isModal ? "Chat-container-modal" : "Chat-container"}>
           <WidgetWrapper>
             <h2>Chats</h2>
             <div className="Chat-list">
               {chats.map((chat) => (
                 <div
                   key={chat._id}
-                  onClick={() => {
-                    setCurrentChat(chat);
-                    setIsChatClicked(true);
-                  }}
+                  onClick={() => handleChatClick(chat)}
                 >
-                  <Conversation data={chat} currentUser={user._id} online={checkOnlineStatus(chat)} />
+                  <Conversation
+                    data={chat}
+                    currentUser={user._id}
+                    online={checkOnlineStatus(chat)}
+                    unreadMessages={unreadMessages[chat._id] || 0}
+                  />
                 </div>
               ))}
             </div>
@@ -100,7 +116,7 @@ const ChatParent = ({isModal, chatWith, vehicleData}) => {
           setSendMessage={setSendMessage}
           receivedMessage={receivedMessage}
           isModal={isModal}
-          vehicleData={vehicleData} // Pass vehicleData here
+          vehicleData={vehicleData}
         />
       </div>
     </div>

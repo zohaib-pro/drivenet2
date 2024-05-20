@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   mode: "light",
@@ -11,6 +11,7 @@ const initialState = {
   search: '',
   isFilterApplied: false,
   userImages: {}, // New state for user images
+  unreadMessages: {}, // State for unread messages
 };
 
 export const authSlice = createSlice({
@@ -47,7 +48,6 @@ export const authSlice = createSlice({
     setEvents: (state, action) => {
       state.events = action.payload.events;
     },
-
     setSearch: (state, action) => {
       state.search = action.payload.search;
     },
@@ -68,6 +68,18 @@ export const authSlice = createSlice({
     setUserImage: (state, action) => {
       state.userImages[action.payload.userId] = action.payload.image;
     },
+    incrementUnread: (state, action) => {
+      const { chatId } = action.payload;
+      if (state.unreadMessages[chatId]) {
+        state.unreadMessages[chatId] += 1;
+      } else {
+        state.unreadMessages[chatId] = 1;
+      }
+    },
+    resetUnread: (state, action) => {
+      const { chatId } = action.payload;
+      state.unreadMessages[chatId] = 0;
+    }
   },
 });
 
@@ -84,5 +96,7 @@ export const {
   setVehicleAds,
   setVehicleAdsAll,
   setUserImage,
+  incrementUnread,
+  resetUnread
 } = authSlice.actions;
 export default authSlice.reducer;
