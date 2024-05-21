@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useTheme, Divider } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useRef } from "react";
 import { addMessage, getMessages } from "../../src/api/MessageRequests";
 import "./ChatBox.css";
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
-import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
 import VehicleAdWidgetLink from "scenes/widgets/VehicleAdWidgetLink";
 
 const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, vehicleData }) => {
@@ -16,6 +14,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
   const { palette } = useTheme();
 
   const isVehicleAdSent = useRef(false);
+  const scroll = useRef();
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage);
@@ -24,7 +23,9 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
   const token = useSelector((state) => state.token);
 
   useEffect(() => {
-    const userId = chat?.members?.find((id) => id !== currentUser);
+    if (!chat) return;
+
+    const userId = chat.members.find((id) => id !== currentUser);
 
     const getUserData = async () => {
       try {
@@ -40,36 +41,34 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
       }
     };
 
-    if (chat !== null) {
-      getUserData();
-      if (!isVehicleAdSent.current){
-        test();
-        isVehicleAdSent.current = true;
-      }
+    getUserData();
+    
+    if (!isVehicleAdSent.current) {
+      sendVehicleAdMessage();
+      isVehicleAdSent.current = true;
     }
-  }, [chat, currentUser]);
+  }, [chat, currentUser, token]);
 
-
-  const test = async () =>{
-    if (vehicleData){
+  const sendVehicleAdMessage = async () => {
+    if (vehicleData && chat) {
       const message = {
         senderId: currentUser,
-        text: "vehiclead:"+vehicleData._id,
+        text: `vehiclead:${vehicleData._id}`,
         chatId: chat._id,
       };
       const receiverId = chat.members.find((id) => id !== currentUser);
       setSendMessage({ ...message, receiverId });
       try {
         await addMessage(message);
-      } catch {
-        //alert("errro");
-        console.log("error");
+      } catch (error) {
+        console.log("Error sending vehicle ad message", error);
       }
     }
-  }
-
+  };
 
   useEffect(() => {
+    if (!chat) return;
+
     const fetchMessages = async () => {
       try {
         const { data } = await getMessages(chat._id);
@@ -79,13 +78,12 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
       }
     };
 
-    if (chat !== null) fetchMessages();
+    fetchMessages();
   }, [chat]);
 
-  const sendMsg = async ()=> {
-    if (!newMessage.trim()) {
-      return;
-    }
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !chat) return;
+
     const message = {
       senderId: currentUser,
       text: newMessage,
@@ -97,27 +95,25 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
       const { data } = await addMessage(message);
       setMessages([...messages, data]);
       setNewMessage("");
-    } catch {
-      //alert("errro");
-      console.log("error");
+    } catch (error) {
+      console.log("Error sending message", error);
     }
-  }
+  };
+
   const handleSend = async (e) => {
     e.preventDefault();
-    sendMsg();
+    sendMessage();
   };
 
   useEffect(() => {
-    if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
-      setMessages([...messages, receivedMessage]);
+    if (receivedMessage && chat && receivedMessage.chatId === chat._id) {
+      setMessages((prevMessages) => [...prevMessages, receivedMessage]);
     }
-  }, [receivedMessage]);
+  }, [receivedMessage, chat]);
 
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  const scroll = useRef();
 
   return (
     <div className={isModal ? "ChatBox-container-modal" : "ChatBox-container"}
@@ -146,14 +142,9 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
           <div className={isModal ? "chat-body-modal" : "chat-body"}>
             {messages.map((message, index) => (
               <div key={index} ref={scroll} className={message.senderId === currentUser ? "message own" : "message"}>
-                {/* {index === 0 && vehicleData && (
-                  <VehicleAdWidget vehicle={vehicleData} />
-                )} */}
-                {
-                  message.text.includes("vehiclead:")
-                  &&
-                  <VehicleAdWidgetLink id={message.text.replace("vehiclead:", "").trim()}/>
-                }
+                {message.text.includes("vehiclead:") && (
+                  <VehicleAdWidgetLink id={message.text.replace("vehiclead:", "").trim()} />
+                )}
                 <span>{message.text}</span> <span>{format(message.createdAt)}</span>
               </div>
             ))}

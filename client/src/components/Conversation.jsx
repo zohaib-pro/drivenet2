@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Divider } from "@mui/material";
 
-const Conversation = ({ data, currentUser, online }) => {
+const Conversation = ({ data, currentUser, online, unreadMessages }) => {
   const [userData, setUserData] = useState(null);
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.token); // Retrieve token from Redux store
 
   useEffect(() => {
@@ -28,6 +27,10 @@ const Conversation = ({ data, currentUser, online }) => {
     getUserData();
   }, [data.members, currentUser, token]);
 
+  if (!userData) {
+    return null; // or a loading spinner, or any other placeholder
+  }
+
   return (
     <>
       <div
@@ -38,8 +41,11 @@ const Conversation = ({ data, currentUser, online }) => {
           alignItems: "flex-start",
         }}
       >
-        <div style={{ display: "flex"}}>
-           {online && <div className="online-dot"></div>}
+        <div style={{ display: "flex" }}>
+          {online && <div className="online-dot"></div>}
+          {unreadMessages > 0 && (
+            <div className="unread-dot"> {unreadMessages}</div>
+          )}
           <img
             src={
               userData?.picturePath
@@ -51,9 +57,7 @@ const Conversation = ({ data, currentUser, online }) => {
             style={{ width: "50px", height: "50px" }}
           />
           {userData && (
-            <div
-              style={{ fontSize: "0.8rem", marginLeft: "0.5rem" }}
-            >
+            <div style={{ fontSize: "0.8rem", marginLeft: "0.5rem" }}>
               <span className="name">
                 {userData.firstName} {userData.lastName}
               </span>
