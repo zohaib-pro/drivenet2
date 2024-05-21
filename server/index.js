@@ -87,6 +87,7 @@ app.use('/vehicles', vehicleRoutes);
 app.use('/location', locationRoutes);
 
 
+
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
 mongoose.connect('mongodb://localhost:27017/kun_drivenet', {
