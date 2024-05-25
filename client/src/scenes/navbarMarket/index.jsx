@@ -44,6 +44,7 @@ const Navbar = ({ onSearch = () => { } }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const cities = useSelector(state => state.cities);
+  const mode = useSelector(state=>state.mode);
   const vehicleAds = useSelector((state) => state.vehicleAds);
   const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -97,20 +98,30 @@ const Navbar = ({ onSearch = () => { } }) => {
         <LoginPage isModal={true} onLogin={()=>{setModalOpen(false)}}/>
       </CustomModal>
       <FlexBetween gap="1rem">
-        <Typography
-          fontWeight="bold"
-          fontSize="clamp(1rem, 2rem, 2.25rem)"
-          color="primary"
-          onClick={() => navigate("/market")}
-          sx={{
-            "&:hover": {
-              color: primaryLight,
-              cursor: "pointer",
-            },
-          }}
-        >
-          DriveNet Market
-        </Typography>
+        <Box display={'flex'} width={'auto'} gap={"0.2rem"} >
+        <img
+            height={'auto'}
+            width={'200vw'}
+            style={{ alignSelf: "center"}}
+            src="http://localhost:3000/assets/drivenet.png"
+            alt="Drivenet Market"
+          />
+
+          <Typography
+            fontWeight="bold"
+            fontSize="clamp(1rem, 2rem, 2.25rem)"
+            color="primary"
+            onClick={() => navigate("/market")}
+            sx={{
+              "&:hover": {
+                color: primaryLight,
+                cursor: "pointer",
+              },
+            }}
+          >
+            Market
+          </Typography>
+        </Box>
         {isNonMobileScreens && (
           <FlexBetween
             backgroundColor={neutralLight}

@@ -16,6 +16,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
 import UserAdsPage from "scenes/UserAdsPage";
+import LandingPage from "scenes/landingPage";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -56,8 +57,9 @@ function App() {
 
             <Route
               path="/market"
-              element={<MarketPage />}
+              element={<LandingPage />}
             />
+
 
             <Route
               path="/market/:vehicleAdId"

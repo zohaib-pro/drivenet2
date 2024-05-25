@@ -11,6 +11,7 @@ import useAlertBox from "components/AlertBox";
 const UserVehicleAdWidgetGallery = ({ heading, UserVehicleAds = [], isOwner, onDeleteSuccess }) => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
+  const user = useSelector(state=>state.user);
 
   const [vehicleAds, setVehicleAds] = useState(UserVehicleAds);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -50,7 +51,7 @@ const UserVehicleAdWidgetGallery = ({ heading, UserVehicleAds = [], isOwner, onD
                 key={item.title || index} // Use index as fallback if title is not unique
               >
                 <UserVehicleAdWidget
-                  isOwner={false}
+                  isOwner={user._id == item.seller}
                   vehicle={item}
                   redirectTo={'/market/' + item._id}
                   onDeleteSuccess={(id)=>{

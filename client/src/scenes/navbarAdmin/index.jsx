@@ -78,7 +78,7 @@ const Navbar = () => {
             },
           }}
         >
-          Community
+          Admin
         </Typography>
           
         </Box>
@@ -94,7 +94,7 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <IconButton component={Link} to="/chat">
+          {/* <IconButton component={Link} to="/chat">
             <Badge badgeContent={unreadMessageCount} color="error">
               <MessageIcon
                 style={{
@@ -103,7 +103,7 @@ const Navbar = () => {
                 }}
               />
             </Badge>
-          </IconButton>
+          </IconButton> */}
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -130,7 +130,7 @@ const Navbar = () => {
           </FormControl>
           <Link to="/market" style={{ textDecoration: "none" }}>
             <Button variant="contained" color="primary">
-              Market
+              Admin
             </Button>
           </Link>
         </FlexBetween>

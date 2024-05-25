@@ -2,7 +2,7 @@ import { Box, useMediaQuery, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Navbar from "scenes/navbar";
+import Navbar from "scenes/navbarAdmin";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -45,8 +45,8 @@ const ProfilePage = () => {
     'Vehicle Details': <VehicleDetailsComponent />,
     'Listing Management': <ListingManagementComponent />,
     'User Management': <></>,
-    'Menu 7': <></>,
-    'Menu 8': <></>,
+    'Menu Main': <></>,
+    'Menu Secondary': <></>,
   }
 
   return (

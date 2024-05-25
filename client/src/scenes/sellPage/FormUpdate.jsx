@@ -17,6 +17,7 @@ import IconBtn from "components/IconBtn";
 import CloseIcon from "@mui/icons-material/Close";
 import { json } from 'react-router-dom';
 import ImagesListViewer from 'components/ImagesListViewer';
+import Predictor from 'components/Predictor';
 
 
 // Define Yup validation schema
@@ -181,7 +182,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
     //   setIsPredicting(false);
     // }, 2000);
     try {
-      const response = await fetch(`http://192.168.218.49:4000/predict`, {
+      const response = await fetch(`http://192.168.147.49:4000/predict`, {
         method: "POST",
         body: formData
       });
@@ -252,6 +253,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
       flexDirection={isNonMobileScreens ? "row" : "column-reverse"}>
         
       <Box flexBasis={"60%"}>
+        <Typography>Test</Typography>
         { vehicle &&
         <Formik
           initialValues={initialValues}
@@ -601,44 +603,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
                 margin="normal"
               />
 
-              <Typography variant="p" fontWeight={500}>
-                Estimate the worth of this vehicle using our AI model
-              </Typography>
-              <Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '60%',
-                    float: 'left',
-                    borderRadius: '20px', // Adjust the border radius as needed
-                    border: '1px solid #BDBDBD', // Optionally, add a border for outline
-                    padding: '8px 12px', // Adjust padding as needed
-                    backgroundColor: '#F5F5F5', // Optionally, set background color
-                  }}
-                >
-                  <Typography  >
-                    {/* {`${prediction.lower_limit}   -   ${prediction.upper_limit}`} */
-                      prediction.predicted_price
-                    }
-                  </Typography>
-                  <Typography >
-                    PKR
-                  </Typography>
-                </Box>
-                <img
-                  width="50px"
-                  height="50px"
-                  alt="post"
-                  style={{ objectFit: "cover", marginTop: "1rem", marginLeft: "-1.4rem" }}
-                  src={`http://localhost:3000/icons/price_tag.png`}
-                />
-                <IconBtn text="Estimate" style={{ float: 'right', color: 'white' }}
-                  icon="http://localhost:3000/icons/ai.png"
-                  onPress={getPrediction}
-                />
-                {isPredicting && <LinearProgress />}
-              </Box>
+              <Predictor vehicle={vehicle} />
 
 
               {/* Submit button */}

@@ -70,7 +70,7 @@ export default function Login({ onLogin, handleRegister }) {
         <img
           height={onLogin? 100:250}
           style={{ alignSelf: "center", marginBottom: '1rem' }}
-          src="http://localhost:3000/assets/drivenet.png"
+          src="http://localhost:3000/assets/drivenetlogo.jpg"
           alt="Drivenet Market"
         />
       </Center>

@@ -61,6 +61,7 @@ const VehicleAdWidget = ({
         </Typography>
         <Typography variant="h5" fontWeight={500}
           mb={1}
+          color={palette.mode == 'dark'? 'white': undefined}
         >
           {vehicle.title}
         </Typography>
@@ -69,10 +70,10 @@ const VehicleAdWidget = ({
 
         <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'} >
           <LocationOnOutlined />
-          <Typography variant="subtitle2">{`${vehicle.location.area ? vehicle.location.area + ', ' : ''}${vehicle.location.city}`}</Typography>
+          <Typography variant="subtitle2"  color={palette.mode == 'dark'? 'white': undefined}>{`${vehicle.location.area ? vehicle.location.area + ', ' : ''}${vehicle.location.city}`}</Typography>
           {/* <Typography>{vehicle.location.city}</Typography> */}
-          <Typography>|</Typography>
-          <Typography variant="subtitle2">{getTimeDiff(vehicle)} days ago</Typography>
+          <Typography color={palette.mode == 'dark'? 'white': undefined}>|</Typography>
+          <Typography variant="subtitle2" color={palette.mode == 'dark'? 'white': undefined}>{getTimeDiff(vehicle)} days ago</Typography>
         </Box>
       </Link>
       {

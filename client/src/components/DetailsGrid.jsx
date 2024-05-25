@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid, useTheme } from "@mui/material";
 import Button from '@mui/material/Button';
 import { AdjustOutlined } from '@mui/icons-material';
 
@@ -12,6 +12,8 @@ const DetailsGrid = ({
         kms: 'kms',
         fuelAvg: 'km/L',
     }
+
+    const { palette } = useTheme();
     return (
         <Grid container spacing={2}>
             {
@@ -22,7 +24,11 @@ const DetailsGrid = ({
                                 width={`${size}px`}
                                 height={`${size}px`}
                                 src={`${mainUrl}/${item}.png`} />
-                            <Typography>{data[item]} {units[item]}</Typography>
+                            <Typography
+                                color={palette.mode == 'dark'? 'white': undefined}
+                            >
+                                {data[item]} {units[item]}
+                            </Typography>
                         </Box>
                     </Grid>
                 ))

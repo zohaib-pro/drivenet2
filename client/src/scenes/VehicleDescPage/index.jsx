@@ -20,10 +20,11 @@ import ChatParent from "scenes/chatPage/ChatParent";
 import { numberWithCommas } from "utils/math";
 import CustomModal from "components/CustomModal";
 import LoginPage from "scenes/loginPage";
+import Predictor from "components/Predictor";
 
 const VehicleDescPage = () => {
   const [open, setOpen] = useState(false);
-  const [isPredicting, setIsPredicting] = useState(false);
+  
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -34,6 +35,7 @@ const VehicleDescPage = () => {
     lower_limit: 0,
     predicted_price: 0
   });
+  const [isPredicting, setIsPredicting] = useState(false);
   const { vehicleAdId } = useParams();
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
@@ -98,7 +100,7 @@ const VehicleDescPage = () => {
     });
 
     try {
-      const response = await fetch(`http://192.168.218.49:4000/predict`, {
+      const response = await fetch(`http://192.168.147.49:4000/predict`, {
         method: "POST",
         body: formData
       });
@@ -194,7 +196,9 @@ const VehicleDescPage = () => {
 
                   <Divider />
 
-                  <Typography variant="p" fontWeight={500}>
+                  <Predictor vehicle={vehicle}/>
+
+                  {/* <Typography variant="p" fontWeight={500}>
                     Estimate the worth of this vehicle using our AI model
                   </Typography>
                   <Box>
@@ -230,7 +234,7 @@ const VehicleDescPage = () => {
                     />
                   </Box>
 
-                  {isPredicting && <LinearProgress />}
+                  {isPredicting && <LinearProgress />} */}
 
                   <SellerCard seller={sellerData} user={user} onPressChat={user ? handleOpen : () => { setLoginModalOpen(true) }} />
 
