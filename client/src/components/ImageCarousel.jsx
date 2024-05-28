@@ -1,28 +1,26 @@
 // src/ImageCarousel.js
 import React from 'react';
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Carousel from 'react-material-ui-carousel';
 import { Paper, Box, Typography, useMediaQuery } from '@mui/material';
 
 const items = [
     {
-        name: "Random Image #1",
-        description: "Description for Random Image #1",
-        imageUrl: "http://localhost:3000/assets/drivenet.png"
+        imageUrl: "http://localhost:3000/assets/slider1.png"
     },
     {
-        name: "Random Image #2",
-        description: "Description for Random Image #2",
-        imageUrl: "http://localhost:3000/assets/drivenet.png"
+        imageUrl: "http://localhost:3000/assets/slider2.png"
     },
     {
-        name: "Random Image #3",
-        description: "Description for Random Image #3",
-        imageUrl: "http://localhost:3000/assets/drivenet.png"
+        imageUrl: "http://localhost:3000/assets/slider3.png"
+
     }
 ];
 
 
 function ImageCarousel() {
+
     return (
         
         <Carousel
@@ -43,7 +41,7 @@ function ImageCarousel() {
                 style: {
                     position: 'relative',
                     zIndex: 3,
-                    marginTop: '-50px',  // Adjust the margin to position it correctly
+                    marginTop: '50px',  // Adjust the margin to position it correctly
                     textAlign: 'center'  // Center the indicators
                 }
             }}
@@ -76,7 +74,7 @@ function Item(props) {
                         sx={{
                             position: 'absolute',
                             background: 'black',
-                            opacity: 0.5,
+                            opacity: 0.20,
                             width: '100%',
                             height: '100%',
                             zIndex: 1,
@@ -89,7 +87,7 @@ function Item(props) {
                             zIndex: 2,
                             color: 'white',
                             padding: '1rem',
-                            top: '50%',
+                            top: '15%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
                             textAlign: 'center',
