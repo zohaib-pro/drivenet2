@@ -7,19 +7,19 @@ import { io } from "socket.io-client";
 import Conversation from "components/Conversation";
 import ChatBox from "components/ChatBox";
 import WidgetWrapper from "components/WidgetWrapper";
-import { incrementUnread, resetUnread, setChatClicked } from "../../state";
+import { incrementUnread, resetUnread } from "../../state";
 
 const ChatParent = ({ isModal, chatWith, vehicleData }) => {
   const socket = useRef();
   const user = useSelector((state) => state.user);
   const unreadMessages = useSelector((state) => state.unreadMessages);
-  const isChatClicked = useSelector((state) => state.isChatClicked);
   const dispatch = useDispatch();
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [sendMessage, setSendMessage] = useState(null);
   const [receivedMessage, setReceivedMessage] = useState(null);
+  const [isChatClicked, setIsChatClicked] = useState(false);
   const isMobileScreens = useMediaQuery("(min-width:768px)");
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const ChatParent = ({ isModal, chatWith, vehicleData }) => {
             const targetChat = data.find((item) => item.members.includes(chatWith));
             if (targetChat) {
               setCurrentChat(targetChat);
-              dispatch(setChatClicked({ isChatClicked: true }));
+              setIsChatClicked(true);
             }
           }
         } catch (error) {
@@ -41,7 +41,7 @@ const ChatParent = ({ isModal, chatWith, vehicleData }) => {
       };
       getChats();
     }
-  }, [user, chatWith, dispatch]);
+  }, [user, chatWith]);
 
   useEffect(() => {
     if (sendMessage !== null) {
@@ -68,7 +68,7 @@ const ChatParent = ({ isModal, chatWith, vehicleData }) => {
 
   const handleChatClick = (chat) => {
     setCurrentChat(chat);
-    dispatch(setChatClicked({ isChatClicked: true, chatId: chat._id }));
+    setIsChatClicked(true);
     dispatch(resetUnread({ chatId: chat._id }));
   };
 

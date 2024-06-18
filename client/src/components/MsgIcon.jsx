@@ -8,7 +8,6 @@ import { resetUnread } from '../state';
 const MsgIcon = ({ views = 0 }) => {
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
   const unreadMessages = useSelector((state) => state.unreadMessages);
-  const clickedChatId = useSelector((state) => state.clickedChatId);
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -19,14 +18,13 @@ const MsgIcon = ({ views = 0 }) => {
       0
     );
     
-    // Set unread message count to zero if the current route is /chat and a chat is clicked
-    if (location.pathname === '/chat' ) {
+    // Set unread message count to zero if the current route is /chat
+    if (location.pathname === '/chat') {
       setUnreadMessageCount(0);
-      dispatch(resetUnread({ chatId: clickedChatId }));
     } else {
       setUnreadMessageCount(totalUnreadCount);
     }
-  }, [unreadMessages, location.pathname, clickedChatId, dispatch]);
+  }, [unreadMessages, location.pathname, dispatch]);
 
   return (
     <IconButton component={Link} to="/chat">
