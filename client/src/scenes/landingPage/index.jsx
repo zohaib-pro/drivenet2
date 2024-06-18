@@ -80,7 +80,7 @@ const LandingPage = () => {
             sx={{
               position: "absolute",
               background: "black",
-              opacity: "0.5",
+              opacity: "0.4",
               width: "100%",
               height: "100%",
               borderRadius: "0.75rem",
