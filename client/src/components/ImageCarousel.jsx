@@ -29,12 +29,12 @@ function ImageCarousel() {
             indicatorIconButtonProps={{
                 style: {
                     padding: '10px',    // Adjust the padding as needed
-                    color: 'white'      // Change to desired color
+                    color: 'orange'      // Change to desired color
                 }
             }}
             activeIndicatorIconButtonProps={{
                 style: {
-                    backgroundColor: '#fff' // Change to desired color
+                    backgroundColor: 'rgba(255, 165, 0, 0.7)' // Change to desired color
                 }
             }}
             indicatorContainerProps={{
@@ -85,7 +85,7 @@ function Item(props) {
                         sx={{
                             position: 'absolute',
                             zIndex: 2,
-                            color: 'white',
+                            color: 'black',
                             padding: '1rem',
                             top: '15%',
                             left: '50%',

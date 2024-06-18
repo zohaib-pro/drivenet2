@@ -238,7 +238,7 @@ const VehicleDescPage = () => {
 
                   <SellerCard seller={sellerData} user={user} onPressChat={user ? handleOpen : () => { setLoginModalOpen(true) }} />
 
-                  <IssueCreationComponent vehicleAdId={vehicleAdId} user={user} onIssueReported={(msg) => { showAlert(msg) }} />
+                  <IssueCreationComponent vehicleAdId={vehicleAdId} seller={sellerData} user={user} onIssueReported={(msg) => { showAlert(msg) }} />
                 </Box>
               </WidgetWrapper>
             }

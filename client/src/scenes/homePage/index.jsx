@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const { _id, picturePath } = useSelector((state) => state.user);
-  const token = useSelector(state=>state.token);
+  const token = useSelector(state => state.token);
 
   const [events, setEvents] = useState([]);
 
@@ -23,10 +23,10 @@ const HomePage = () => {
 
     const data = await response.json();
     setEvents(data)
-};
-useEffect(()=>{
-  getEvents();
-}, [])
+  };
+  useEffect(() => {
+    getEvents();
+  }, [])
 
 
   return (
@@ -49,12 +49,12 @@ useEffect(()=>{
           <MyPostWidget picturePath={picturePath} />
           <PostsWidget userId={_id} />
         </Box>
-        
-          <Box flexBasis="26%">
-            <EventWidgetGallery events={events}/>
-            <FriendListWidget userId={_id} />
-          </Box>
-          
+
+        <Box flexBasis="26%">
+          <EventWidgetGallery events={events} />
+          <FriendListWidget userId={_id} />
+        </Box>
+
       </Box>
     </Box>
   );

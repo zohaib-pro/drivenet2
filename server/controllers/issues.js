@@ -3,14 +3,16 @@ import Issue from "../models/Issue.js";
 /* CREATE */
 export const createIssue = async (req, res) => {
   try {
-    const { userId, vehicleAdId, category, details, userInfo } = req.body; // Add title
+    const { userId, vehicleAdId, category, details, userInfo, sellerId } = req.body; // Add title
     const newIssue = new Issue({
       userId, 
       vehicleAdId,
+      sellerId,
       category,
       details,
       userInfo
     });
+
     await newIssue.save();  
     res.status(201).json(newIssue);
   } catch (err) {

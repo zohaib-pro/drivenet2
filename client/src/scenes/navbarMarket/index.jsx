@@ -35,6 +35,7 @@ import { setVehicleAds } from "state";
 import CustomModal from "components/CustomModal";
 import Login from "scenes/loginPage/Login";
 import LoginPage from "scenes/loginPage";
+import MsgIcon from "components/MsgIcon";
 
 const Navbar = ({ onSearch = () => { } }) => {
 
@@ -206,6 +207,8 @@ const Navbar = ({ onSearch = () => { } }) => {
       {isNonMobileScreens ? (
         <FlexBetween gap="1rem">
 
+          <MsgIcon />
+
           <IconButton
             onClick={() => dispatch(setMode())}
             sx={{ fontSize: "25px" }}
@@ -312,6 +315,8 @@ const Navbar = ({ onSearch = () => { } }) => {
             alignItems="center"
             gap="3rem"
           >
+
+            
             <IconButton
               onClick={() => dispatch(setMode())}
               sx={{ fontSize: "25px" }}
@@ -322,9 +327,8 @@ const Navbar = ({ onSearch = () => { } }) => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
-            <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
+            <MsgIcon />
+
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}
@@ -346,9 +350,9 @@ const Navbar = ({ onSearch = () => { } }) => {
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => navigate('/market')}>
-                  My Ads
-                </MenuItem>
+                <MenuItem onClick={() => navigate('/market/profile/' + user._id)}>
+                My Ads
+              </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out
                 </MenuItem>

@@ -24,26 +24,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
+import MsgIcon from "components/MsgIcon";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
-  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-
-  const unreadMessages = useSelector((state) => state.unreadMessages);
-
-  useEffect(() => {
-    // Calculate total unread message count
-    const totalUnreadCount = Object.values(unreadMessages).reduce(
-      (acc, curr) => curr,
-      0
-    );
-    setUnreadMessageCount(totalUnreadCount);
-  }, [unreadMessages]); 
-
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");  
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
   const dark = theme.palette.neutral.dark;
@@ -94,16 +83,7 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <IconButton component={Link} to="/chat">
-            <Badge badgeContent={unreadMessageCount} color="error">
-              <MessageIcon
-                style={{
-                  fontSize: "25px",
-                  color: theme.palette.mode === "dark" ? "inherit" : dark,
-                }}
-              />
-            </Badge>
-          </IconButton>
+          <MsgIcon />
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -178,11 +158,7 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <IconButton component={Link} to="/chat">
-              <Badge badgeContent={unreadMessageCount} color="error">
-                <MessageIcon sx={{ fontSize: "25px" }} />
-              </Badge>
-            </IconButton>
+            <MsgIcon />
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}
