@@ -12,6 +12,8 @@ const initialState = {
   isFilterApplied: false,
   userImages: {}, // New state for user images
   unreadMessages: {}, // State for unread messages
+  isChatClicked: false,
+  clickedChatId: null, // Add clickedChatId to state
 };
 
 export const authSlice = createSlice({
@@ -73,13 +75,18 @@ export const authSlice = createSlice({
       if (state.unreadMessages[chatId]) {
         state.unreadMessages[chatId] += 1;
       } else {
-        state.unreadMessages[chatId] = 1;  
+        state.unreadMessages[chatId] = 1;
       }
     },
     resetUnread: (state, action) => {
       const { chatId } = action.payload;
       state.unreadMessages[chatId] = 0;
-    }
+    },
+    setChatClicked: (state, action) => {
+      state.isChatClicked = action.payload.isChatClicked;
+      state.clickedChatId = action.payload.chatId; // Update clickedChatId
+    },
+    
   },
 });
 
@@ -97,6 +104,7 @@ export const {
   setVehicleAdsAll,
   setUserImage,
   incrementUnread,
-  resetUnread
+  resetUnread,
+  setChatClicked
 } = authSlice.actions;
 export default authSlice.reducer;
