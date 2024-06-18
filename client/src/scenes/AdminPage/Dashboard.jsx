@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 import { Box, useMediaQuery } from "@mui/material";
 import LineGraph from "components/lineGraph";
+import { useGetData } from "hooks/apiHook";
 
 const Dashboard = () => {
     const [report, setReport] = useState();
@@ -31,15 +32,8 @@ const Dashboard = () => {
         }
     };
 
-    const dummySiteVisitsData = [
-        { date: "2024-04-01", visits: 100 },
-        { date: "2024-04-02", visits: 150 },
-        { date: "2024-04-03", visits: 200 },
-        { date: "2024-04-04", visits: 180 },
-        { date: "2024-04-05", visits: 220 },
-        { date: "2024-04-06", visits: 250 },
-        { date: "2024-04-07", visits: 300 },
-    ];
+    const {data:dummySiteVisitsData} = useGetData('/visits'); 
+ 
     return (
         report &&
         <Box

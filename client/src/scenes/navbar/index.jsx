@@ -20,6 +20,7 @@ import {
   Close,
 } from "@mui/icons-material";
 import MessageIcon from "@mui/icons-material/Message";
+import UserImage from "components/UserImage";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
@@ -84,6 +85,7 @@ const Navbar = () => {
             )}
           </IconButton>
           <MsgIcon />
+          <UserImage size="35px" image={user?.picturePath ? user.picturePath : "defuser.jpg"} />
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -160,30 +162,52 @@ const Navbar = () => {
             </IconButton>
             <MsgIcon />
             <FormControl variant="standard" value={fullName}>
-              <Select
-                value={fullName}
-                sx={{
-                  backgroundColor: neutralLight,
-                  width: "150px",
-                  borderRadius: "0.25rem",
-                  p: "0.25rem 1rem",
-                  "& .MuiSvgIcon-root": {
-                    pr: "0.25rem",
-                    width: "3rem",
-                  },
-                  "& .MuiSelect-select:focus": {
+              <Link to="/market" style={{ textDecoration: 'none', width: '150px', marginTop: 5 }}>
+                <Button variant="contained" color="primary" sx={{ width: '100%' }}>
+                  Market
+                </Button>
+              </Link>
+              <Box mt={5} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+              {
+                <UserImage size="35px" image={user?.picturePath ? user.picturePath : "defuser.jpg"} />
+              }
+              {user ? <FormControl variant="standard" value={fullName}>
+                <Select
+                  value={fullName}
+                  sx={{
                     backgroundColor: neutralLight,
-                  },
-                }}
-                input={<InputBase />}
-              >
-                <MenuItem value={fullName}>
-                  <Typography>{fullName}</Typography>
-                </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>
-                  Log Out
-                </MenuItem>
-              </Select>
+                    width: "150px",
+                    borderRadius: "0.25rem",
+                    p: "0.25rem 1rem",
+                    "& .MuiSvgIcon-root": {
+                      pr: "0.25rem",
+                      width: "3rem",
+                    },
+                    "& .MuiSelect-select:focus": {
+                      backgroundColor: neutralLight,
+                    },
+                  }}
+                  input={<InputBase />}
+                >
+                  <MenuItem value={fullName}>
+                    <Typography>{fullName}</Typography>
+                  </MenuItem>
+                  <MenuItem onClick={() => navigate('/market/profile/' + user._id)}>
+                    My Ads
+                  </MenuItem>
+                  <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+                </Select>
+              </FormControl> :
+                <Typography component="a" href="/your-link-path" variant="body1"
+                  onClick={(event) => {
+                    event.preventDefault();
+                  }}
+                >
+                  login
+                </Typography>
+              }
+              </Box>
+              
             </FormControl>
           </FlexBetween>
         </Box>

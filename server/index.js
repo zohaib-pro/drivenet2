@@ -10,6 +10,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/auth.js";
+import visitRoutes from './routes/visits.js'
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import issueRoutes from "./routes/issues.js";
@@ -85,6 +86,7 @@ app.use('/message', MessageRoute);
 app.use('/report', reportRoutes);
 app.use('/vehicles', vehicleRoutes);
 app.use('/location', locationRoutes);
+app.use('/visits', visitRoutes);
 
 
 /* MONGOOSE SETUP */

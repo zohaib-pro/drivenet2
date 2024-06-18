@@ -12,7 +12,7 @@ import {
 } from "@mui/icons-material";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useSelector } from "react-redux";
-import { usePatchData } from "hooks/apiHook";
+import { useGetData, usePatchData } from "hooks/apiHook";
 
 const UserCard = ({
   user
@@ -20,7 +20,7 @@ const UserCard = ({
 
   const [status, setStatus] = useState(user.status);
 
-  const {patchData:patchUserBlocking} = usePatchData();
+  const {getData:handleBlocking, data:userStatus} = useGetData();
   
   const token = useSelector((state) => state.token);
 
@@ -38,7 +38,7 @@ const UserCard = ({
             Phone : {user?.phone}
           </Typography>
           <Typography>
-            Status : {user?.status == 1? "Active": "Blocked"}
+            Status : {status == 1? "Active": "Blocked"}
           </Typography>
           <Box display={'flex'} gap={1}>
             <Button
@@ -46,15 +46,18 @@ const UserCard = ({
               color="primary"
               startIcon={<Block sx={{ fontSize: 4 }} />}
               onClick={() => {
-                patchUserBlocking(JSON.stringify({userId: user._id}), `users/${user._id}/blocking`, {
-                  isJson: true, onSuccess: (data) => {
-                    setStatus(data.status);
-                  }
-                });
+                handleBlocking(`users/${user._id}/blocking`);
+                setStatus((status+1)%2);
+                // patchUserBlocking(JSON.stringify({userId: user._id}), `users/${user._id}/blocking`, {
+                //   isJson: true, onSuccess: (data) => {
+                //     setStatus(data.status);
+                //   }
+                // });
               }}
               sx={{ fontSize: 10 }}
             >
-              {status && status == 0 ? 'unblock': 'block'}
+
+              {status == 0 ? 'unblock': 'block'}
             </Button>
             {/* <Button
               variant="contained"

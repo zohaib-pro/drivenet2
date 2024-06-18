@@ -16,13 +16,14 @@ import ImageCarousel from "components/ImageCarousel";
 import WidgetWrapper from "components/WidgetWrapper";
 import WidgetWrapper2 from "components/WidgetWrapper2";
 import { useSelector } from "react-redux";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Navbar from "scenes/navbarMarket";
 import SearchAndCity from "scenes/navbarMarket/searchandcity";
 import FiltersWidget from "scenes/widgets/FiltersWidget";
 import VehicleAdWidgetGallery from "scenes/widgets/VehicleAdGalleryWidget";
 import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
 import { useNavigate } from "react-router-dom";
+import { useGetData } from "hooks/apiHook";
 
 const LandingPage = () => {
 
@@ -50,6 +51,22 @@ const LandingPage = () => {
       console.log(user?.firstName + " " + user?.lastName);
     }
   }, [user]);
+
+  const isVisited = useRef(false);
+
+  useEffect(()=>{
+    if (!isVisited.current){
+      try{
+        fetch('http://localhost:3001/visits/increment', {
+          method: "GET",
+        });
+      }catch(error){
+  
+      }
+      isVisited.current = true;
+    }
+  }, []);
+
 
   return (
     <Box>
@@ -143,7 +160,7 @@ const LandingPage = () => {
         }}
       >
         <WidgetWrapper
-          height={"20rem"}
+          height={isNonMobileScreens? "20rem" : undefined}
           width={isNonMobileScreens ? "40%" : "90%"}
         >
           <Box sx={{ padding: '1rem' }}>
@@ -169,7 +186,7 @@ const LandingPage = () => {
                 variant="contained"
                 color="primary"
                 size="large"
-                sx={{ marginTop: '1.5rem' }}
+                sx={{ marginTop: isNonMobileScreens?  '1.5rem' : '0.2rem' }}
                 onClick={() => { navigate('/market/new/sell') }}
               >
                 Sell Now
@@ -179,7 +196,7 @@ const LandingPage = () => {
         </WidgetWrapper>
 
         <WidgetWrapper
-          height={"20rem"}
+          height={isNonMobileScreens? "20rem" : undefined}
           width={isNonMobileScreens ? "40%" : "90%"}
         >
           <Box sx={{ padding: '1rem' }}>
@@ -205,7 +222,7 @@ const LandingPage = () => {
                 variant="contained"
                 color="primary"
                 size="large"
-                sx={{ marginTop: '1.5rem' }}
+                sx={{ marginTop: isNonMobileScreens?  '1.5rem' : '0.2rem' }}
                 onClick={() => { navigate('/home') }}
               >
                 Visit Community

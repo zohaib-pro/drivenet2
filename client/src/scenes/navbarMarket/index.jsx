@@ -45,7 +45,7 @@ const Navbar = ({ onSearch = () => { } }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const cities = useSelector(state => state.cities);
-  const mode = useSelector(state=>state.mode);
+  const mode = useSelector(state => state.mode);
   const vehicleAds = useSelector((state) => state.vehicleAds);
   const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -96,14 +96,14 @@ const Navbar = ({ onSearch = () => { } }) => {
   return (
     <FlexBetween padding="0.3rem 1%" backgroundColor={alt}>
       <CustomModal open={isModalOpen} setOpen={setModalOpen}>
-        <LoginPage isModal={true} onLogin={()=>{setModalOpen(false)}}/>
+        <LoginPage isModal={true} onLogin={() => { setModalOpen(false) }} />
       </CustomModal>
       <FlexBetween gap="1rem">
         <Box display={'flex'} width={'auto'} gap={"0.2rem"} >
-        <img
+          <img
             height={'auto'}
             width={'200vw'}
-            style={{ alignSelf: "center"}}
+            style={{ alignSelf: "center" }}
             src="http://localhost:3000/assets/drivenet.png"
             alt="Drivenet Market"
           />
@@ -256,7 +256,7 @@ const Navbar = ({ onSearch = () => { } }) => {
             </Select>
           </FormControl> :
             <Typography component="a" href="/your-link-path" variant="body1"
-              onClick={(event)=>{
+              onClick={(event) => {
                 event.preventDefault();
                 setModalOpen(true);
               }}
@@ -316,7 +316,7 @@ const Navbar = ({ onSearch = () => { } }) => {
             gap="3rem"
           >
 
-            
+
             <IconButton
               onClick={() => dispatch(setMode())}
               sx={{ fontSize: "25px" }}
@@ -330,33 +330,62 @@ const Navbar = ({ onSearch = () => { } }) => {
             <MsgIcon />
 
             <FormControl variant="standard" value={fullName}>
-              <Select
-                value={fullName}
-                sx={{
-                  backgroundColor: neutralLight,
-                  width: "150px",
-                  borderRadius: "0.25rem",
-                  p: "0.25rem 1rem",
-                  "& .MuiSvgIcon-root": {
-                    pr: "0.25rem",
-                    width: "3rem",
-                  },
-                  "& .MuiSelect-select:focus": {
+              <Link to="/home" style={{ textDecoration: 'none', width: '150px', marginTop: 5 }}>
+                <Button variant="contained" color="primary" sx={{ width: '100%' }}>
+                  Community
+                </Button>
+              </Link>
+              <Link to="/home" style={{ textDecoration: 'none', width: '150px', marginTop: 5 }}>
+                <Button variant="contained" color="primary" sx={{ width: '100%' }}>
+                  Sell Now
+                </Button>
+              </Link>
+              <Box mt={5} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+              {
+                <UserImage size="35px" image={user?.picturePath ? user.picturePath : "defuser.jpg"} />
+              }
+              {user ? <FormControl variant="standard" value={fullName}>
+                <Select
+                  value={fullName}
+                  sx={{
                     backgroundColor: neutralLight,
-                  },
-                }}
-                input={<InputBase />}
-              >
-                <MenuItem value={fullName}>
-                  <Typography>{fullName}</Typography>
-                </MenuItem>
-                <MenuItem onClick={() => navigate('/market/profile/' + user._id)}>
-                My Ads
-              </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>
-                  Log Out
-                </MenuItem>
-              </Select>
+                    width: "150px",
+                    borderRadius: "0.25rem",
+                    p: "0.25rem 1rem",
+                    "& .MuiSvgIcon-root": {
+                      pr: "0.25rem",
+                      width: "3rem",
+                    },
+                    "& .MuiSelect-select:focus": {
+                      backgroundColor: neutralLight,
+                    },
+                  }}
+                  input={<InputBase />}
+                >
+                  <MenuItem value={fullName}>
+                    <Typography>{fullName}</Typography>
+                  </MenuItem>
+                  <MenuItem onClick={() => navigate('/market/profile/' + user._id)}>
+                    My Ads
+                  </MenuItem>
+                  {/* <MenuItem onClick={() => dispatch(setMode())}>
+                  {theme.palette.mode === "dark"? "Light Mode": "Dark Mode"}
+              </MenuItem> */}
+
+                  <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+                </Select>
+              </FormControl> :
+                <Typography component="a" href="/your-link-path" variant="body1"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setModalOpen(true);
+                  }}
+                >
+                  login
+                </Typography>
+              }
+              </Box>
+              
             </FormControl>
           </FlexBetween>
         </Box>
