@@ -68,7 +68,7 @@ const ChatParent = ({ isModal, chatWith, vehicleData }) => {
 
   const handleChatClick = (chat) => {
     setCurrentChat(chat);
-    dispatch(setChatClicked({ isChatClicked: true }));
+    dispatch(setChatClicked({ isChatClicked: true, chatId: chat._id }));
     dispatch(resetUnread({ chatId: chat._id }));
   };
 
