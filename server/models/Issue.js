@@ -18,6 +18,11 @@ const issueSchema = mongoose.Schema(
       ref: 'User',
       required: true
     },
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
     vehicleAdId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'VehicleAd',

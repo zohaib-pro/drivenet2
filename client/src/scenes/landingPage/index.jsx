@@ -22,8 +22,11 @@ import SearchAndCity from "scenes/navbarMarket/searchandcity";
 import FiltersWidget from "scenes/widgets/FiltersWidget";
 import VehicleAdWidgetGallery from "scenes/widgets/VehicleAdGalleryWidget";
 import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+
+  const navigate = useNavigate();
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   //const { picturePath } = useSelector((state) => state.user);
@@ -98,9 +101,9 @@ const LandingPage = () => {
           >
             {(
               <Typography variant={isNonMobileScreens ? "h1" : "h4"} sx={{ color: "white", mb: 2 }}>
-               {user
-                ? `Welcome ${user.firstName} ${user.lastName} 👋`
-                : 'Welcome Guest User 👋'}
+                {user
+                  ? `Welcome, ${user.firstName} ${user.lastName} 👋`
+                  : 'Welcome, Guest User 👋'}
               </Typography>
             )}
           </Box>
@@ -125,7 +128,7 @@ const LandingPage = () => {
       >
         Browse DriveNet and Discover new best Features
       </Typography>
-      
+
       <Box pb={"2rem"} pl={"20rem"} pr={"20rem"} flexGrow={1}>
         <Divider sx={{ borderBottomWidth: 3, borderColor: '#b8b8b8' }} />
       </Box>
@@ -162,14 +165,15 @@ const LandingPage = () => {
             </List>
 
             <Center>
-              <Link
-                to="/market/new/sell"
-                style={{ textDecoration: "none", marginTop: "1.5rem" }}
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ marginTop: '1.5rem' }}
+                onClick={() => { navigate('/market/new/sell') }}
               >
-                <Button variant="contained" color="primary" size="large">
-                  Sell Now
-                </Button>
-              </Link>
+                Sell Now
+              </Button>
             </Center>
           </Box>
         </WidgetWrapper>
@@ -196,16 +200,18 @@ const LandingPage = () => {
               ))}
             </List>
 
-            <Center>
-              <Link
-                to="/home"
-                style={{ textDecoration: "none", marginTop: "1.5rem" }}
+            <center>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ marginTop: '1.5rem' }}
+                onClick={() => { navigate('/home') }}
               >
-                <Button variant="contained" color="primary" size="large">
-                  Visit Community
-                </Button>
-              </Link>
-            </Center>
+                Visit Community
+              </Button>
+            </center>
+
           </Box>
         </WidgetWrapper>
       </Box>

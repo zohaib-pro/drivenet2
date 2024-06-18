@@ -14,6 +14,7 @@ const issueSchema = yup.object().shape({
 const initialValues = {
     userId: "hello",
     vehicleAdId: "",
+    sellerId: "",
     details: "",
     category: "",
     userInfo: {}
@@ -21,7 +22,7 @@ const initialValues = {
 
 const categories = ["Wrong Price Prediction", "Fake Vehicle details", "Fraud Seller", "Other"]; // Add your categories here
 
-const IssueCreationComponent = ({user, vehicleAdId, onIssueReported}) => {
+const IssueCreationComponent = ({user, vehicleAdId,seller, onIssueReported}) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -34,7 +35,7 @@ const IssueCreationComponent = ({user, vehicleAdId, onIssueReported}) => {
                 phone: '+92 301 1212123'
             }
             values.vehicleAdId = vehicleAdId;
-            console.log(JSON.stringify(values));
+            values.sellerId = seller._id;
             const response = await fetch(`http://localhost:3001/issues`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

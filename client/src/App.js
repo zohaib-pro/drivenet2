@@ -60,7 +60,6 @@ function App() {
               element={<LandingPage />}
             />
 
-
             <Route
               path="/market/:vehicleAdId"
               element={<VehicleDescPage />}

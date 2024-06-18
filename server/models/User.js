@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
+
+    status: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
     firstName: {
       type: String,
       required: true,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Checkbox, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Link } from "@mui/material";
+import { Alert, Checkbox, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Link, Typography } from "@mui/material";
 
 const IssuesHandlerComponent = () => {
     const [issues, setIssues] = useState([]);
@@ -83,9 +83,18 @@ const IssuesHandlerComponent = () => {
                                 <Box>{issue.userInfo.phone}</Box>
                             </TableCell>
                             <TableCell>
-                                <Link href={`/market/${issue.vehicleAdId}`} target="_blank" rel="noopener">
-                                    {issue.vehicleAdId}
-                                </Link>
+                                <Box>
+                                    <Typography >Vehicle</Typography>
+                                    <Link href={`/market/${issue.vehicleAdId}`} target="_blank" rel="noopener">
+                                        {issue.vehicleAdId}
+                                    </Link>
+                                    {issue.sellerId? <Box>
+                                        <Typography >Seller</Typography>
+                                    <Link href={`/profile/${issue.sellerId}`} target="_blank" rel="noopener">
+                                        {issue.sellerId}
+                                    </Link>
+                                    </Box>:<></>}
+                                </Box>
                             </TableCell>
                             <TableCell>{issue.details}</TableCell>
                             <TableCell>{issue.category}</TableCell>
