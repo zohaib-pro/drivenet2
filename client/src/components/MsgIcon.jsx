@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MessageIcon from "@mui/icons-material/Message";
-import { Link } from "react-router-dom";
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import { IconButton, Badge } from '@mui/material';
+import { resetUnread } from '../state';
 
 const MsgIcon = ({ views = 0 }) => {
-
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
   const unreadMessages = useSelector((state) => state.unreadMessages);
+  const location = useLocation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Calculate total unread message count
@@ -16,8 +17,17 @@ const MsgIcon = ({ views = 0 }) => {
       (acc, curr) => curr,
       0
     );
-    setUnreadMessageCount(totalUnreadCount);
-  }, [unreadMessages]);
+    
+    // Set unread message count to zero if the current route is /chat
+    if (location.pathname === '/chat') {
+      setUnreadMessageCount(0);
+      Object.keys(unreadMessages).forEach(chatId => {
+        dispatch(resetUnread({ chatId }));
+      });
+    } else {
+      setUnreadMessageCount(totalUnreadCount);
+    }
+  }, [unreadMessages, location.pathname, dispatch]);
 
   return (
     <IconButton component={Link} to="/chat">

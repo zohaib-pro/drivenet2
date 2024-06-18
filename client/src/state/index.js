@@ -73,7 +73,7 @@ export const authSlice = createSlice({
       if (state.unreadMessages[chatId]) {
         state.unreadMessages[chatId] += 1;
       } else {
-        state.unreadMessages[chatId] = 1;
+        state.unreadMessages[chatId] = 1;  
       }
     },
     resetUnread: (state, action) => {
