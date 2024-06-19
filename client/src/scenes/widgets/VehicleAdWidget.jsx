@@ -27,6 +27,8 @@ import Friend from "components/Friend";
 import { setPost } from "state";
 import { useDispatch, useSelector } from "react-redux";
 import ApproveRejectAd from "./ApproveRejectAd";
+import { useGetData } from "hooks/apiHook";
+import { getTimeDiff } from "utils/extra";
 
 const VehicleAdWidget = ({
   vehicle, redirectTo, isAdmin = false
@@ -36,13 +38,11 @@ const VehicleAdWidget = ({
   const main = palette.neutral.main;
   const primary = palette.primary.main;
 
-  const getTimeDiff = (vehicleAd) => {
-    const timeDiff = new Date() - new Date(vehicleAd.createdAt);
-    return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-  }
+  
 
+  
   return (
-    <WidgetWrapper >
+    <WidgetWrapper>
       <Link to={redirectTo} style={{ textDecoration: 'none', color: 'inherit' }}>
         {(
           <img
@@ -66,7 +66,7 @@ const VehicleAdWidget = ({
           {vehicle.title}
         </Typography>
 
-        <DetailsGrid data={{ year: vehicle.year, kms: vehicle.mileage, fuelAvg: 22, fuel: 'petrol' }} />
+        <DetailsGrid vehicle={vehicle} />
 
         <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'} >
           <LocationOnOutlined />

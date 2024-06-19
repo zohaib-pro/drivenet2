@@ -11,7 +11,7 @@ export const useGetData = (target, token='', { defValue = [], onSuccess, onFail}
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    console.log('blah blah: '+defValue);
+    
     useEffect(() => {
         
         const fetchData = async () => {

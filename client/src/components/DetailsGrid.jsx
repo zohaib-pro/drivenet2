@@ -2,15 +2,18 @@ import React from 'react';
 import { Box, Typography, Grid, useTheme } from "@mui/material";
 import Button from '@mui/material/Button';
 import { AdjustOutlined } from '@mui/icons-material';
+import { useGetData } from 'hooks/apiHook';
 
 const DetailsGrid = ({
     mainUrl="http://localhost:3000/icons",
-    data,
+    vehicle,
     size=22
 }) => {
+    const {data:vehicleData} = useGetData(`vehicles/${vehicle.make}/${vehicle.model}`, '', {defValue: null});
+    const data = { year: vehicle.year, kms: vehicle.mileage, fuelAvg: vehicleData?.engineC, fuel: vehicleData?.fuelType }
     const units = {
         kms: 'kms',
-        fuelAvg: 'km/L',
+        fuelAvg: 'cc',
     }
 
     const { palette } = useTheme();

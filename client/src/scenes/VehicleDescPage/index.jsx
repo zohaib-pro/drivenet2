@@ -21,6 +21,7 @@ import { numberWithCommas } from "utils/math";
 import CustomModal from "components/CustomModal";
 import LoginPage from "scenes/loginPage";
 import Predictor from "components/Predictor";
+import { getTimeDiff } from "utils/extra";
 
 const VehicleDescPage = () => {
   const [open, setOpen] = useState(false);
@@ -154,7 +155,7 @@ const VehicleDescPage = () => {
               <Typography variant="h4" fontWeight={500}>
                 Details about Ad
               </Typography>
-              <DetailsGrid data={{ year: vehicle.year, kms: vehicle.mileage, fuelAvg: 22, fuel: 'petrol' }} />
+              <DetailsGrid vehicle={vehicle} />
             </Box>
 
             <Box mt={3}>
@@ -191,7 +192,7 @@ const VehicleDescPage = () => {
                     <LocationOnOutlined />
                     <Typography>{vehicle.location.area + " , " + vehicle.location.city}</Typography>
                     <Typography>|</Typography>
-                    <Typography>2 days ago</Typography>
+                    <Typography>{getTimeDiff(vehicle)} days ago</Typography>
                   </Box>
 
                   <Divider />

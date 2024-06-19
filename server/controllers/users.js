@@ -1,11 +1,25 @@
 import User from "../models/User.js";
 import bcrypt from 'bcrypt'; // Import bcrypt for password hashing
 
+function isValidEmail(email) {
+  // Regular expression to validate email address
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+  // Test the email against the regex
+  return emailRegex.test(email);
+}
 /* READ */
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    console.log("id is", id);
+    var user = null;
+    console.log("user is: ", user);
+    if (isValidEmail(id)){
+      user = await User.findOne({email: id})
+    }else{
+      user = await User.findById(id);
+    }
     res.status(200).json(user);
   } catch (err) {
     res.status(404).json({ message: err.message });
