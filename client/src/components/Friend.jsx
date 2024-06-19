@@ -1,8 +1,7 @@
-//Friend.js from components
 import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
@@ -10,6 +9,7 @@ import UserImage from "./UserImage";
 const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => { 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const friends = useSelector((state) => state.user.friends);
@@ -22,6 +22,8 @@ const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => {
 
   const isFriend = friends.find((friend) => friend._id === friendId);
   const isOwnPost = friendId === _id; // Check if the post belongs to the logged-in user
+  const isProfilePage = location.pathname.startsWith('/profile'); // Check if the current path is a profile page
+  const isMProfilePage = location.pathname.startsWith('/market/profile'); // Check if the current path is a profile page
 
   const patchFriend = async () => {
     try {
@@ -55,8 +57,6 @@ const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => {
     }
   };
   
-  
-
   return (
     <FlexBetween>
       <FlexBetween gap="1rem">
@@ -85,8 +85,8 @@ const Friend = ({ friendId, firstName, name, subtitle, userPicturePath }) => {
           </Typography>
         </Box>
       </FlexBetween>
-      {/* Conditionally render the add friend icon based on whether it's the user's own post */}
-      {!isOwnPost && (
+      {/* Conditionally render the add friend icon based on whether it's the user's own post and not on a profile page */}
+      {!isOwnPost && !isProfilePage && !isMProfilePage && (
         <IconButton
           onClick={() => patchFriend()}
           sx={{ backgroundColor: primaryLight, p: "0.6rem" }}

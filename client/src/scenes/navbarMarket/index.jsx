@@ -103,8 +103,8 @@ const Navbar = ({ onSearch = () => { } }) => {
           <img
             height={'auto'}
             width={'200vw'}
-            style={{ alignSelf: "center" }}
-            src="http://localhost:3000/assets/drivenet.png"
+            style={{ alignSelf: "center", borderRadius: "0.5rem"}}
+            src="http://localhost:3000/assets/drivenet2.png"
             alt="Drivenet Market"
           />
 
