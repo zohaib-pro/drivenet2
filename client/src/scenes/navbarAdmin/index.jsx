@@ -58,13 +58,20 @@ const Navbar = () => {
       <FlexBetween gap="1.75rem">
 
       <Box display={'flex'} width={'auto'} gap={"0.2rem"} >
-        <img
-            height={'auto'}
-            width={'200vw'}
-            style={{ alignSelf: "center", borderRadius: "0.5rem", cursor: "pointer" }}
+      <img
+            height="auto"
+            width="200vw"
+            style={{
+              alignSelf: "center",
+              borderRadius: "0.5rem",
+              cursor: "pointer",
+              transition: "opacity 0.3s",
+            }}
             src="http://localhost:3000/assets/drivenet2.png"
             alt="Drivenet Market"
             onClick={() => navigate("/home")}
+            onMouseOver={(e) => (e.currentTarget.style.opacity = 0.5)}
+            onMouseOut={(e) => (e.currentTarget.style.opacity = 1)}
           />
 
         <Typography

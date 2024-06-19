@@ -7,6 +7,7 @@ import {
   useTheme,
   TextField,
   Button,
+  Modal,
 } from "@mui/material";
 import {
   ChatBubbleOutlineOutlined,
@@ -38,6 +39,7 @@ const PostWidget = ({
   const [comment, setComment] = useState("");
   const [commentData, setCommentData] = useState([]);
   const [likeCount, setLikeCount] = useState(Object.keys(likes).length);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
@@ -122,38 +124,19 @@ const PostWidget = ({
           body: JSON.stringify({ userId: loggedInUserId, comment }),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to add comment");
       }
-  
+
       const updatedPost = await response.json();
-/*   
-      // Update like count
-      setLikeCount(Object.keys(updatedPost.likes).length);
-      // Update isLiked state
-      setIsLiked(Boolean(updatedPost.likes[loggedInUserId])); */
-      // Update post data in Redux store
       dispatch(setPost({ post: updatedPost }));
-  
-/*       // Update comment data with the newly added comment
-      const newCommentData = [
-        ...commentData,
-        {
-          image: userPicturePath, // Use current user's picture
-          firstName: firstName, // Use current user's first name
-          lastName: lastName, // Use current user's last name
-          comment: comment, // New comment text
-        },
-      ]; */
-      //setCommentData(newCommentData);
-  
+
       setComment("");
     } catch (error) {
       console.error("Error adding comment:", error);
     }
   };
-  
 
   // Format the createdAt date
   const formattedDate = new Date(createdAt).toLocaleString("en-US", {
@@ -198,7 +181,7 @@ const PostWidget = ({
           mt="0.5rem"
           display="flex"
           flexDirection="row"
-          justifyContent="space-between" // Align date to the right side
+          justifyContent="space-between"
           alignItems="center"
         >
           <Box display="flex" flexDirection="row" alignItems="center">
@@ -219,13 +202,13 @@ const PostWidget = ({
               <Typography>{commentData.length}</Typography>
             </Box>
             <Box display="flex" flexDirection="row" alignItems="center">
-              <IconButton>
+              <IconButton onClick={() => setIsShareModalOpen(true)}>
                 <ShareOutlined />
               </IconButton>
             </Box>
           </Box>
           <Typography variant="caption" color={main}>
-            {formattedDate} {/* Display the formatted date */}
+            {formattedDate}
           </Typography>
         </Box>
         {isComments && (
@@ -278,6 +261,51 @@ const PostWidget = ({
           </Box>
         )}
       </Box>
+
+      <Modal
+        open={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        aria-labelledby="share-modal-title"
+        aria-describedby="share-modal-description"
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          position="absolute"
+          top="30%"
+          left="35%"
+          bgcolor="background.paper"
+          border="2px solid #000"
+          borderRadius={2}
+          boxShadow={24}
+          width={500}
+          p={4}
+        >
+          <Typography id="share-modal-title" variant="h6" component="h2">
+            Share this post
+          </Typography>
+          <TextField
+            id="share-modal-description"
+            label="Post Link"
+            value={`http://localhost:3000/posts/${postId}`}
+            InputProps={{
+              readOnly: true,
+            }}
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigator.clipboard.writeText(`http://localhost:3000/posts/${postId}`)}
+            sx={{ mt: 2 }}
+          >
+            Copy Link
+          </Button>
+        </Box>
+      </Modal>
     </WidgetWrapper>
   );
 };
