@@ -16,6 +16,7 @@ import ImageCarousel from "components/ImageCarousel";
 import WidgetWrapper from "components/WidgetWrapper";
 import WidgetWrapper2 from "components/WidgetWrapper2";
 import { useSelector } from "react-redux";
+import Footer from "scenes/footer/Footer";
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "scenes/navbarMarket";
 import SearchAndCity from "scenes/navbarMarket/searchandcity";
@@ -249,6 +250,10 @@ const LandingPage = () => {
           <VehicleAdWidgetGallery heading={"Listed Recently for sale!"} />
         </Box>
       </Box>
+      
+      {/* Footer */}
+      <Footer />
+
     </Box>
   );
 };

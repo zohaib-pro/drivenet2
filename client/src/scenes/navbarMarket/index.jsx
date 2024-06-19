@@ -100,12 +100,20 @@ const Navbar = ({ onSearch = () => { } }) => {
       </CustomModal>
       <FlexBetween gap="1rem">
         <Box display={'flex'} width={'auto'} gap={"0.2rem"} >
-          <img
-            height={'auto'}
-            width={'200vw'}
-            style={{ alignSelf: "center" }}
-            src="http://localhost:3000/assets/drivenet.png"
+        <img
+            height="auto"
+            width="200vw"
+            style={{
+              alignSelf: "center",
+              borderRadius: "0.5rem",
+              cursor: "pointer",
+              transition: "opacity 0.3s",
+            }}
+            src="http://localhost:3000/assets/drivenet2.png"
             alt="Drivenet Market"
+            onClick={() => navigate("/market")}
+            onMouseOver={(e) => (e.currentTarget.style.opacity = 0.5)}
+            onMouseOut={(e) => (e.currentTarget.style.opacity = 1)}
           />
 
           <Typography

@@ -50,6 +50,10 @@ const UserSchema = new mongoose.Schema(
     occupation: String,
     viewedProfile: Number,
     impressions: Number,
+    profileViews: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
