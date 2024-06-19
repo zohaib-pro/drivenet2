@@ -30,7 +30,7 @@ const DetailsGrid = ({
                             <Typography
                                 color={palette.mode == 'dark'? 'white': undefined}
                             >
-                                {data[item]} {units[item]}
+                                {data[item]?? 'N/A'} {units[item]}
                             </Typography>
                         </Box>
                     </Grid>

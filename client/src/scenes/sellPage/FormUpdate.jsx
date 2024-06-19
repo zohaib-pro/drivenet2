@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, useTheme, useMediaQuery, LinearProgress, IconButton } from '@mui/material';
+import { Box, Button, TextField, Typography, useTheme, useMediaQuery, LinearProgress, IconButton, Divider } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePatchData, usePostData } from 'hooks/apiHook';
 import * as yup from 'yup';
@@ -18,6 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { json } from 'react-router-dom';
 import ImagesListViewer from 'components/ImagesListViewer';
 import Predictor from 'components/Predictor';
+import CarFeaturesSelector from './FeatureSelector';
 
 
 // Define Yup validation schema
@@ -84,6 +85,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
     area: vehicle? vehicle.location.area :'',
     location: vehicle? vehicle.location :{},
     images: [],
+    features: vehicle? vehicle.features: []
   };  
 
 
@@ -206,7 +208,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
     //formData.append("picturePath", image.name);
     //Append non-image fields
     for (let key in values) {
-      if (key !== "images" && key !== "location" && key !== "title") {
+      if (key !== "images" && key !== "location" && key !== "title" && key !== 'features') {
         formData.append(key, values[key]);
       }
     }
@@ -214,6 +216,9 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
     formData.append("title", `${values.make} ${values.model} ${values.variant} ${values.year}`)
 
     formData.append("location", location);
+    values.features.forEach((value, index)=>{
+      formData.append("features", value);
+    });
 
     prevImages.forEach((image, index)=>{
       formData.append("prevImages", image);
@@ -487,11 +492,6 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
 
               {/* Display selected images */}
               
-              {/* <Box display={'flex'}>
-              <ImagesListViewer images={prevImages} 
-                onDelete={(image)=>{setPrevImages(prevImages.filter(item=>item != image))}} />
-              <ImagesListViewer images={values.images} getSrc={(image)=>URL.createObjectURL(image)} />
-              </Box> */}
 
               <Box mt={2}>
                 <Typography variant="h6">Selected Images:</Typography>
@@ -552,7 +552,6 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
 
               {/* Input for images */}
 
-
               <Box
                 gridColumn="span 4"
                 border={`1px solid ${palette.neutral.medium}`}
@@ -603,8 +602,10 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
                 margin="normal"
               />
 
-              <Predictor vehicle={vehicle} />
+              <CarFeaturesSelector prevFeatures={vehicle.features} onChange={(features)=>{values.features = features;}}/>
+              <Divider sx={{margin: 2}}/>
 
+              <Predictor vehicle={vehicle} />
 
               {/* Submit button */}
               <Button

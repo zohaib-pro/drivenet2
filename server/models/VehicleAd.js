@@ -83,6 +83,7 @@ const vehicleAdSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    features: [String], 
     images: [String] // Array of image URLs
   }, { timestamps: true }
 );

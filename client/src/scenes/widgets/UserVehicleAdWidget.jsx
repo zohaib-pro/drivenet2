@@ -120,7 +120,7 @@ const UserVehicleAdWidget = ({
           {vehicle.title}
         </Typography>
 
-        <DetailsGrid data={{ year: vehicle.year, kms: vehicle.mileage, fuelAvg: 22, fuel: 'petrol' }} />
+        <DetailsGrid vehicle={vehicle} />
 
         <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'} >
           <LocationOnOutlined />

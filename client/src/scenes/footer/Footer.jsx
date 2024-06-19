@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Footer = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");

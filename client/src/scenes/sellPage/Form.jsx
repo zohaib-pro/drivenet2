@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, useTheme, useMediaQuery, LinearProgress, IconButton } from '@mui/material';
+import { Box, Button, TextField, Typography, useTheme, useMediaQuery, LinearProgress, IconButton, Divider } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePostData } from 'hooks/apiHook';
 import * as yup from 'yup';
@@ -17,6 +17,7 @@ import IconBtn from "components/IconBtn";
 import CloseIcon from "@mui/icons-material/Close";
 import ImagesListViewer from 'components/ImagesListViewer';
 import Predictor from 'components/Predictor';
+import CarFeaturesSelector from './FeatureSelector';
 
 
 // Define Yup validation schema
@@ -57,6 +58,7 @@ const initialValues = {
   area: '',
   location: {},
   images: [],
+  features: [],
 };
 
 
@@ -192,7 +194,7 @@ const VehicleAdForm = () => {
     //formData.append("picturePath", image.name);
     //Append non-image fields
     for (let key in values) {
-      if (key !== "images" && key !== "location" && key !== "title") {
+      if (key !== "images" && key !== "location" && key !== "title" && key !== 'features') {
         formData.append(key, values[key]);
       }
     }
@@ -200,6 +202,9 @@ const VehicleAdForm = () => {
     formData.append("title", `${values.make} ${values.model} ${values.variant} ${values.year}`)
 
     formData.append("location", location);
+    values.features.forEach((value, index)=>{
+      formData.append("features", value);
+    });
 
     values.images.forEach((image, index) => {
       formData.append(`images`, image, image.name);
@@ -571,6 +576,9 @@ const VehicleAdForm = () => {
 
               {/*  */}
 
+              <CarFeaturesSelector onChange={(features)=>{values.features = features;}}/>
+              
+              <Divider sx={{margin: 2}}/>
               <Predictor vehicle={vehicle} />
 
 

@@ -22,6 +22,8 @@ import CustomModal from "components/CustomModal";
 import LoginPage from "scenes/loginPage";
 import Predictor from "components/Predictor";
 import { getTimeDiff } from "utils/extra";
+import SelectedFeaturesDisplay from "./VehicleDisplayer";
+import VehicleInfoTable from "./VehicleInfo";
 
 const VehicleDescPage = () => {
   const [open, setOpen] = useState(false);
@@ -134,6 +136,16 @@ const VehicleDescPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  const {data:vehicleData} = useGetData(`vehicles/${vehicle?.make}/${vehicle?.model}`, '', {defValue: null});
+
+  const vehicleInfo = [
+    {category: 'Color', value: vehicle?.color},
+    {category: 'Registration City', value: vehicle?.cityReg},
+    {category: 'Body Type', value: vehicleData?.category ?? 'N/A'},
+    {category: 'Transmission Type', value: vehicleData?.transType ?? 'N/A'},
+    {category: 'Last Updated', value: vehicle?.updatedAt.substring(0, vehicle?.updatedAt.indexOf('T'))},
+  ]
+
   return (
     vehicle ?
       <Box>
@@ -157,7 +169,18 @@ const VehicleDescPage = () => {
               </Typography>
               <DetailsGrid vehicle={vehicle} />
             </Box>
-
+            <Box mt={3}>
+              <Typography variant="h4" fontWeight={500}>
+                Vehicle Information
+              </Typography>
+              <VehicleInfoTable data={vehicleInfo}/>
+            </Box>
+            <Box mt={3}>
+              <Typography variant="h4" fontWeight={500}>
+                Features
+              </Typography>
+              <SelectedFeaturesDisplay selectedFeatures={vehicle.features} />
+            </Box>
             <Box mt={3}>
               <Typography variant="h4" fontWeight={500}>
                 Description
@@ -198,44 +221,6 @@ const VehicleDescPage = () => {
                   <Divider />
 
                   <Predictor vehicle={vehicle}/>
-
-                  {/* <Typography variant="p" fontWeight={500}>
-                    Estimate the worth of this vehicle using our AI model
-                  </Typography>
-                  <Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '60%',
-                        float: 'left',
-                        borderRadius: '20px',
-                        border: '1px solid #BDBDBD',
-                        padding: '8px 12px',
-                        backgroundColor: '#F5F5F5',
-                      }}
-                    >
-                      <Typography>
-                        {prediction.predicted_price}
-                      </Typography>
-                      <Typography>
-                        PKR
-                      </Typography>
-                    </Box>
-                    <img
-                      width="50px"
-                      height="50px"
-                      alt="post"
-                      style={{ objectFit: "cover", marginTop: "1rem", marginLeft: "-1.4rem" }}
-                      src={`http://localhost:3000/icons/price_tag.png`}
-                    />
-                    <IconBtn text="Estimate" style={{ float: 'right', color: 'white' }}
-                      icon="http://localhost:3000/icons/ai.png"
-                      onPress={getPrediction}
-                    />
-                  </Box>
-
-                  {isPredicting && <LinearProgress />} */}
 
                   <SellerCard seller={sellerData} user={user} onPressChat={user ? handleOpen : () => { setLoginModalOpen(true) }} />
 

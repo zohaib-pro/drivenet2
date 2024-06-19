@@ -46,7 +46,14 @@ const Predictor = ({ vehicle, onPrediction }) => {
         setIsPredicting(true);
         const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant ? "?" + vehicle.variant : ""}`;
         const res = await fetch(url, { method: "GET" });
-        const vehDetails = await res.json();
+        var vehDetails = {};
+        try{
+          vehDetails = await res.json();
+        }catch(e){
+          setPrediction({ predicted_price: "No vehicle details exist! Contact Admin" });
+          setIsPredicting(false);
+          return;
+        }
 
         if (!vehDetails) {
             alert("No Vehicle Details Found!");

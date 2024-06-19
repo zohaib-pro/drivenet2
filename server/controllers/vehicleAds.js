@@ -67,6 +67,7 @@ export const createVehicleAd = async (req, res) => {
       color,
       city,
       area,
+      features,
     } = req.body;
 
 
@@ -85,11 +86,10 @@ export const createVehicleAd = async (req, res) => {
       location: { city, area },
       cityReg,
       color,
-      images
+      images,
+      features
     });
     await newVehicleAd.save();
-
-    console.log(JSON.stringify(newVehicleAd));
     res.status(201).json(newVehicleAd)
   }
   catch (err) {
@@ -114,6 +114,7 @@ export const updateVehicleAd = async (req, res) => {
       color,
       city,
       area,
+      features,
       prevImages //images that were present previously before updating
     } = req.body;
 
@@ -140,6 +141,7 @@ export const updateVehicleAd = async (req, res) => {
     vehicle.cityReg = cityReg,
     vehicle.color = color,
     vehicle.images = images,
+    vehicle.features = features;
     vehicle.status = 'new';
 
     await vehicle.save();
