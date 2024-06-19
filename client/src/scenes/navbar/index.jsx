@@ -51,9 +51,10 @@ const Navbar = () => {
         <img
             height={'auto'}
             width={'200vw'}
-            style={{ alignSelf: "center", borderRadius: "0.5rem"}}
+            style={{ alignSelf: "center", borderRadius: "0.5rem", cursor: "pointer"}}
             src="http://localhost:3000/assets/drivenet2.png"
             alt="Drivenet Market"
+            onClick={() => navigate("/home")}
           />
 
         <Typography
