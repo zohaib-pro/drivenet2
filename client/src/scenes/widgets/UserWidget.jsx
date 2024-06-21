@@ -4,7 +4,7 @@ import {
   LocationOnOutlined,
   WorkOutlineOutlined,
 } from "@mui/icons-material";
-import { Box, Typography, Divider, useTheme } from "@mui/material";
+import { Box, Typography, Divider, useTheme, IconButton } from "@mui/material";
 import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -87,16 +87,19 @@ const UserWidget = ({ userId, picturePath }) => {
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-
-        <ManageAccountsOutlined
-          onClick={() => navigate(`/editProfile/${userId}`)}
-          sx={{
-            "&:hover": {
-              color: palette.primary.main,
-              cursor: "pointer",
-            },
-          }}
-        />
+        <IconButton
+          sx={{ backgroundColor: palette.primary.light, p: "0.6rem" }}
+        >
+          <ManageAccountsOutlined
+            onClick={() => navigate(`/editProfile/${userId}`)}
+            sx={{
+              "&:hover": {
+                color: palette.primary.main,
+                cursor: "pointer",
+              },
+            }}
+          />
+        </IconButton>
       </FlexBetween>
 
       <Divider />
@@ -134,7 +137,7 @@ const UserWidget = ({ userId, picturePath }) => {
       <Divider />
 
       {/* FOURTH ROW */}
-{/*       <Box p="1rem 0">
+      {/*       <Box p="1rem 0">
         <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
           Social Profiles
         </Typography>

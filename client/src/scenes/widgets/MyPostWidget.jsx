@@ -48,6 +48,9 @@ const MyPostWidget = ({ title: defaultTitle, picturePath }) => {
 
   const handlePost = async () => {
     try {
+      if (!post.trim()) {
+        return; // If comment is empty, do nothing
+      }
       const formData = new FormData();
       formData.append("userId", _id);
       formData.append("title", title);
