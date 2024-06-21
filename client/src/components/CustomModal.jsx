@@ -1,14 +1,12 @@
 import { Box, IconButton, Modal } from "@mui/material";
 import { useState } from "react";
 import { styled } from "@mui/system";
-
 import { Close } from "@mui/icons-material";
-
 import React from 'react';
 
-const CustomModal = ({open, setOpen, children }) => {
+const CustomModal = ({ open, setOpen, children }) => {
   return (
-    <Modal open={open} onClose={()=>{setOpen(false)}}>
+    <Modal open={open} onClose={() => { setOpen(false) }}>
       <Box
         sx={{
           position: "absolute",
@@ -18,13 +16,21 @@ const CustomModal = ({open, setOpen, children }) => {
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
-          minWidth: 300,
+          minWidth: 600,
           maxHeight: '80vh',
-          maxWidth: '80vw',
-          overflow: 'scroll'
+          maxWidth: '800vw',
+          overflow: 'auto',
+          borderRadius: '0.5rem',
+          // Hide scrollbars but keep scrolling
+          '&::-webkit-scrollbar': {
+            width: '0px',
+            height: '0px',
+          },
+          '-ms-overflow-style': 'none',  // IE and Edge
+          'scrollbar-width': 'none'  // Firefox
         }}
       >
-        <IconButton onClick={()=>{setOpen(false)}} style={{ position: 'absolute', top: 5, right: 5 }}>
+        <IconButton onClick={() => { setOpen(false) }} style={{ position: 'absolute', top: 5, right: 5 }}>
           <Close />
         </IconButton>
         {children}
