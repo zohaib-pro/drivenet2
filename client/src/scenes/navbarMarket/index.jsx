@@ -263,14 +263,16 @@ const Navbar = ({ onSearch = () => { } }) => {
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
           </FormControl> :
-            <Typography component="a" href="/your-link-path" variant="body1"
+          <Button 
+              variant="contained" 
+              color="inherit"
               onClick={(event) => {
                 event.preventDefault();
                 setModalOpen(true);
               }}
             >
-              login
-            </Typography>
+              Login
+            </Button>
           }
 
           <Link to="/home" style={{ textDecoration: 'none' }}>
@@ -383,14 +385,17 @@ const Navbar = ({ onSearch = () => { } }) => {
                   <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
                 </Select>
               </FormControl> :
-                <Typography component="a" href="/your-link-path" variant="body1"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setModalOpen(true);
-                  }}
-                >
-                  login
-                </Typography>
+              <Button 
+              variant="contained" 
+              color="info"
+              onClick={(event) => {
+                event.preventDefault();
+                setModalOpen(true);
+              }}
+              sx={{marginTop: '1rem'}}
+            >
+              Login
+            </Button>
               }
               </Box>
               

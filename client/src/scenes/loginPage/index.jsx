@@ -20,7 +20,7 @@ const LoginPage = ({isModal, onLogin}) => {
         textAlign="center"
       >
         <Typography fontWeight="bold" fontSize="32px" color="primary">
-          DriveNet Market
+          <span style={{ color: 'orange' }}>DriveNet</span> Market
         </Typography>
       </Box>
       }
