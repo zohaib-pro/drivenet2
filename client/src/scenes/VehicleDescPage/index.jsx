@@ -186,9 +186,9 @@ const VehicleDescPage = () => {
                 Description
               </Typography>
               <Typography
-                minHeight={'10rem'}
+                minHeight={'15rem'}
                 border={'2px solid orange'}
-                borderRadius={"1rem"}
+                borderRadius={"0.2rem"}
                 p={'1rem'}
               >
                 {vehicle.description}

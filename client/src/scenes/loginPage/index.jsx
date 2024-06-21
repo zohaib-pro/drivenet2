@@ -20,16 +20,16 @@ const LoginPage = ({isModal, onLogin}) => {
         textAlign="center"
       >
         <Typography fontWeight="bold" fontSize="32px" color="primary">
-          DriveNet Market
+          <span style={{ color: 'orange' }}>DriveNet</span> Market
         </Typography>
       </Box>
       }
-      {
+{/*       {
         isModal &&
         <Typography textAlign={'center'} fontWeight="bold" fontSize="32px" color="primary">
           DriveNet Market
         </Typography>
-      }
+      } */}
       <Box
         width={isNonMobileScreens && !isModal? "45%" : "93%"}
         p={isModal? "1rem":"3rem"}
@@ -38,9 +38,9 @@ const LoginPage = ({isModal, onLogin}) => {
         borderRadius="2rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Center><Typography textAlign={'center'} fontWeight="500" variant="h5" sx={{ mb: isModal? "0.5rem":"1.5rem" }}>
+        <Center>{!isModal && <Typography textAlign={'center'} fontWeight="500" variant="h5" sx={{ mb: isModal? "0.5rem":"1.5rem" }}>
           Welcome to DriveNet Market and Community, for Car Enthusiasts!
-        </Typography></Center>
+        </Typography>}</Center>
         
         {login && (
           <Login onLogin={onLogin}
