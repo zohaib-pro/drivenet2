@@ -138,7 +138,7 @@ const Navbar = () => {
           </FormControl>
           <Link to="/market" style={{ textDecoration: "none" }}>
             <Button variant="contained" color="primary">
-              Admin
+              Market
             </Button>
           </Link>
         </FlexBetween>

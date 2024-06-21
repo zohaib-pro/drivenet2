@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -25,7 +25,7 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout, setCities, setSearch } from "state";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
 
@@ -51,6 +51,10 @@ const Navbar = ({ onSearch = () => { } }) => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const search = useSelector(state => state.search);
 
+  const query = new URLSearchParams(useLocation().search)
+  const queryLocation = query.get('location');
+  const [currentLocation, setCurrentLocation] = useState(queryLocation ?? "Pakistan");
+
   useGetData('location', '', {
     onSuccess: (data) => {
       dispatch(setCities({ cities: data }));
@@ -67,7 +71,6 @@ const Navbar = ({ onSearch = () => { } }) => {
   /* const fullName = `${user.firstName} ${user.lastName}`; */
   const fullName = user ? `${user.firstName}` : "user";
 
-  const [currentLocation, setCurrentLocation] = useState("Pakistan");
 
   const [inputValue, setInputValue] = useState('');
 
@@ -92,6 +95,20 @@ const Navbar = ({ onSearch = () => { } }) => {
   const handleSubmit = () => {
     setInputValue('');
   };
+
+  const filterByLocation = (val)=>{
+    if (val != currentLocation){
+      setCurrentLocation(val);
+      if (val == "Pakistan")
+        dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }))
+      else
+        dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll.filter(item => item.location.city == val) }))
+    }
+  }
+
+  if (queryLocation){
+    filterByLocation(queryLocation);}
+  
 
   return (
     <FlexBetween padding="0.3rem 1%" backgroundColor={alt}>
@@ -176,11 +193,7 @@ const Navbar = ({ onSearch = () => { } }) => {
               value={currentLocation}
               onChange={(event) => {
                 const val = event.target.value;
-                setCurrentLocation(val);
-                if (val == "Pakistan")
-                  dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }))
-                else
-                  dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll.filter(item => item.location.city == val) }))
+                filterByLocation(val);
               }}
               sx={{
                 backgroundColor: neutralLight,

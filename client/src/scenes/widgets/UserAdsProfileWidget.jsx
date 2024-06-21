@@ -105,7 +105,7 @@ const UserAdsProfileWidget = ({ userId, picturePath, vehicleAds=[] }) => {
         <FlexBetween>
           <Typography color={medium}>Impressions of your vehicles</Typography>
           <Typography color={main} fontWeight="500">
-            {impressions}
+            {vehicleAds.reduce((acc, ad)=> acc+ad.views, 0)}
           </Typography>
         </FlexBetween>
       </Box>

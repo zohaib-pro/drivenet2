@@ -15,7 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "state";
 import Center from "components/Center";
 
@@ -25,6 +25,7 @@ export default function Login({ onLogin, handleRegister }) {
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector(state=>state.user);
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const loginSchema = yup.object().shape({
     email: yup.string().email("invalid email").required("required"),
@@ -55,8 +56,9 @@ export default function Login({ onLogin, handleRegister }) {
       );
       if (onLogin)
         onLogin();
-      else
-        navigate("/market");
+      else {
+        navigate( loggedIn.user.role == 'admin'?  "/admin":"/market")
+      }
     } else {
       setLoginError(loggedIn.msg); // Set the error message to loginError state
     }
@@ -157,6 +159,20 @@ export default function Login({ onLogin, handleRegister }) {
                 }}
               >
                 {"LOGIN"}
+              </Button>
+
+              <Button
+                fullWidth
+                onClick={()=>{navigate('/')}}
+                sx={{
+                  m: "0.2rem 0",
+                  p: "1rem",
+                  backgroundColor: palette.primary.main,
+                  color: palette.background.alt,
+                  "&:hover": { color: palette.primary.main },
+                }}
+              >
+                {"Continue as guest"}
               </Button>
               <Typography
                 onClick={() => {

@@ -29,7 +29,7 @@ const Footer = () => {
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>
           <Typography variant="h5" mb="1rem" mt="1rem">Cars By City</Typography>
           <Box textAlign={isNonMobileScreens ? 'left' : 'center'}>
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Lahore</Link><br />
+            <Link href="/market?location=Lahore" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Lahore</Link><br />
             <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Karachi</Link><br />
             <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Islamabad</Link><br />
             <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Rawalpindi</Link><br />

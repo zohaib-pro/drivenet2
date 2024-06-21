@@ -13,6 +13,7 @@ import Dashboard from "./Dashboard";
 import VehicleDetailsComponent from "./VehicleDetails";
 import ListingManagementComponent from "./ListingManagement";
 import UserManagementComponent from "./UserManagement";
+import { useTheme } from "@emotion/react";
 
 
 
@@ -22,6 +23,7 @@ const ProfilePage = () => {
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const [subMenu, setSubMenu] = useState("Dashboard");
+  const theme = useTheme();
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:3001/users/${userId}`, {
@@ -64,7 +66,9 @@ const ProfilePage = () => {
           <WidgetWrapper>
           <List>
             {Object.keys(menu).map((text, index) => (
-              <ListItem button key={text} onClick={()=>{setSubMenu(text)}}>
+              <ListItem button key={text} onClick={()=>{setSubMenu(text)}}
+              sx={{backgroundColor: text==subMenu? theme.palette.primary.light: undefined}} 
+              >
                 <ListItemText primary={text} />
               </ListItem>
             ))}

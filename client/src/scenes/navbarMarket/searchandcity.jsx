@@ -25,7 +25,7 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout, setCities, setSearch } from "state";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import UserImage from "components/UserImage";
 
@@ -49,14 +49,10 @@ const SearchAndCity = ({ onSearch = () => { } }) => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const search = useSelector(state => state.search);
 
-  useGetData('location', '', {
-    onSuccess: (data) => {
-      dispatch(setCities({ cities: data }));
-    }
-  });
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
+
   const dark = theme.palette.neutral.dark;
   const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
@@ -65,9 +61,18 @@ const SearchAndCity = ({ onSearch = () => { } }) => {
   /* const fullName = `${user.firstName} ${user.lastName}`; */
   const fullName = user ? `${user.firstName}` : "user";
 
-  const [currentLocation, setCurrentLocation] = useState("Pakistan");
+  const query = new URLSearchParams(useLocation().search)
+  const queryLocation = query.get('location');
+  const [currentLocation, setCurrentLocation] = useState(queryLocation ?? "Pakistan");
 
   const [inputValue, setInputValue] = useState('');
+
+  useGetData('location', '', {
+    onSuccess: (data) => {
+      dispatch(setCities({ cities: data }));
+    }
+  });
+
 
 
 
