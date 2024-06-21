@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IconButton, Box, Button, TextField, Typography, useTheme, Slider, InputLabel } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePostData } from 'hooks/apiHook';
@@ -15,6 +15,7 @@ import FlexBetween from "components/FlexBetween";
 
 import { useDispatch, useSelector } from "react-redux";
 import useAlertBox from 'components/AlertBox';
+import { useLocation } from 'react-router-dom';
 
 // Define Yup validation schema
 // const vehicleAdSchema = yup.object().shape({
@@ -39,6 +40,8 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
   const { data: vehicleModels, getData: getVehicleModels } = useGetData(undefined, '', { defValue: [] });
   const [isOpen, setOpen] = useState(true);
 
+  const query = new URLSearchParams(useLocation().search)
+  const queryMake = query.get('make');
 
   const dispatch = useDispatch();
 
@@ -54,12 +57,13 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
   const [mileageRange, setMileageRange] = useState([Math.min(...mileages), Math.max(...mileages)])
   const [yearRange, setYearRange] = useState([Math.min(...years), Math.max(...years)])
 
+  const isCalled = useRef(false);
 
   const initialValues = {
     priceRange: priceRange,
     mileageRange: mileageRange,
     yearRange: yearRange,
-    make: '',
+    make: queryMake,
     model: '',
     variant: '',
   };
@@ -111,6 +115,8 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     }
   }
 
+  
+
   function filterResults(data, params, omitKeys) {
     return data.filter(item => {
       for (const key in params) {
@@ -130,6 +136,12 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     setOpen(isNonMobileScreen);
   }, [isNonMobileScreen]);
 
+  if (queryMake && !isCalled.current){
+    setTimeout(()=>{
+      applyFilters(initialValues);
+      isCalled.current = true;
+    }, 500)
+  }
 
   return (
     <WidgetWrapper>

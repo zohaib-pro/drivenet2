@@ -15,30 +15,30 @@ const Footer = () => {
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>
           <Typography variant="h5" mb="1rem" mt="1rem">Cars By Make</Typography>
           <Box textAlign={isNonMobileScreens ? 'left' : 'center'}>
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Toyota Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Suzuki Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Honda Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Daihatsu Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mitsubishi Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Nissan Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mercedes Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Hyundai Cars for Sale</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>BMW Cars for Sale</Link>
+            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Toyota Cars for Sale</Link><br />
+            <Link href="/market?make=Suzuki" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Suzuki Cars for Sale</Link><br />
+            <Link href="/market?make=Honda" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Honda Cars for Sale</Link><br />
+            <Link href="/market?make=Daihatsu" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Daihatsu Cars for Sale</Link><br />
+            <Link href="/market?make=Mitsubishi" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mitsubishi Cars for Sale</Link><br />
+            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Nissan Cars for Sale</Link><br />
+            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mercedes Cars for Sale</Link><br />
+            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Hyundai Cars for Sale</Link><br />
+            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>BMW Cars for Sale</Link>
           </Box>
         </Box>
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>
           <Typography variant="h5" mb="1rem" mt="1rem">Cars By City</Typography>
           <Box textAlign={isNonMobileScreens ? 'left' : 'center'}>
             <Link href="/market?location=Lahore" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Lahore</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Karachi</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Islamabad</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Rawalpindi</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Peshawar</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Faisalabad</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Multan</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Gujranwala</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Sialkot</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Sargodha</Link>
+            <Link href="/market?location=Karachi" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Karachi</Link><br />
+            <Link href="/market?location=Islamabad" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Islamabad</Link><br />
+            <Link href="/market?location=Rawalpindi" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Rawalpindi</Link><br />
+            <Link href="/market?location=Peshawar" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Peshawar</Link><br />
+            <Link href="/market?location=Faisalabad" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Faisalabad</Link><br />
+            <Link href="/market?location=Multan" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Multan</Link><br />
+            <Link href="/market?location=Gujranwala" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Gujranwala</Link><br />
+            <Link href="/market?location=Sialkot" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Sialkot</Link><br />
+            <Link href="/market?location=Sargodha" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cars in Sargodha</Link>
           </Box>
         </Box>
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>

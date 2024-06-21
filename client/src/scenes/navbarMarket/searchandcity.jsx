@@ -53,14 +53,6 @@ const SearchAndCity = ({ onSearch = () => { } }) => {
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
 
-  const dark = theme.palette.neutral.dark;
-  const background = theme.palette.background.default;
-  const primaryLight = theme.palette.primary.light;
-  const alt = theme.palette.background.alt;
-
-  /* const fullName = `${user.firstName} ${user.lastName}`; */
-  const fullName = user ? `${user.firstName}` : "user";
-
   const query = new URLSearchParams(useLocation().search)
   const queryLocation = query.get('location');
   const [currentLocation, setCurrentLocation] = useState(queryLocation ?? "Pakistan");
@@ -112,7 +104,7 @@ const SearchAndCity = ({ onSearch = () => { } }) => {
               onChange={handleChange}
               onKeyDown={handleKeyPress}
             />
-            <Box>
+            <Box display={'flex'}>
               {
                 search &&
                 <IconButton onClick={() => {

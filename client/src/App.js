@@ -60,7 +60,7 @@ function App() {
 
             <Route
               path="/market"
-              element={<LandingPage />}
+              element={<MarketPage/>}
             />
 
             <Route

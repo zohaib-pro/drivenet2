@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   IconButton,
@@ -53,7 +53,7 @@ const Navbar = ({ onSearch = () => { } }) => {
 
   const query = new URLSearchParams(useLocation().search)
   const queryLocation = query.get('location');
-  const [currentLocation, setCurrentLocation] = useState(queryLocation ?? "Pakistan");
+  const [currentLocation, setCurrentLocation] = useState("Pakistan");
 
   useGetData('location', '', {
     onSuccess: (data) => {
@@ -73,9 +73,7 @@ const Navbar = ({ onSearch = () => { } }) => {
 
 
   const [inputValue, setInputValue] = useState('');
-
-
-
+  const isCalled = useRef(false);
   const handleChange = (event) => {
     setInputValue(event.target.value);
   };
@@ -98,18 +96,21 @@ const Navbar = ({ onSearch = () => { } }) => {
 
   const filterByLocation = (val)=>{
     if (val != currentLocation){
-      setCurrentLocation(val);
-      if (val == "Pakistan")
-        dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }))
-      else
-        dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll.filter(item => item.location.city == val) }))
+      setTimeout(()=>{
+        //alert('filtering by location')
+        setCurrentLocation(val);
+        if (val == "Pakistan")
+          dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }))
+        else
+          dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll.filter(item => item.location.city == val) }))
+        isCalled.current = true
+      }, isCalled.current ? 0 : 500)
     }
   }
 
-  if (queryLocation){
+  if (queryLocation && !isCalled.current){
     filterByLocation(queryLocation);}
   
-
   return (
     <FlexBetween padding="0.3rem 1%" backgroundColor={alt}>
       <CustomModal open={isModalOpen} setOpen={setModalOpen}>
@@ -128,7 +129,7 @@ const Navbar = ({ onSearch = () => { } }) => {
             }}
             src="http://localhost:3000/assets/drivenet2.png"
             alt="Drivenet Market"
-            onClick={() => navigate("/market")}
+            onClick={() => navigate("/")}
             onMouseOver={(e) => (e.currentTarget.style.opacity = 0.5)}
             onMouseOut={(e) => (e.currentTarget.style.opacity = 1)}
           />
