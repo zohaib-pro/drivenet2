@@ -161,7 +161,7 @@ export default function Login({ onLogin, handleRegister }) {
                 {"LOGIN"}
               </Button>
 
-              <Button
+{/*               <Button
                 fullWidth
                 onClick={()=>{navigate('/')}}
                 sx={{
@@ -173,7 +173,7 @@ export default function Login({ onLogin, handleRegister }) {
                 }}
               >
                 {"Continue as guest"}
-              </Button>
+              </Button> */}
               <Typography
                 onClick={() => {
                   handleRegister();

@@ -18,12 +18,12 @@ const Footer = () => {
             <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Toyota Cars for Sale</Link><br />
             <Link href="/market?make=Suzuki" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Suzuki Cars for Sale</Link><br />
             <Link href="/market?make=Honda" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Honda Cars for Sale</Link><br />
+            <Link href="/market?make=Hyundai" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Hyundai Cars for Sale</Link><br />
+            <Link href="/market?make=Kia" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Kia Cars for Sale</Link><br />
+            <Link href="/market?make=Nissan" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Nissan Cars for Sale</Link><br />
+            <Link href="/market?make=Mercedes" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mercedes Cars for Sale</Link><br />
             <Link href="/market?make=Daihatsu" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Daihatsu Cars for Sale</Link><br />
-            <Link href="/market?make=Mitsubishi" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mitsubishi Cars for Sale</Link><br />
-            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Nissan Cars for Sale</Link><br />
-            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mercedes Cars for Sale</Link><br />
-            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Hyundai Cars for Sale</Link><br />
-            <Link href="/market?make=Toyota" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>BMW Cars for Sale</Link>
+            <Link href="/market?make=Mitsubishi" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Mitsubishi Cars for Sale</Link>
           </Box>
         </Box>
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>
@@ -44,25 +44,17 @@ const Footer = () => {
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>
           <Typography variant="h5" mb="1rem" mt="1rem">Explore DriveNet</Typography>
           <Box textAlign={isNonMobileScreens ? 'left' : 'center'}>
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Used Cars</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Used Bikes</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>New Cars</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Auto Parts & Accessories</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Cool Rides</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Forums</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Autoshow</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Sitemap</Link>
+            <Link href="/market" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Explore Used Cars</Link><br />
+            <Link href="/home" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Explore Autoshow Events</Link><br />
+            <Link href="/home" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Explore DriveNet Media</Link>
           </Box>
         </Box>
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>
           <Typography variant="h5" mb="1rem" mt="1rem">DriveNet.com</Typography>
           <Box textAlign={isNonMobileScreens ? 'left' : 'center'}>
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>About DriveNet.com</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Our Products</Link><br />
+            <Link href="/market" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>About DriveNet.com</Link><br />
             <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Advertise With Us</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>How To Pay</Link><br />
             <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>FAQs</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Refunds & Returns</Link><br />
             <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Careers</Link><br />
             <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Contact Us</Link>
           </Box>
@@ -70,9 +62,9 @@ const Footer = () => {
         <Box flexBasis="20%" textAlign={isNonMobileScreens ? 'left' : 'center'}>
           <Typography variant="h5" mb="1rem" mt="1rem">Sell On DriveNet</Typography>
           <Box textAlign={isNonMobileScreens ? 'left' : 'center'}>
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Sell Your Car</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Sell Your Bike</Link><br />
-            <Link href="#" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Sell Accessory</Link>
+            <Link href="/market/new/sell" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Sell Your Car</Link><br />
+            <Link href="/home" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Post on Community</Link><br />
+            <Link href="/chat" color="inherit" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Chat with Friends</Link>
           </Box>
           <Typography variant="h5" mt="1rem">Subscribe to our Newsletter</Typography>
           <Box display="flex" mt="0.5rem" justifyContent={isNonMobileScreens ? 'left' : 'center'}>

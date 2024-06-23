@@ -99,3 +99,14 @@ export const addCommentToPost = async (req, res) => {
     res.status(500).json({ message: "Failed to add comment" });
   }
 };
+
+
+export const getUserPostCount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const postCount = await Post.countDocuments({ userId: userId });
+    res.status(200).json(postCount);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

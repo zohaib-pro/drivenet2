@@ -15,6 +15,7 @@ import { setUserImage } from "state"; // Import setUserImage action
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
+  const [postCount, setPostCount] = useState(0); // Add state for post count
   const { palette } = useTheme();
   const navigate = useNavigate();
   const location = useLocation(); // Get the current location
@@ -34,6 +35,15 @@ const UserWidget = ({ userId, picturePath }) => {
     dispatch(setUserImage({ userId: userId, image: data.picturePath }));
   };
 
+  const getUserPostCount = async () => {
+    const response = await fetch(`http://localhost:3001/posts/${userId}/postCount`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    setPostCount(data);
+  };
+
   const incrementProfileViews = async () => {
     await fetch(`http://localhost:3001/users/${userId}/incrementProfileViews`, {
       method: "POST",
@@ -42,6 +52,7 @@ const UserWidget = ({ userId, picturePath }) => {
 
   useEffect(() => {
     getUser();
+    getUserPostCount();
 
     // Check if the current URL matches the profile URL
     const currentPath = `/profile/${userId}`;
@@ -89,9 +100,9 @@ const UserWidget = ({ userId, picturePath }) => {
         </FlexBetween>
         <IconButton
           sx={{ backgroundColor: palette.primary.light, p: "0.6rem" }}
+          onClick={() => navigate(`/editProfile/${userId}`)}
         >
           <ManageAccountsOutlined
-            onClick={() => navigate(`/editProfile/${userId}`)}
             sx={{
               "&:hover": {
                 color: palette.primary.main,
@@ -127,9 +138,9 @@ const UserWidget = ({ userId, picturePath }) => {
           </Typography>
         </FlexBetween>
         <FlexBetween>
-          <Typography color={medium}>Impressions of your post</Typography>
+          <Typography color={medium}>Number of your Posts</Typography>
           <Typography color={main} fontWeight="500">
-            {impressions}
+            {postCount}
           </Typography>
         </FlexBetween>
       </Box>
