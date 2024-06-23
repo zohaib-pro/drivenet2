@@ -1,4 +1,6 @@
-import { Alert, IconButton, Box, Divider, Typography, useMediaQuery, Grid, Modal, LinearProgress } from "@mui/material";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { Alert, IconButton, Box, Divider, Typography, useMediaQuery, Modal } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "scenes/navbarMarket";
@@ -11,7 +13,7 @@ import SellerCard from "components/SellerCard";
 import { Close } from "@mui/icons-material";
 
 import { LocationOnOutlined } from "@mui/icons-material";
-import IconBtn from "components/IconBtn";
+//import IconBtn from "components/IconBtn";
 import DetailsGrid from "components/DetailsGrid";
 import IssueCreationComponent from "./IssueCreator";
 import { useGetData, usePatchData } from "hooks/apiHook";

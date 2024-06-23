@@ -1,10 +1,8 @@
-import { Box, Typography, useMediaQuery } from "@mui/material";
-import { useSelector } from "react-redux";
+import { Box, useMediaQuery } from "@mui/material";
 import Footer from "scenes/footer/Footer";
 import Navbar from "scenes/navbarMarket";
 import FiltersWidget from "scenes/widgets/FiltersWidget";
 import VehicleAdWidgetGallery from "scenes/widgets/VehicleAdGalleryWidget";
-import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");

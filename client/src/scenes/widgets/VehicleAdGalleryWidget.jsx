@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVehicleAds, setVehicleAdsAll } from "state";
 
-import { useMediaQuery, Typography, Box, useTheme, Select, MenuItem, InputBase, InputLabel, FormControl, Link, Button } from "@mui/material";
+import { useMediaQuery, Typography, Box, useTheme, Select, MenuItem, InputBase, FormControl, Button } from "@mui/material";
 import Center from "components/Center";
 import VehicleAdWidget from "./VehicleAdWidget";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false, l
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
   const posts = useSelector((state) => state.vehicleAds);
-  const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
+  //const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const token = useSelector((state) => state.token);
   const isFilterApplied = useSelector(state => state.isFilterApplied);
   const search = useSelector(state => state.search);
@@ -42,21 +42,21 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false, l
     "Mileage: High to Low",
   ]
 
-  const filterOptions = [
+/*   const filterOptions = [
     "All",
     "New",
     "Approved",
     "Rejected",
-  ]
+  ] */
 
   const [sortBy, setSortBy] = useState(sortOptions[0]);
-  const [filterBy, setFilterBy] = useState(filterOptions[0]);
+ // const [filterBy, setFilterBy] = useState(filterOptions[0]);
 
   const sort = (selectedOption) => {
     //alert(selectedOption);
     let i = 0;
     for (let option of sortOptions) {
-      if (option == selectedOption)
+      if (option === selectedOption)
         break;
       i++;
     }
@@ -64,19 +64,19 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false, l
     var sorted = []
     const zero = i % 2;
     //sort by Date
-    if (i == 0 || i == 1) {
+    if (i === 0 || i === 1) {
       sorted = [...vehicleAds].sort((v1, v2) => { return new Date((zero ? v2 : v1).updatedAt) - new Date((zero ? v1 : v2).updatedAt) });
     }
     //sort by year
-    else if (i == 2 || i == 3) {
+    else if (i === 2 || i === 3) {
       sorted = [...vehicleAds].sort((v1, v2) => { return (zero ? v1 : v2).year - (zero ? v2 : v1).year });
     }
     //sort by price
-    else if (i == 4 || i == 5) {
+    else if (i === 4 || i === 5) {
       sorted = [...vehicleAds].sort((v1, v2) => { return (zero ? v2 : v1).price - (zero ? v1 : v2).price });
     }
     //sort by mileage
-    else if (i == 6 || i == 7) {
+    else if (i === 6 || i === 7) {
       sorted = [...vehicleAds].sort((v1, v2) => { return (zero ? v2 : v1).mileage - (zero ? v1 : v2).mileage });
     }
 
@@ -87,9 +87,9 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false, l
     getVehicleAds();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const filter = () => {
+/*   const filter = () => {
 
-  }
+  } */
 
   // Reverse the order of posts array
   const vehicleAds = posts;

@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IconButton, Box, Button, TextField, Typography, useTheme, Slider, InputLabel } from '@mui/material';
+import { IconButton, Box, Button, TextField, Typography, Slider, InputLabel } from '@mui/material';
 import { Formik } from 'formik';
-import { useGetData, usePostData } from 'hooks/apiHook';
+import { useGetData } from 'hooks/apiHook';
 import { setVehicleAds, setFilterApplied, setSearch } from 'state';
 import { numberWithCommas } from 'utils/math';
-import * as yup from 'yup';
+//import * as yup from 'yup';
 import WidgetWrapper from 'components/WidgetWrapper';
 
 
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
-import Dropzone from "react-dropzone";
+//import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 
 import { useDispatch, useSelector } from "react-redux";
-import useAlertBox from 'components/AlertBox';
+//import useAlertBox from 'components/AlertBox';
 import { useLocation } from 'react-router-dom';
 
 // Define Yup validation schema
@@ -84,7 +84,7 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     //check if there is any value entered
     var isValue = false;
     for (const key in values) {
-      if (values[key] && String(values[key]).length != 0) {
+      if (values[key] && String(values[key]).length !== 0) {
         isValue = true;
         break;
       }
@@ -93,8 +93,8 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     const inValue = search.toLowerCase();
     if (inValue)
       filteredResults = filteredResults.filter(item =>
-        item.make.toLowerCase() == inValue ||
-        item.model.toLowerCase() == inValue
+        item.make.toLowerCase() === inValue ||
+        item.model.toLowerCase() === inValue
       );
 
     console.log(values.priceRange[0], values.priceRange[1]);
@@ -141,8 +141,8 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
   if (querySearch && !isCalled.current){
     setTimeout(()=>{
       const results = vehicleAdsAll.filter(item =>
-        item.make.toLowerCase() == querySearch ||
-        item.model.toLowerCase() == querySearch
+        item.make.toLowerCase() === querySearch ||
+        item.model.toLowerCase() === querySearch
       );
       dispatch(setVehicleAds({ vehicleAds: results }));
       dispatch(setSearch({ search: querySearch }))
@@ -341,8 +341,8 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
 
                 if (inValue)
                   filteredResults = filteredResults.filter(item =>
-                    item.make.toLowerCase() == inValue ||
-                    item.model.toLowerCase() == inValue
+                    item.make.toLowerCase() === inValue ||
+                    item.model.toLowerCase() === inValue
                   )
                 dispatch(setVehicleAds({ vehicleAds: filteredResults }));
                 dispatch(setFilterApplied({ isFilterApplied: false }));
