@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { IconButton, Box, Button, TextField, Typography, useTheme, Slider, InputLabel } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePostData } from 'hooks/apiHook';
-import { setVehicleAds, setFilterApplied } from 'state';
+import { setVehicleAds, setFilterApplied, setSearch } from 'state';
 import { numberWithCommas } from 'utils/math';
 import * as yup from 'yup';
 import WidgetWrapper from 'components/WidgetWrapper';
@@ -42,6 +42,7 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
 
   const query = new URLSearchParams(useLocation().search)
   const queryMake = query.get('make');
+  const querySearch = query.get('search');
 
   const dispatch = useDispatch();
 
@@ -59,11 +60,13 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
 
   const isCalled = useRef(false);
 
+        
+
   const initialValues = {
     priceRange: priceRange,
     mileageRange: mileageRange,
     yearRange: yearRange,
-    make: queryMake,
+    make: queryMake?? '',
     model: '',
     variant: '',
   };
@@ -99,14 +102,6 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     filteredResults = filteredResults.filter(item => (item.mileage >= values.mileageRange[0] && item.mileage <= values.mileageRange[1]))
     filteredResults = filteredResults.filter(item => (item.year >= values.yearRange[0] && item.year <= values.yearRange[1]))
 
-    // if (values['minprice']) {
-    //   filteredResults = filteredResults.filter(item => item.price >= values['minprice'])
-    // }
-
-    // if (values['maxprice']) {
-    //   filteredResults = filteredResults.filter(item => item.price <= values['maxprice'])
-    // }
-
     filteredResults = filterResults(filteredResults, values, ['priceRange', 'mileageRange', 'yearRange'])
 
     if (isValue) {
@@ -140,6 +135,17 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     setTimeout(()=>{
       applyFilters(initialValues);
       isCalled.current = true;
+    }, 500)
+  }
+
+  if (querySearch && !isCalled.current){
+    setTimeout(()=>{
+      const results = vehicleAdsAll.filter(item =>
+        item.make.toLowerCase() == querySearch ||
+        item.model.toLowerCase() == querySearch
+      );
+      dispatch(setVehicleAds({ vehicleAds: results }));
+      dispatch(setSearch({ search: querySearch }))
     }, 500)
   }
 

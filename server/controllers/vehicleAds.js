@@ -206,3 +206,16 @@ export const getVehicleAd = async (req, res) => {
   }
 
 }
+
+export const soldVehicleAd= async (req, res) => {
+  try {
+    const { vehicleAdId } = req.params;
+    const vehicleAd = await VehicleAd.findById(vehicleAdId);
+    vehicleAd.status = 'sold';
+    await vehicleAd.save();
+    res.status(200).json(vehicleAd);
+  } catch (err) {
+    res.status(409).json({ message: err.message });
+  }
+
+}

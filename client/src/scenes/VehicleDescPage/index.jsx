@@ -24,6 +24,7 @@ import Predictor from "components/Predictor";
 import { getTimeDiff, getUpdatedAt } from "utils/extra";
 import SelectedFeaturesDisplay from "./VehicleDisplayer";
 import VehicleInfoTable from "./VehicleInfo";
+import Footer from "scenes/footer/Footer";
 
 const VehicleDescPage = () => {
   const [open, setOpen] = useState(false);
@@ -256,6 +257,7 @@ const VehicleDescPage = () => {
         <CustomModal open={isLoginModalOpen} setOpen={setLoginModalOpen}>
           <LoginPage isModal={true} onLogin={() => { setLoginModalOpen(false) }} />
         </CustomModal>
+        <Footer />
       </Box>
       : <Box></Box>
   );

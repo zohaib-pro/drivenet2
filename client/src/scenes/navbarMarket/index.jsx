@@ -79,14 +79,17 @@ const Navbar = ({ onSearch = () => { } }) => {
   };
 
   const handleKeyPress = (event) => {
+    
     if (event.key === 'Enter') {
+      
       const inValue = inputValue.toLowerCase()
-      const results = vehicleAdsAll.filter(item =>
-        item.make.toLowerCase() == inValue ||
-        item.model.toLowerCase() == inValue
-      );
-      dispatch(setVehicleAds({ vehicleAds: results }));
-      dispatch(setSearch({ search: inputValue }))
+      navigate(`/market?search=${inValue}`);
+      // const results = vehicleAdsAll.filter(item =>
+      //   item.make.toLowerCase() == inValue ||
+      //   item.model.toLowerCase() == inValue
+      // );
+      // dispatch(setVehicleAds({ vehicleAds: results }));
+      // dispatch(setSearch({ search: inputValue }))
     }
   };
 

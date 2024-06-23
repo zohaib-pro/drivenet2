@@ -1,5 +1,5 @@
 import express from "express";
-import { getVehicleAds, getUserVehicleAds, getVehicleAd, delVehicleAd, setVehicleStatus, getVehicleAdsAll, incViews } from "../controllers/vehicleAds.js";
+import { getVehicleAds, getUserVehicleAds, getVehicleAd, delVehicleAd, setVehicleStatus, getVehicleAdsAll, incViews, soldVehicleAd } from "../controllers/vehicleAds.js";
 import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.get("/", getVehicleAds);
 router.get("/all", getVehicleAdsAll);
 router.get("/:vehicleAdId", getVehicleAd)
 router.get("/:userId/ads", getUserVehicleAds);
+router.get("/sold/:vehicleAdId", soldVehicleAd);
 
 /* UPDATE */
 // router.patch("/:id/like", verifyToken, likeVehicleAd);

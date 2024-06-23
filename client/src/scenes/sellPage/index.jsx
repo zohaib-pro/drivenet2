@@ -4,6 +4,7 @@ import Navbar from "scenes/navbarMarket";
 import StepForm from "./StepForm";
 import { useParams } from "react-router-dom";
 import VehicleAdUpdateForm from "./FormUpdate";
+import Footer from "scenes/footer/Footer";
 
 const SellPage = () => {
   const theme = useTheme();
@@ -26,6 +27,7 @@ const SellPage = () => {
           {vehicleAdId? <VehicleAdUpdateForm vehicleAdId={vehicleAdId}/> :  <Form /> }
         </Box>
       </Box>
+      <Footer />
     </Box>
   );
 };

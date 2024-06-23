@@ -18,6 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ImagesListViewer from 'components/ImagesListViewer';
 import Predictor from 'components/Predictor';
 import CarFeaturesSelector from './FeatureSelector';
+import Footer from 'scenes/footer/Footer';
 
 
 // Define Yup validation schema
@@ -645,7 +646,6 @@ const VehicleAdForm = () => {
         />
 
       </Box>
-
     </Box>
   );
 };

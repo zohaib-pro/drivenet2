@@ -20,14 +20,15 @@ import {
   DeleteForever,
   EditOutlined,
   Delete,
-  Edit
+  Edit,
+  SellOutlined
 } from "@mui/icons-material";
 import WidgetWrapper from "components/WidgetWrapper";
 import Friend from "components/Friend";
 import { setPost } from "state";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmationDialog from "components/ConfirmationDialog";
-import { useDelData } from "hooks/apiHook";
+import { useDelData, useGetData } from "hooks/apiHook";
 import VehicleUpdateAdForm from "scenes/sellPage/FormUpdate";
 import ViewsEye from "components/ViewsEye";
 
@@ -42,11 +43,14 @@ const UserVehicleAdWidget = ({
   const main = palette.neutral.main;
   const primary = palette.primary.main;
 
+  const {getData:markAsSold} = useGetData();
+
   const navigate = useNavigate();
 
   const [isModalOpen, setModalOpen] = useState(false);
 
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isDialogOpen2, setDialogOpen2] = useState(false);
 
   const getTimeDiff = (vehicleAd) => {
     const timeDiff = new Date() - new Date(vehicleAd.createdAt);
@@ -80,13 +84,16 @@ const UserVehicleAdWidget = ({
           <IconButton onClick={() => { navigate(`/market/edit/${vehicle._id}`) }}>
             <Edit />
           </IconButton>
+          <IconButton onClick={() => { setDialogOpen2(true) }}>
+            <SellOutlined />
+          </IconButton>
         </Box>
         }
 
 
         {
           isOwner && <Typography variant="h5" color={'orange'}>
-          {vehicle.status === 'new' ? "Pending approval" : vehicle.status === 'approved' ? "Live" : "Rejected"}
+          {vehicle.status === 'new' ? "Pending approval" : vehicle.status === 'approved' ? "Live" : vehicle.status}
         </Typography>
         }
       </Box>
@@ -142,6 +149,7 @@ const UserVehicleAdWidget = ({
         </Box>
       }
       <ConfirmationDialog data={{ title: "Are you sure to delete?", content: "The selected vehicle ad will be deleted from market", open: isDialogOpen, onConfirm: () => { setDialogOpen(false); delVehicleAd(vehicle._id) }, onClose: () => { setDialogOpen(false) } }} />
+      <ConfirmationDialog data={{ title: "Mark this vehicle as sold?", content: "The selected vehicle ad will be marked as sold and removed from market", open: isDialogOpen2, onConfirm: () => { setDialogOpen2(false); markAsSold('/market/sold/'+vehicle._id) }, onClose: () => { setDialogOpen2(false) } }} />
 
       <Modal open={isModalOpen} onClose={handleClose}>
 

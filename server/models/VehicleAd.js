@@ -68,7 +68,7 @@ const vehicleAdSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      enum: ['new', 'approved', 'rejected'],
+      enum: ['new', 'approved', 'rejected', 'sold'],
       default: 'new',
     },
     remarks: {
