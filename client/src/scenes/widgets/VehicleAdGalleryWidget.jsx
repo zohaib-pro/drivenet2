@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVehicleAds, setVehicleAdsAll } from "state";
 
-import { useMediaQuery, Typography, Box, useTheme, Select, MenuItem, InputBase, InputLabel, FormControl } from "@mui/material";
+import { useMediaQuery, Typography, Box, useTheme, Select, MenuItem, InputBase, InputLabel, FormControl, Link, Button } from "@mui/material";
 import Center from "components/Center";
 import VehicleAdWidget from "./VehicleAdWidget";
+import { useNavigate } from "react-router-dom";
 
-const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false }) => {
+const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false, limit }) => {
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
   const posts = useSelector((state) => state.vehicleAds);
-  const vehicleAdsAll = useSelector(state=>state.vehicleAdsAll);
+  const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const token = useSelector((state) => state.token);
   const isFilterApplied = useSelector(state => state.isFilterApplied);
   const search = useSelector(state => state.search);
@@ -29,9 +32,9 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false })
   };
 
   const sortOptions = [
-    "Date: Recent First", 
-    "Date: Oldest First", 
-    "Model Year: Latest First", 
+    "Date: Recent First",
+    "Date: Oldest First",
+    "Model Year: Latest First",
     "Model Year: Oldest First",
     "Price: Low to High",
     "Price: High to Low",
@@ -52,7 +55,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false })
   const sort = (selectedOption) => {
     //alert(selectedOption);
     let i = 0;
-    for (let option of sortOptions){
+    for (let option of sortOptions) {
       if (option == selectedOption)
         break;
       i++;
@@ -62,30 +65,30 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false })
     const zero = i % 2;
     //sort by Date
     if (i == 0 || i == 1) {
-      sorted = [...vehicleAds].sort((v1, v2)=>{return new Date((zero?v2:v1).updatedAt) - new Date((zero?v1:v2).updatedAt)});
+      sorted = [...vehicleAds].sort((v1, v2) => { return new Date((zero ? v2 : v1).updatedAt) - new Date((zero ? v1 : v2).updatedAt) });
     }
     //sort by year
     else if (i == 2 || i == 3) {
-      sorted = [...vehicleAds].sort((v1, v2)=>{return (zero?v1:v2).year - (zero?v2:v1).year});
+      sorted = [...vehicleAds].sort((v1, v2) => { return (zero ? v1 : v2).year - (zero ? v2 : v1).year });
     }
     //sort by price
     else if (i == 4 || i == 5) {
-      sorted = [...vehicleAds].sort((v1, v2)=>{return (zero?v2:v1).price - (zero?v1:v2).price});
+      sorted = [...vehicleAds].sort((v1, v2) => { return (zero ? v2 : v1).price - (zero ? v1 : v2).price });
     }
     //sort by mileage
     else if (i == 6 || i == 7) {
-      sorted = [...vehicleAds].sort((v1, v2)=>{return (zero?v2:v1).mileage - (zero?v1:v2).mileage});
+      sorted = [...vehicleAds].sort((v1, v2) => { return (zero ? v2 : v1).mileage - (zero ? v1 : v2).mileage });
     }
 
     dispatch(setVehicleAds({ vehicleAds: sorted }));
-    
+
   }
   useEffect(() => {
     getVehicleAds();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filter = () => {
-    
+
   }
 
   // Reverse the order of posts array
@@ -110,17 +113,20 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false })
           width="100%"
           padding="1rem 2%">
           <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography variant="h4" fontWeight={500}
-              mb={1}
-            >
-              {heading}
-            </Typography>
+            <Box>
+              <Typography variant="h4" fontWeight={500}
+                mb={1}
+              >
+                {heading}
+              </Typography>
+              {/* <Link href={"http://localhost:3000/market"} target="_blank">View All Vehicles</Link> */}
+            </Box>
 
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="button" style={{ marginRight: '8px' }}>Sort By</Typography>
               <FormControl>
                 <Select
-                  onChange={(event)=>{
+                  onChange={(event) => {
                     const value = event.target.value;
                     setSortBy(value);
                     sort(value);
@@ -141,10 +147,10 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false })
                   }}
                   input={<InputBase />}
                 >
-                  {sortOptions.map(item=>(
+                  {sortOptions.map(item => (
                     <MenuItem value={item}>
-                    <Typography>{item}</Typography>
-                  </MenuItem>
+                      <Typography>{item}</Typography>
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -158,7 +164,7 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false })
               gap: '0.5rem'
             }}
           >
-            {vehicleAds.map((item) => (
+            {(limit ? vehicleAds.slice(0, limit) : vehicleAds).map((item) => (
               <VehicleAdWidget
                 isAdmin={isAdmin}
                 key={item.title} // Add a unique key for each item in the map function
@@ -168,6 +174,20 @@ const VehicleAdWidgetGallery = ({ heading, isProfile = false, isAdmin = false })
             ))}
 
           </Box>
+          {
+            limit &&
+            <Box display={'flex'} justifyContent='center'>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ marginTop: isNonMobileScreens ? '1.5rem' : '0.2rem' }}
+                onClick={() => { navigate('/market') }}
+              >
+                Go to Market
+              </Button>
+            </Box>
+          }
         </Box>
 
       )}

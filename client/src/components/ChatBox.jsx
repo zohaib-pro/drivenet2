@@ -1,19 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useTheme, Divider } from "@mui/material";
+import { useTheme, Divider, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { addMessage, getMessages } from "../../src/api/MessageRequests";
 import "./ChatBox.css";
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
 import VehicleAdWidgetLink from "scenes/widgets/VehicleAdWidgetLink";
+import BuyerCard from "./BuyerCard";
 
-const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, vehicleData }) => {
+const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, vehicleData, buyerData }) => {
   const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const { palette } = useTheme();
 
   const isVehicleAdSent = useRef(false);
+  const isBuyerAdSent = useRef(false);
   const scroll = useRef();
 
   const handleChange = (newMessage) => {
@@ -47,6 +49,10 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
       sendVehicleAdMessage();
       isVehicleAdSent.current = true;
     }
+    if (!isBuyerAdSent.current) {
+      sendBuyerAdMessage();
+      isBuyerAdSent.current = true;
+    }
   }, [chat, currentUser, token]);
 
   const sendVehicleAdMessage = async () => {
@@ -54,6 +60,23 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
       const message = {
         senderId: currentUser,
         text: `vehiclead:${vehicleData._id}`,
+        chatId: chat._id,
+      };
+      const receiverId = chat.members.find((id) => id !== currentUser);
+      setSendMessage({ ...message, receiverId });
+      try {
+        await addMessage(message);
+      } catch (error) {
+        console.log("Error sending vehicle ad message", error);
+      }
+    }
+  };
+
+  const sendBuyerAdMessage = async () => {
+    if (buyerData && chat) {
+      const message = {
+        senderId: currentUser,
+        text: `buyerad:${buyerData._id}`,
         chatId: chat._id,
       };
       const receiverId = chat.members.find((id) => id !== currentUser);
@@ -144,6 +167,9 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage, isModal, 
               <div key={index} ref={scroll} className={message.senderId === currentUser ? "message own" : "message"}>
                 {message.text.includes("vehiclead:") && (
                   <VehicleAdWidgetLink id={message.text.replace("vehiclead:", "").trim()} />
+                )}
+                {message.text.includes("buyerad:") && (
+                  <BuyerCard id={message.text.replace("buyerad:", "").trim()} />
                 )}
                 <span>{message.text}</span> <span>{format(message.createdAt)}</span>
               </div>

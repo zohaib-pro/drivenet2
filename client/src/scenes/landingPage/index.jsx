@@ -242,12 +242,12 @@ const LandingPage = () => {
         gap="0.5rem"
         justifyContent="space-between"
       >
-        <Box flexBasis={"20%"}>
+        {/* <Box flexBasis={"20%"}>
           <FiltersWidget isNonMobileScreen={isNonMobileScreens} />
-        </Box>
+        </Box> */}
 
-        <Box flexBasis={"80%"}>
-          <VehicleAdWidgetGallery heading={"Listed Recently for sale!"} />
+        <Box flexBasis={"100%"}>
+          <VehicleAdWidgetGallery heading={"Listed Recently for sale!"} limit={1} />
         </Box>
       </Box>
       

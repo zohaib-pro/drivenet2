@@ -9,7 +9,7 @@ import ChatBox from "components/ChatBox";
 import WidgetWrapper from "components/WidgetWrapper";
 import { incrementUnread, resetUnread } from "../../state";
 
-const ChatParent = ({ isModal, chatWith, vehicleData }) => {
+const ChatParent = ({ isModal, chatWith, vehicleData, buyerData }) => {
   const socket = useRef();
   const user = useSelector((state) => state.user);
   const unreadMessages = useSelector((state) => state.unreadMessages);
@@ -117,6 +117,7 @@ const ChatParent = ({ isModal, chatWith, vehicleData }) => {
           receivedMessage={receivedMessage}
           isModal={isModal}
           vehicleData={vehicleData}
+          buyerData={buyerData}
         />
       </div>
     </div>

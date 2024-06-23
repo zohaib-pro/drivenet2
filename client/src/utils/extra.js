@@ -22,3 +22,9 @@ export const getTimeDiff = (vehicleAd) => {
     const timeDiff = new Date() - new Date(vehicleAd.createdAt);
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 }
+
+export const getUpdatedAt = (obj) => {
+    if (!obj) 
+        return "1970-01-01"
+    return obj?.updatedAt.substring(0, obj?.updatedAt.indexOf('T'));
+}

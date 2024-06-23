@@ -21,7 +21,7 @@ import { numberWithCommas } from "utils/math";
 import CustomModal from "components/CustomModal";
 import LoginPage from "scenes/loginPage";
 import Predictor from "components/Predictor";
-import { getTimeDiff } from "utils/extra";
+import { getTimeDiff, getUpdatedAt } from "utils/extra";
 import SelectedFeaturesDisplay from "./VehicleDisplayer";
 import VehicleInfoTable from "./VehicleInfo";
 
@@ -143,7 +143,7 @@ const VehicleDescPage = () => {
     {category: 'Registration City', value: vehicle?.cityReg},
     {category: 'Body Type', value: vehicleData?.category ?? 'N/A'},
     {category: 'Transmission Type', value: vehicleData?.transType ?? 'N/A'},
-    {category: 'Last Updated', value: vehicle?.updatedAt.substring(0, vehicle?.updatedAt.indexOf('T'))},
+    {category: 'Last Updated', value: getUpdatedAt(vehicle)},
   ]
 
   return (
