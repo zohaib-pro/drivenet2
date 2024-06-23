@@ -6,6 +6,7 @@ import { Typography, Box } from "@mui/material";
 import Center from "components/Center";
 import AdvertWidget from "./AdvertWidget";
 
+
 const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelClick }) => {
   const posts = events;
 
@@ -13,6 +14,7 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
 
   // Reverse the order of posts array
   const reversedPosts = posts;
+
 
   return (
     <>

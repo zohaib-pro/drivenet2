@@ -76,7 +76,9 @@ const Footer = () => {
             <Typography variant="h5" mb="1rem">Follow Us</Typography>
             <Box display="flex" gap="1rem" justifyContent={isNonMobileScreens ? 'left' : 'center'}>
               <i className="fab fa-facebook-f" style={{ fontSize: '2rem' }}></i>
+              <i className="fab fa-twitter" style={{ fontSize: '2rem' }}></i>
               <i className="fab fa-instagram" style={{ fontSize: '2rem' }}></i>
+              <i className="fab fa-youtube" style={{ fontSize: '2rem' }}></i>
             </Box>
           </Box>
         </Box>
