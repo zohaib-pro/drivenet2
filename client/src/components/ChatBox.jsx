@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useRef } from "react";
-import { useTheme, Divider, Typography } from "@mui/material";
+import { useTheme, Divider } from "@mui/material";
 import { useSelector } from "react-redux";
 import { addMessage, getMessages } from "../../src/api/MessageRequests";
 import "./ChatBox.css";

@@ -1,4 +1,4 @@
-import { Button, Typography, useTheme, IconButton, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { Button, Typography, useTheme, IconButton,  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import Center from "components/Center";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 import useAlertBox from "../../components/AlertBox";
+import { useLocation } from "react-router-dom";
+
 
 const AdvertWidget = ({
   image,
@@ -31,6 +33,10 @@ const AdvertWidget = ({
 
   // Initialize the custom alert box hook
   const { AlertBox, ShowAlertBox } = useAlertBox();
+  const location = useLocation(); // Get current location
+
+
+  const isAdmin = location.pathname === "/admin" 
 
   const handleInterestClick = async () => {
     try {
@@ -104,7 +110,7 @@ const AdvertWidget = ({
         {description}
       </Typography>
       <Center>
-        <Button
+        { !isAdmin && <Button
           onClick={interested ? handleOpenModal : handleInterestClick}
           sx={{
             color: palette.background.alt,
@@ -115,7 +121,7 @@ const AdvertWidget = ({
           }}
         >
           {interested ? "Subscribed" : "Subscribe"}
-        </Button>
+        </Button>}
       </Center>
       {/* Unsubscribe confirmation modal */}
       <Dialog open={openModal} onClose={handleCloseModal}>
@@ -127,9 +133,9 @@ const AdvertWidget = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal}>Close</Button>
-          <Button onClick={handleUnsubscribe} variant="contained" color="error">
+          {!isAdmin && <Button onClick={handleUnsubscribe} variant="contained" color="error">
             Unsubscribe
-          </Button>
+          </Button>}
         </DialogActions>
       </Dialog>
     </WidgetWrapper>

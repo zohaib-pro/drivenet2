@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Importing FontAwesome CSS
 
 const Footer = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -76,7 +77,6 @@ const Footer = () => {
             <Box display="flex" gap="1rem" justifyContent={isNonMobileScreens ? 'left' : 'center'}>
               <i className="fab fa-facebook-f" style={{ fontSize: '2rem' }}></i>
               <i className="fab fa-twitter" style={{ fontSize: '2rem' }}></i>
-              <i className="fab fa-pinterest" style={{ fontSize: '2rem' }}></i>
               <i className="fab fa-instagram" style={{ fontSize: '2rem' }}></i>
               <i className="fab fa-youtube" style={{ fontSize: '2rem' }}></i>
             </Box>

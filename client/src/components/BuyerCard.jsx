@@ -1,18 +1,11 @@
-import { useState } from "react";
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import {
   Box,
   Typography,
   Link,
-  Button,
 } from "@mui/material";
-import {
-  Call,
-  Chat,
-} from "@mui/icons-material";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useSelector } from "react-redux";
-import { getUpdatedAt } from "utils/extra";
-import ChatParent from "scenes/chatPage/ChatParent";
 import { useGetData } from "hooks/apiHook";
 
 const BuyerCard = ({

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Box,
   IconButton,
@@ -10,15 +10,11 @@ import {
   useTheme,
   useMediaQuery,
   Button,
-  Modal,
 } from "@mui/material";
 import {
   Search,
-  Message,
   DarkMode,
   LightMode,
-  Notifications,
-  Help,
   Menu,
   Close,
 } from "@mui/icons-material";
@@ -33,7 +29,7 @@ import { useGetData } from "hooks/apiHook";
 
 import { setVehicleAds } from "state";
 import CustomModal from "components/CustomModal";
-import Login from "scenes/loginPage/Login";
+//import Login from "scenes/loginPage/Login";
 import LoginPage from "scenes/loginPage";
 import MsgIcon from "components/MsgIcon";
 
@@ -45,8 +41,8 @@ const Navbar = ({ onSearch = () => { } }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const cities = useSelector(state => state.cities);
-  const mode = useSelector(state => state.mode);
-  const vehicleAds = useSelector((state) => state.vehicleAds);
+  //const mode = useSelector(state => state.mode);
+  //const vehicleAds = useSelector((state) => state.vehicleAds);
   const vehicleAdsAll = useSelector(state => state.vehicleAdsAll);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const search = useSelector(state => state.search);
@@ -88,19 +84,19 @@ const Navbar = ({ onSearch = () => { } }) => {
     }
   };
 
-  const handleSubmit = () => {
+/*   const handleSubmit = () => {
     setInputValue('');
   };
-
+ */
   const filterByLocation = (val)=>{
-    if (val != currentLocation){
+    if (val !== currentLocation){
       setTimeout(()=>{
         //alert('filtering by location')
         setCurrentLocation(val);
-        if (val == "Pakistan")
+        if (val === "Pakistan")
           dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }))
         else
-          dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll.filter(item => item.location.city == val) }))
+          dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll.filter(item => item.location.city === val) }))
         isCalled.current = true
       }, isCalled.current ? 0 : 500)
     }

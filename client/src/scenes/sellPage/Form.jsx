@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, useTheme, useMediaQuery, LinearProgress, IconButton, Divider } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, useTheme, useMediaQuery, Divider } from '@mui/material';
 import { Formik } from 'formik';
 import { useGetData, usePostData } from 'hooks/apiHook';
 import * as yup from 'yup';
@@ -8,13 +9,13 @@ import * as yup from 'yup';
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useAlertBox from 'components/AlertBox';
 import VehicleAdWidget from 'scenes/widgets/VehicleAdWidget';
 import AdvertWidgetShow from 'scenes/widgets/AdvertWidgetShow';
-import IconBtn from "components/IconBtn";
+//import IconBtn from "components/IconBtn";
 
-import CloseIcon from "@mui/icons-material/Close";
+//import CloseIcon from "@mui/icons-material/Close";
 import ImagesListViewer from 'components/ImagesListViewer';
 import Predictor from 'components/Predictor';
 import CarFeaturesSelector from './FeatureSelector';

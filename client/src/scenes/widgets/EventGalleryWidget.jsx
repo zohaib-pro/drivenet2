@@ -7,6 +7,7 @@ import Center from "components/Center";
 import AdvertWidget from "./AdvertWidget";
 import { isEditable } from "@testing-library/user-event/dist/utils";
 
+
 const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelClick }) => {
   const posts = events;
 
@@ -15,6 +16,7 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
 
   // Reverse the order of posts array
   const reversedPosts = posts;
+
 
   return (
     <>

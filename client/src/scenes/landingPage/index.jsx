@@ -1,4 +1,4 @@
-import { Check, CheckCircle, Margin } from "@mui/icons-material";
+import { Check } from "@mui/icons-material";
 import {
   Box,
   Typography,
@@ -8,7 +8,6 @@ import {
   ListItemIcon,
   ListItemText,
   Button,
-  Link,
   Divider,
 } from "@mui/material";
 import Center from "components/Center";
@@ -17,14 +16,14 @@ import WidgetWrapper from "components/WidgetWrapper";
 import WidgetWrapper2 from "components/WidgetWrapper2";
 import { useSelector } from "react-redux";
 import Footer from "scenes/footer/Footer";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Navbar from "scenes/navbarMarket";
 import SearchAndCity from "scenes/navbarMarket/searchandcity";
-import FiltersWidget from "scenes/widgets/FiltersWidget";
+//import FiltersWidget from "scenes/widgets/FiltersWidget";
 import VehicleAdWidgetGallery from "scenes/widgets/VehicleAdGalleryWidget";
-import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
+//import VehicleAdWidget from "scenes/widgets/VehicleAdWidget";
 import { useNavigate } from "react-router-dom";
-import { useGetData } from "hooks/apiHook";
+//import { useGetData } from "hooks/apiHook";
 
 const LandingPage = () => {
 

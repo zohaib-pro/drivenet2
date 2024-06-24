@@ -3,7 +3,6 @@ import {
   Box,
   IconButton,
   Typography,
-  useTheme,
   Modal,
 } from "@mui/material";
 
@@ -11,22 +10,16 @@ import DetailsGrid from "components/DetailsGrid";
 
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  ChatBubbleOutlineOutlined,
-  FavoriteBorderOutlined,
   LocationOnOutlined,
-  FavoriteOutlined,
-  ShareOutlined,
   Close,
-  DeleteForever,
-  EditOutlined,
   Delete,
   Edit,
   SellOutlined
 } from "@mui/icons-material";
 import WidgetWrapper from "components/WidgetWrapper";
-import Friend from "components/Friend";
-import { setPost } from "state";
-import { useDispatch, useSelector } from "react-redux";
+//import Friend from "components/Friend";
+//import { setPost } from "state";
+//import { useDispatch, useSelector } from "react-redux";
 import ConfirmationDialog from "components/ConfirmationDialog";
 import { useDelData, useGetData } from "hooks/apiHook";
 import VehicleUpdateAdForm from "scenes/sellPage/FormUpdate";
@@ -35,13 +28,13 @@ import ViewsEye from "components/ViewsEye";
 const UserVehicleAdWidget = ({
   vehicle, isOwner, redirectTo, onDeleteSuccess
 }) => {
-  const dispatch = useDispatch();
+/*   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
 
   const { palette } = useTheme();
   const main = palette.neutral.main;
-  const primary = palette.primary.main;
+  const primary = palette.primary.main; */
 
   const {getData:markAsSold} = useGetData();
   

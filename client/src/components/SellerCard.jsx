@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import { useState } from "react";
 import {
   Box,
@@ -59,7 +60,7 @@ const SellerCard = ({
             DriveNet Seller Card
           </Typography>
           <Typography>
-            Name : {seller?.firstName + " " + seller?.lastName + (seller?._id == user?._id ? " (You) " : "")}
+            Name : {seller?.firstName + " " + seller?.lastName + (seller?._id === user?._id ? " (You) " : "")}
           </Typography>
           <Typography>
             Phone : {isRevealed? seller?.phone : "03XX XXXXXXX"}
@@ -83,7 +84,7 @@ const SellerCard = ({
               Contact
             </Button>
             <Button
-              disabled={seller?._id == user?._id}
+              disabled={seller?._id === user?._id}
               variant="contained"
               color="primary"
               startIcon={<Chat />}
