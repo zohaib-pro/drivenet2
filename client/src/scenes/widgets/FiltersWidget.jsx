@@ -16,6 +16,7 @@ import FlexBetween from "components/FlexBetween";
 import { useDispatch, useSelector } from "react-redux";
 import useAlertBox from 'components/AlertBox';
 import { useLocation } from 'react-router-dom';
+import { AryIncludes, Includes, ToLacOrCrore } from 'utils/extra';
 
 // Define Yup validation schema
 // const vehicleAdSchema = yup.object().shape({
@@ -91,10 +92,14 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     }
     var filteredResults = [...vehicleAdsAll];
     const inValue = search.toLowerCase();
+    filteredResults.forEach(item=>
+      console.log(item.description, Includes(item.description, inValue))
+    )
     if (inValue)
       filteredResults = filteredResults.filter(item =>
         item.make.toLowerCase() == inValue ||
-        item.model.toLowerCase() == inValue
+        item.model.toLowerCase() == inValue ||
+        Includes(item.description, inValue)
       );
 
     console.log(values.priceRange[0], values.priceRange[1]);
@@ -142,7 +147,10 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
     setTimeout(()=>{
       const results = vehicleAdsAll.filter(item =>
         item.make.toLowerCase() == querySearch ||
-        item.model.toLowerCase() == querySearch
+        item.model.toLowerCase() == querySearch ||
+        Includes(item.description, querySearch) ||
+        AryIncludes(item.features, querySearch) ||
+        AryIncludes(item.tags, querySearch)
       );
       dispatch(setVehicleAds({ vehicleAds: results }));
       dispatch(setSearch({ search: querySearch }))
@@ -262,8 +270,8 @@ const FiltersWidget = ({ isNonMobileScreen = false }) => {
                 aria-labelledby="range-slider"
               />
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography>{numberWithCommas(priceRange[0])}</Typography>
-                <Typography>{numberWithCommas(priceRange[1])}</Typography>
+                <Typography>{ToLacOrCrore(priceRange[0])}</Typography>
+                <Typography>{ToLacOrCrore(priceRange[1])}</Typography>
               </Box>
 
               <InputLabel>Mileage Range</InputLabel>

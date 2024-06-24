@@ -2,14 +2,16 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setEvents } from "state";
 
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, useMediaQuery } from "@mui/material";
 import Center from "components/Center";
 import AdvertWidget from "./AdvertWidget";
+import { isEditable } from "@testing-library/user-event/dist/utils";
 
 const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelClick }) => {
   const posts = events;
 
   const user = useSelector((state) => state.user);
+  const isNonMobileScreens =  useMediaQuery("(min-width:1000px)");
 
   // Reverse the order of posts array
   const reversedPosts = posts;
@@ -24,7 +26,11 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
         </Center>
       ) : (
         <Box
-          display="flex" flexWrap="wrap"
+        display="grid"
+        style={{
+          gridTemplateColumns: `repeat(auto-fill, minmax(${ (editable && isNonMobileScreens) ? "35%" : "100%"}, 1fr))`,
+          gap: '0.2rem'
+        }}
         >
 
           {reversedPosts.map((item) => (
@@ -34,7 +40,6 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
               flexGrow={1} // Allow items to grow to fill the available space
               minWidth={0} // Ensure items can shrink if necessary
               textAlign="center" // Optional: center align content
-              marginBottom={2} // Optional: add margin between items
               padding={2} // Optional: add padding to each item
             >
               <AdvertWidget 
@@ -47,7 +52,9 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
                   onDelClick(item._id);
                 }:null}
               />
-              <Box m="2rem 0" />
+              {
+              !editable && <Box m="2rem 0" />
+            }
             </Box>
             :
             <Box>
@@ -59,7 +66,10 @@ const EventWidgetGallery = ({ events, horizontal=false, editable=false, onDelCli
               eventId={item._id}
               isUserInterested={item.interestedUsers && user && item.interestedUsers[user._id]}
             />
-            <Box m="2rem 0" />
+            
+            {
+              !editable && <Box m="2rem 0" />
+            }
           </Box>
           
           ))}

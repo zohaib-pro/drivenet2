@@ -58,6 +58,7 @@ export const createVehicleAd = async (req, res) => {
       title,
       description,
       price,
+      estPrice,
       mileage,
       year,
       make,
@@ -68,8 +69,10 @@ export const createVehicleAd = async (req, res) => {
       city,
       area,
       features,
+      tags,
     } = req.body;
 
+    console.log(estPrice);
 
     const images = req.files.map(file => file.filename);
 
@@ -78,6 +81,7 @@ export const createVehicleAd = async (req, res) => {
       title,
       description,
       price,
+      estPrice,
       mileage,
       year,
       make,
@@ -87,7 +91,8 @@ export const createVehicleAd = async (req, res) => {
       cityReg,
       color,
       images,
-      features
+      features,
+      tags
     });
     await newVehicleAd.save();
     res.status(201).json(newVehicleAd)
@@ -105,6 +110,7 @@ export const updateVehicleAd = async (req, res) => {
       title,
       description,
       price,
+      estPrice,
       mileage,
       year,
       make,
@@ -118,7 +124,7 @@ export const updateVehicleAd = async (req, res) => {
       prevImages //images that were present previously before updating
     } = req.body;
 
-
+    console.log(estPrice);
     // Find the user by ID
     const vehicle = await VehicleAd.findById(vehicleAdId);
 
@@ -132,6 +138,7 @@ export const updateVehicleAd = async (req, res) => {
     vehicle.title = title,
     vehicle.description = description,
     vehicle.price = price,
+    vehicle.estPrice = estPrice;
     vehicle.mileage = mileage,
     vehicle.year = year,
     vehicle.make = make,

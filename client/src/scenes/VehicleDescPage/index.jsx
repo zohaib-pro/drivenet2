@@ -21,7 +21,7 @@ import { numberWithCommas } from "utils/math";
 import CustomModal from "components/CustomModal";
 import LoginPage from "scenes/loginPage";
 import Predictor from "components/Predictor";
-import { getTimeDiff, getUpdatedAt } from "utils/extra";
+import { ToLacOrCrore, getTimeDiff, getUpdatedAt } from "utils/extra";
 import SelectedFeaturesDisplay from "./VehicleDisplayer";
 import VehicleInfoTable from "./VehicleInfo";
 import Footer from "scenes/footer/Footer";
@@ -43,7 +43,7 @@ const VehicleDescPage = () => {
   const { vehicleAdId } = useParams();
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
-  console.log("user:", user);
+  //console.log("user:", user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const { data: sellerData, getData: getSellerData } = useGetData(undefined, token, { defValue: null });
@@ -209,7 +209,7 @@ const VehicleDescPage = () => {
                   </Typography>
 
                   <Typography variant="h3" color={'orange'} fontWeight={500} mb={2} mt={2}>
-                    PKR {numberWithCommas(vehicle.price)}
+                    PKR {ToLacOrCrore(vehicle.price)}
                   </Typography>
 
                   <Box mt="0.5rem" mb="0.5rem" display="flex" flexDirection="row" gap={'0.5rem'}>

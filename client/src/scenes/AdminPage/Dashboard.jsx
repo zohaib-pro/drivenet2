@@ -55,7 +55,7 @@ const Dashboard = () => {
                 <RoundProgressBar title='Vehicles on Sale' valueText={report.vehiclesN} />
                 <RoundProgressBar title='Vehicles Sold'
                     isValue={true}
-                    value={(report.vehiclesSoldN / report.vehiclesN)}
+                    value={(report.vehiclesSoldN * 100 / report.vehiclesN)}
                     valueText={`${report.vehiclesSoldN}/${report.vehiclesN}`}
                 />
                 <RoundProgressBar title='Issues Resolved'

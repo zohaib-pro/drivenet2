@@ -44,7 +44,8 @@ const UserVehicleAdWidget = ({
   const primary = palette.primary.main;
 
   const {getData:markAsSold} = useGetData();
-
+  
+  const [isMarkedSold, setMarkedSold] = useState(false);
   const navigate = useNavigate();
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -84,16 +85,21 @@ const UserVehicleAdWidget = ({
           <IconButton onClick={() => { navigate(`/market/edit/${vehicle._id}`) }}>
             <Edit />
           </IconButton>
-          <IconButton onClick={() => { setDialogOpen2(true) }}>
-            <SellOutlined />
-          </IconButton>
+          {
+            ((!isMarkedSold && vehicle.status != 'sold')) ?
+            <IconButton onClick={() => { setDialogOpen2(true) }}>
+              <SellOutlined />
+            </IconButton>
+            :
+            <></>
+          }
         </Box>
         }
 
 
         {
           isOwner && <Typography variant="h5" color={'orange'}>
-          {vehicle.status === 'new' ? "Pending approval" : vehicle.status === 'approved' ? "Live" : vehicle.status}
+          {isMarkedSold? "sold" : vehicle.status === 'new' ? "Pending approval" : vehicle.status === 'approved' ? "Live" : vehicle.status}
         </Typography>
         }
       </Box>
@@ -149,7 +155,7 @@ const UserVehicleAdWidget = ({
         </Box>
       }
       <ConfirmationDialog data={{ title: "Are you sure to delete?", content: "The selected vehicle ad will be deleted from market", open: isDialogOpen, onConfirm: () => { setDialogOpen(false); delVehicleAd(vehicle._id) }, onClose: () => { setDialogOpen(false) } }} />
-      <ConfirmationDialog data={{ title: "Mark this vehicle as sold?", content: "The selected vehicle ad will be marked as sold and removed from market", open: isDialogOpen2, onConfirm: () => { setDialogOpen2(false); markAsSold('/market/sold/'+vehicle._id) }, onClose: () => { setDialogOpen2(false) } }} />
+      <ConfirmationDialog data={{ title: "Mark this vehicle as sold?", content: "The selected vehicle ad will be marked as sold and removed from market", open: isDialogOpen2, onConfirm: () => { setDialogOpen2(false); markAsSold('/market/sold/'+vehicle._id); setMarkedSold(true) }, onClose: () => { setDialogOpen2(false) } }} />
 
       <Modal open={isModalOpen} onClose={handleClose}>
 

@@ -27,6 +27,9 @@ const vehicleAdSchema = new mongoose.Schema({
       type: Number,
       required: true
     },
+    estPrice: {
+      type: Number,
+    },
     views: {
       type: Number,
       default: 0
@@ -84,6 +87,7 @@ const vehicleAdSchema = new mongoose.Schema({
         default: 0
     },
     features: [String], 
+    tags: [String],
     images: [String] // Array of image URLs
   }, { timestamps: true }
 );

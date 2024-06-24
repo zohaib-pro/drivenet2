@@ -6,7 +6,7 @@ export const getReport = async (req, res) => {
   try {
     const usersN = await User.countDocuments();
     const vehiclesN = await VehicleAd.countDocuments();
-    const vehiclesSoldN = await VehicleAd.countDocuments({sold: true});
+    const vehiclesSoldN = await VehicleAd.countDocuments({status: 'sold'});
     const issuesN = await Issue.countDocuments();
     const issuesResolvedN = await Issue.countDocuments({status: 'resolved'});
 

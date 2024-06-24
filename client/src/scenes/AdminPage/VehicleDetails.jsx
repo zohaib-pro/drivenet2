@@ -72,7 +72,6 @@ const VehicleDetailsComponent = () => {
 
     const submitEvent = async (values, onSubmitProps) => {
         const target = `vehicles/${values.make}/${values.model}`;
-        alert(values.engineC);
         postVehicleDetails(JSON.stringify(values), target, {
             onSuccess:()=>{
                 //onSubmitProps.resetForm();

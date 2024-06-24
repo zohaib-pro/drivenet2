@@ -3,9 +3,9 @@ import { Box, Typography, useTheme, LinearProgress } from "@mui/material";
 import IconBtn from './IconBtn';
 import Button from '@mui/material/Button';
 import { AdjustOutlined } from '@mui/icons-material';
-import { GetStringsWithDelay } from 'utils/extra';
+import { GetStringsWithDelay, ToLacOrCrore } from 'utils/extra';
 
-const Predictor = ({ vehicle, onPrediction }) => {
+const Predictor = ({ vehicle, onPrediction, onGetDetails, isRaw  }) => {
     const [prediction, setPrediction] = useState({
         upper_limit: 0,
         lower_limit: 0,
@@ -43,6 +43,8 @@ const Predictor = ({ vehicle, onPrediction }) => {
     }
 
     const getPrediction = async () => {
+        if (isRaw)
+            console.log('vehicle', vehicle);
         setIsPredicting(true);
         const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant ? "?" + vehicle.variant : ""}`;
         const res = await fetch(url, { method: "GET" });
@@ -61,6 +63,9 @@ const Predictor = ({ vehicle, onPrediction }) => {
             return;
         }
 
+        if (onGetDetails)
+            onGetDetails(vehDetails);
+
         const formData = new FormData();
         formData.append('car_brand', vehicle.make);
         formData.append('car_name', vehicle.model);
@@ -73,14 +78,22 @@ const Predictor = ({ vehicle, onPrediction }) => {
         formData.append('trans', vehDetails.transType);
         formData.append('cate', vehDetails.category);
 
-        const imageURLs = vehicle.images.map(item => 'http://localhost:3001/assets/' + item);
-        const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
-        results.forEach(({ blob, extension }, index) => {
-            formData.append(`images`, blob, `image${index + 1}.${extension}`);
-        });
+        if (isRaw){
+            vehicle.images.forEach(item=>{
+                formData.append('images', item);
+            })
+            
+        }else{
+            const imageURLs = vehicle.images.map(item => 'http://localhost:3001/assets/' + item);
+            const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
+            results.forEach(({ blob, extension }, index) => {
+                formData.append(`images`, blob, `image${index + 1}.${extension}`);
+            });
+        }
+        
 
         try {
-            const response = await fetch(`http://192.168.147.49:4000/predict`, {
+            const response = await fetch(`http://192.168.1.12:4000/predict`, {
                 method: "POST",
                 body: formData
             });
@@ -90,6 +103,7 @@ const Predictor = ({ vehicle, onPrediction }) => {
             if (onPrediction)
                 onPrediction(data);
         } catch (e) {
+            console.log(e);
             setPrediction({ predicted_price: "Failed to predict!" });
             setIsPredicting(false);
         }
@@ -115,7 +129,7 @@ const Predictor = ({ vehicle, onPrediction }) => {
                     }}
                 >
                     <Typography>
-                        {prediction.predicted_price}
+                        {isRaw ? prediction.predicted_price : prediction.predicted_price == 0 && vehicle.estPrice? ToLacOrCrore(vehicle.estPrice) : prediction.predicted_price}
                     </Typography>
                     <Typography>
                         PKR
@@ -128,9 +142,10 @@ const Predictor = ({ vehicle, onPrediction }) => {
                     style={{ objectFit: "cover", marginTop: "1rem", marginLeft: "-1.4rem" }}
                     src={`http://localhost:3000/icons/price_tag.png`}
                 />
-                <IconBtn text="Estimate" style={{ float: 'right', color: 'white' }}
+                <IconBtn text="Estimate" isDisabled={vehicle.estPrice} style={{ float: 'right', color: 'white' }}
                     icon="http://localhost:3000/icons/ai.png"
                     onPress={getPrediction}
+                    
                 />
                 {isPredicting && (
                     <>

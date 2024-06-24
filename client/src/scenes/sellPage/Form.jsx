@@ -19,7 +19,20 @@ import ImagesListViewer from 'components/ImagesListViewer';
 import Predictor from 'components/Predictor';
 import CarFeaturesSelector from './FeatureSelector';
 import Footer from 'scenes/footer/Footer';
+import { ToLacOrCrore, ToNumberPrice } from 'utils/extra';
 
+
+const colors = [
+  "White",
+  "Black",
+  "Red",
+  "Rallye Red",
+  "Blue Metallic",
+  "Black Pearl",
+  "Silver Metallic",
+  "Gray Metallic",
+  "White Pearl",
+]
 
 // Define Yup validation schema
 const vehicleAdSchema = yup.object().shape({
@@ -60,57 +73,18 @@ const initialValues = {
   location: {},
   images: [],
   features: [],
+  tags: [],
 };
 
 
 const VehicleAdForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+
   /** Price prediciton */
-  const [vehicle, setVehicle] = useState(initialValues);
-  const [isPredicting, setIsPredicting] = useState(false);
 
-  const [prediction, setPrediction] = useState({
-    upper_limit: 0,
-    lower_limit: 0,
-    predicted_price: 0
-  });
-
-
-  async function fetchImageAsBlob(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const contentType = response.headers.get('Content-Type');
-    const extension = contentType.split('/')[1];
-
-    const blob = await response.blob();
-    return { blob, extension };
-  }
-
-  function formDataToJson(formData) {
-    const json = {};
-
-    formData.forEach((value, key) => {
-      // Check if key already exists
-      if (json[key]) {
-        if (!Array.isArray(json[key])) {
-          // Convert existing value to an array
-          json[key] = [json[key]];
-        }
-        // Append the new value to the array
-        json[key].push(value);
-      } else {
-        // Just set the value
-        json[key] = value;
-      }
-    });
-
-    return json;
-  }
-
+  const [vehDetails, setVehDetails] = useState();
+  const [estPrice, setEstPrice] = useState();
 
   /*End of price prediction */
   const { data: vehicleMakes } = useGetData("vehicles", '', { defValue: [] });
@@ -128,64 +102,7 @@ const VehicleAdForm = () => {
 
   const { AlertBox, ShowAlertBox } = useAlertBox();
 
-  const getPrediction = async () => {
-
-    setIsPredicting(true);
-    const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant ? "?" + vehicle.variant : ""}`;
-    //get the extra details about the vehicle first
-    const res = await fetch(url, {
-      method: "GET",
-    });
-    const vehDetails = await res.json()
-
-    if (!vehDetails) {
-      alert("No Vehicle Details Found!");
-      return;
-    }
-
-    //send the request to next page
-    const formData = new FormData();
-    formData.append('car_brand', vehicle.make);
-    formData.append('car_name', vehicle.model);
-    formData.append('milage', vehicle.mileage);
-    formData.append('model_year', vehicle.year);
-    formData.append('city_registered', vehicle.cityReg);
-    formData.append('color', vehicle.color);
-    formData.append('engine_c', vehDetails.engineC);
-    formData.append('fuel_type', vehDetails.fuelType);
-    formData.append('trans', vehDetails.transType);
-    formData.append('cate', vehDetails.category);
-
-    const imageURLs = vehicle.images.map(item => 'http://localhost:3001/assets/' + item);
-    const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
-    console.log(imageURLs);
-    results.forEach(({ blob, extension }, index) => {
-      formData.append(`images`, blob, `image${index + 1}.${extension}`);
-    });
-
-    console.log(formDataToJson(formData))
-    //alert(JSON.stringify(formData));
-
-    // setTimeout(()=>{
-    //   setIsPredicting(false);
-    // }, 2000);
-    try {
-      const response = await fetch(`http://192.168.147.49:4000/predict`, {
-        method: "POST",
-        body: formData
-      });
-      const data = await response.json();
-      setPrediction(data);
-      setIsPredicting(false);
-    } catch (e) {
-      //alert('failed');
-      setPrediction({ predicted_price: "Failed to predict!" })
-      setIsPredicting(false);
-    }
-
-
-  }
-
+  
   const submitVehicleAd = async (values, onSubmitProps) => {
 
     // this allows us to send form info with image
@@ -200,7 +117,9 @@ const VehicleAdForm = () => {
       }
     }
 
-    formData.append("title", `${values.make} ${values.model} ${values.variant} ${values.year}`)
+    formData.append("title", `${values.make} ${values.model} ${values.variant} ${values.year}`);
+    if (estPrice)
+    formData.append("estPrice", estPrice);
 
     formData.append("location", location);
     values.features.forEach((value, index)=>{
@@ -213,6 +132,19 @@ const VehicleAdForm = () => {
 
     formData.append("userId", _id);
 
+    if (vehDetails) {
+      values.tags.push(vehDetails.fuelType);
+      values.tags.push(vehDetails.category);
+      values.tags.push(vehDetails.transType);
+      values.tags.push(vehDetails.engineC);
+      values.tags.push(vehDetails.engineC+"cc");
+      values.tags.push(vehDetails.engineC+" cc");
+    }
+
+    values.tags.forEach((value, index)=>{
+      formData.append("tags", value);
+    });
+
     postVehicleAd(formData, undefined, {
       onSuccess: (data) => {
 
@@ -223,7 +155,7 @@ const VehicleAdForm = () => {
       }
     });
 
-    onSubmitProps.resetForm();
+    //onSubmitProps.resetForm();
 
   };
 
@@ -371,7 +303,7 @@ const VehicleAdForm = () => {
                 margin="normal"
               />
 
-              <TextField
+              {/* <TextField
                 fullWidth
                 label="Color *"
                 name="color"
@@ -382,7 +314,28 @@ const VehicleAdForm = () => {
                 error={touched.color && Boolean(errors.color)}
                 helperText={touched.color && errors.color}
                 margin="normal"
-              />
+              /> */}
+
+              <TextField
+                fullWidth
+                select
+                label="Color *"
+                name="color"
+                value={values.color}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.color && Boolean(errors.color)}
+                helperText={touched.color && errors.color}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  colors.map(make => (<option value={make}>{make}</option>))
+                }
+              </TextField>
 
               <TextField
                 fullWidth
@@ -562,6 +515,12 @@ const VehicleAdForm = () => {
                 </Dropzone>
               </Box>
 
+              {/*  */}
+
+              <CarFeaturesSelector onChange={(features)=>{values.features = features;}}/>
+              
+              <Divider sx={{margin: 2}}/>
+
               <TextField
                 fullWidth
                 label="Price *"
@@ -575,13 +534,15 @@ const VehicleAdForm = () => {
                 margin="normal"
               />
 
-              {/*  */}
-
-              <CarFeaturesSelector onChange={(features)=>{values.features = features;}}/>
-              
+              <Typography ml={2}>PKR {values.price != ''? ToLacOrCrore(values.price): 0}</Typography>
               <Divider sx={{margin: 2}}/>
-              <Predictor vehicle={vehicle} />
-
+              <Predictor 
+                vehicle={values} 
+                onPrediction={(data)=>{setEstPrice(ToNumberPrice(data.predicted_price));}} 
+                isRaw={true}
+                onGetDetails={(details)=>setVehDetails(details)}
+                />
+                
 
               {/* Submit button */}
               <Button
@@ -617,9 +578,6 @@ const VehicleAdForm = () => {
 
         {
           postedVehicle &&
-          // <Typography>
-          //   {JSON.stringify(postedVehicle)}
-          // </Typography>
           <Box mt={2} mb={2}>
             <VehicleAdWidget
               key={postedVehicle.title} // Add a unique key for each item in the map function

@@ -88,7 +88,7 @@ const AdvertWidget = ({
         )}
       </FlexBetween>
       <img
-        width="300px"
+        width="100%"
         height="auto"
         alt="advert"
         src={`http://localhost:3001/assets/${image}`}
@@ -98,7 +98,7 @@ const AdvertWidget = ({
         <Typography color={main} fontWeight="500">
           {title}
         </Typography>
-        <Typography color={medium}>{date}</Typography>
+        <Typography color={medium}>{date.replace('T', ' ')}</Typography>
       </FlexBetween>
       <Typography color={medium} m="0.5rem 0">
         {description}

@@ -20,6 +20,22 @@ import ImagesListViewer from 'components/ImagesListViewer';
 import Predictor from 'components/Predictor';
 import CarFeaturesSelector from './FeatureSelector';
 
+import { ToNumberPrice, ToLacOrCrore } from 'utils/extra';
+
+
+const colors = [
+  "White",
+  "Black",
+  "Red",
+  "Rallye Red",
+  "Blue Metallic",
+  "Black Pearl",
+  "Silver Metallic",
+  "Gray Metallic",
+  "White Pearl",
+]
+
+
 
 // Define Yup validation schema
 const vehicleAdSchema = yup.object().shape({
@@ -46,6 +62,7 @@ const vehicleAdSchema = yup.object().shape({
 
 
 const VehicleAdUpdateForm = ({vehicleAdId}) => {
+  const [estPrice, setEstPrice] = useState();
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   /** Price prediciton */
@@ -74,6 +91,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
     title: '',
     description: vehicle? vehicle.description: '',
     price: vehicle? vehicle.price : ''  ,
+    estPrice: vehicle? vehicle.estPrice: '',
     mileage: vehicle? vehicle.mileage : '',
     year:vehicle? vehicle.year :'',
     make: vehicle? vehicle.make :'',
@@ -142,63 +160,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
 
   const { AlertBox, ShowAlertBox } = useAlertBox();
 
-  const getPrediction = async () => {
-
-    setIsPredicting(true);
-    const url = `http://localhost:3001/vehicles/${vehicle.make}/${vehicle.model}${vehicle.variant ? "?" + vehicle.variant : ""}`;
-    //get the extra details about the vehicle first
-    const res = await fetch(url, {
-      method: "GET",
-    });
-    const vehDetails = await res.json()
-
-    if (!vehDetails) {
-      alert("No Vehicle Details Found!");
-      return;
-    }
-
-    //send the request to next page
-    const formData = new FormData();
-    formData.append('car_brand', vehicle.make);
-    formData.append('car_name', vehicle.model);
-    formData.append('milage', vehicle.mileage);
-    formData.append('model_year', vehicle.year);
-    formData.append('city_registered', vehicle.cityReg);
-    formData.append('color', vehicle.color);
-    formData.append('engine_c', vehDetails.engineC);
-    formData.append('fuel_type', vehDetails.fuelType);
-    formData.append('trans', vehDetails.transType);
-    formData.append('cate', vehDetails.category);
-
-    const imageURLs = vehicle.images.map(item => 'http://localhost:3001/assets/' + item);
-    const results = await Promise.all(imageURLs.map(url => fetchImageAsBlob(url)));
-    console.log(imageURLs);
-    results.forEach(({ blob, extension }, index) => {
-      formData.append(`images`, blob, `image${index + 1}.${extension}`);
-    });
-
-    console.log(formDataToJson(formData))
-    //alert(JSON.stringify(formData));
-
-    // setTimeout(()=>{
-    //   setIsPredicting(false);
-    // }, 2000);
-    try {
-      const response = await fetch(`http://192.168.147.49:4000/predict`, {
-        method: "POST",
-        body: formData
-      });
-      const data = await response.json();
-      setPrediction(data);
-      setIsPredicting(false);
-    } catch (e) {
-      //alert('failed');
-      setPrediction({ predicted_price: "Failed to predict!" })
-      setIsPredicting(false);
-    }
-
-  }
-
+  
   const submitVehicleAd = async (values, onSubmitProps) => {
 
     // this allows us to send form info with image
@@ -214,6 +176,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
     }
 
     formData.append("title", `${values.make} ${values.model} ${values.variant} ${values.year}`)
+    formData.append("estPrice", estPrice);
 
     formData.append("location", location);
     values.features.forEach((value, index)=>{
@@ -384,7 +347,7 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
                 margin="normal"
               />
 
-              <TextField
+              {/* <TextField
                 fullWidth
                 label="Color *"
                 name="color"
@@ -395,7 +358,28 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
                 error={touched.color && Boolean(errors.color)}
                 helperText={touched.color && errors.color}
                 margin="normal"
-              />
+              /> */}
+
+<TextField
+                fullWidth
+                select
+                label="Color *"
+                name="color"
+                value={values.color}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.color && Boolean(errors.color)}
+                helperText={touched.color && errors.color}
+                SelectProps={{
+                  native: true,
+                }}
+                margin="normal"
+              >
+                <option value=""></option>
+                {
+                  colors.map(make => (<option value={make}>{make}</option>))
+                }
+              </TextField>
 
               <TextField
                 fullWidth
@@ -588,7 +572,10 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
                   )}
                 </Dropzone>
               </Box>
+              <CarFeaturesSelector prevFeatures={vehicle.features} onChange={(features)=>{values.features = features;}}/>
 
+              <Divider sx={{margin: 2}}/>
+              
               <TextField
                 fullWidth
                 label="Price *"
@@ -602,10 +589,9 @@ const VehicleAdUpdateForm = ({vehicleAdId}) => {
                 margin="normal"
               />
 
-              <CarFeaturesSelector prevFeatures={vehicle.features} onChange={(features)=>{values.features = features;}}/>
+              <Typography ml={2}>PKR {values.price != ''? ToLacOrCrore(values.price): 0}</Typography>
               <Divider sx={{margin: 2}}/>
-
-              <Predictor vehicle={vehicle} />
+              <Predictor vehicle={values} onPrediction={(data)=>{setEstPrice(ToNumberPrice(data.predicted_price));}} isRaw={true}/>
 
               {/* Submit button */}
               <Button

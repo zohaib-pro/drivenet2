@@ -27,7 +27,7 @@ const initialValues = {
 
 const EventHandlerComponent = () => {
     const [open, setOpen] = useState(false);
-    
+
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -37,7 +37,7 @@ const EventHandlerComponent = () => {
     const { palette } = useTheme();
 
     const [events, setEvents] = useState([]);
- 
+
     const submitEvent = async (values, onSubmitProps) => {
 
         const formData = new FormData();
@@ -58,31 +58,31 @@ const EventHandlerComponent = () => {
 
     const getEvents = async () => {
         const response = await fetch("http://localhost:3001/events", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
         });
-    
+
         const data = await response.json();
         setEvents(data)
     };
 
     const delEvent = async (id) => {
-        const response = await fetch("http://localhost:3001/events/"+id, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await fetch("http://localhost:3001/events/" + id, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
         });
-    
+
         if (!response.ok) {
-          alert("Failed to delete !")
-        }else{
-          setEvents(events.filter(item=>item._id != id));
-          showAlert('Event Deleted Successfully!');
+            alert("Failed to delete !")
+        } else {
+            setEvents(events.filter(item => item._id != id));
+            showAlert('Event Deleted Successfully!');
         }
 
     };
 
     const [alertObj, setAlertObj] = useState();
-    const showAlert = (msg , severity='success')=> {
+    const showAlert = (msg, severity = 'success') => {
         setAlertObj({
             msg,
             severity
@@ -93,24 +93,24 @@ const EventHandlerComponent = () => {
         });
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getEvents();
-    },[]);
+    }, []);
     return (
         <Box>
             {/* Plus icon to toggle the form */}
-            <Box sx={{ mt: 2, display: "flex", justifyContent: alertObj?"space-between":"end" }}>
-            {
-                alertObj &&
-                <Alert severity={alertObj.severity} variant="outlined" onClose={()=>{setAlertObj(null)}}>{alertObj.msg}</Alert>
-            }
-                <Button 
-                startIcon={<AddIcon />} onClick={handleOpen}
+            <Box sx={{ mt: 2, display: "flex", justifyContent: alertObj ? "space-between" : "end" }}>
+                {
+                    alertObj &&
+                    <Alert severity={alertObj.severity} variant="outlined" onClose={() => { setAlertObj(null) }}>{alertObj.msg}</Alert>
+                }
+                <Button
+                    startIcon={<AddIcon />} onClick={handleOpen}
                 >
                     Add Event
                 </Button>
             </Box>
-            
+
             {/* Modal for the form */}
             <Modal open={open} onClose={handleClose}>
                 <Box
@@ -170,8 +170,8 @@ const EventHandlerComponent = () => {
                                     onChange={handleChange}
                                     value={values.date}
                                     name="datetime"
-                                    error={Boolean(touched.date) && Boolean(errors.date)}
-                                    helperText={touched.date && errors.date}
+                                    error={Boolean(touched.datetime) && Boolean(errors.datetime)}
+                                    helperText={touched.datetime && errors.datetime}
                                     fullWidth
                                     margin="normal"
                                 />
@@ -201,6 +201,9 @@ const EventHandlerComponent = () => {
                                                     <EditOutlinedIcon />
                                                 </FlexBetween>
                                             )}
+                                            <Typography color="error">
+                                                {touched.picture && errors.picture}
+                                            </Typography>
                                         </Box>
                                     )}
                                 </Dropzone>
@@ -214,7 +217,7 @@ const EventHandlerComponent = () => {
                 </Box>
             </Modal>
 
-            <EventWidgetGallery horizontal={true} editable={true} events={events} onDelClick={(id)=>{delEvent(id)}} />
+            <EventWidgetGallery horizontal={true} editable={true} events={events} onDelClick={(id) => { delEvent(id) }} />
         </Box>
     );
 };

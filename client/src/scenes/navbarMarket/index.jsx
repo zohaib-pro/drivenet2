@@ -53,6 +53,7 @@ const Navbar = ({ onSearch = () => { } }) => {
 
   const query = new URLSearchParams(useLocation().search)
   const queryLocation = query.get('location');
+  const querySearch = query.get('search');
   const [currentLocation, setCurrentLocation] = useState("Pakistan");
 
   useGetData('location', '', {
@@ -72,7 +73,7 @@ const Navbar = ({ onSearch = () => { } }) => {
   const fullName = user ? `${user.firstName}` : "user";
 
 
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(querySearch??'');
   const isCalled = useRef(false);
   const handleChange = (event) => {
     setInputValue(event.target.value);
@@ -84,12 +85,6 @@ const Navbar = ({ onSearch = () => { } }) => {
       
       const inValue = inputValue.toLowerCase()
       navigate(`/market?search=${inValue}`);
-      // const results = vehicleAdsAll.filter(item =>
-      //   item.make.toLowerCase() == inValue ||
-      //   item.model.toLowerCase() == inValue
-      // );
-      // dispatch(setVehicleAds({ vehicleAds: results }));
-      // dispatch(setSearch({ search: inputValue }))
     }
   };
 
@@ -168,6 +163,7 @@ const Navbar = ({ onSearch = () => { } }) => {
               {
                 search &&
                 <IconButton onClick={() => {
+                  navigate(`/market`);
                   dispatch(setVehicleAds({ vehicleAds: vehicleAdsAll }));
                   dispatch(setSearch({ search: '' }));
                   setInputValue('');

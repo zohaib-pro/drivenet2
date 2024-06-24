@@ -12,6 +12,8 @@ import {
   Button,
 } from "@mui/material";
 
+import { ToLacOrCrore } from "utils/extra";
+
 import DetailsGrid from "components/DetailsGrid";
 
 import { Link } from 'react-router-dom';
@@ -57,7 +59,7 @@ const VehicleAdWidget = ({
         <Typography variant="h4" fontWeight={500} color={'orange'}
           mt={1}
         >
-          PKR {numberWithCommas(vehicle.price)}
+          PKR {ToLacOrCrore(vehicle.price)}
         </Typography>
         <Typography variant="h5" fontWeight={500}
           mb={1}

@@ -247,7 +247,7 @@ const LandingPage = () => {
         </Box> */}
 
         <Box flexBasis={"100%"}>
-          <VehicleAdWidgetGallery heading={"Listed Recently for sale!"} limit={1} />
+          <VehicleAdWidgetGallery heading={"Listed Recently for sale!"} limit={3} />
         </Box>
       </Box>
       
